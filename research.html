@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2E2119">
+<title>毛孩研究知識庫｜AI 萌寵映畫誌</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --amber:#C05621; --amber2:#E08A47; --amber-soft:#FDF3E7;
+    --ink:#3B2B20; --muted:#7A6A5B; --paper:#FFFCF8; --card:#FFFFFF;
+    --line:#EADBCA; --dog:#2F6FB0; --dog-soft:#EAF2FA;
+    --cat:#8A5AA8; --cat-soft:#F3ECF8; --bad:#C0392B; --ok:#3E8E5A; --sci:#2F6FB0;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper); color:var(--ink);
+       font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;
+       line-height:1.6; overflow-x:hidden; word-break:break-word;
+       padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+
+  header{background:linear-gradient(150deg,#3D2C21,#2E2119); color:#F6EDE4; padding:34px 22px 30px; position:relative; overflow:hidden}
+  header::after{content:""; position:absolute; right:-60px; top:-60px; width:230px; height:230px; border-radius:50%; background:rgba(224,138,71,.16)}
+  .hwrap{max-width:1120px; margin:0 auto; position:relative; z-index:2}
+  .kick{font-size:12.5px; letter-spacing:4px; font-weight:800; color:var(--amber2)}
+  header h1{font-size:33px; font-weight:900; margin:8px 0 6px; letter-spacing:1px}
+  header p{font-size:15px; color:#CDBCAC; max-width:680px}
+  .stats{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap}
+  .stat{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16); border-radius:10px; padding:8px 14px; font-size:13px}
+  .stat b{color:var(--amber2); font-size:17px}
+  .backlink{display:inline-block; margin-top:14px; margin-right:16px; color:var(--amber2); font-size:13.5px; font-weight:800; text-decoration:none; border-bottom:1.5px solid rgba(224,138,71,.4); padding-bottom:2px}
+
+  .toolbar{position:sticky; top:0; z-index:30; background:rgba(255,252,248,.97); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:13px 22px}
+  .twrap{max-width:1120px; margin:0 auto}
+  .search{width:100%; padding:13px 16px; font-size:16px; border:2px solid var(--line); border-radius:12px; font-family:inherit; background:#fff; color:var(--ink); -webkit-appearance:none}
+  .search:focus{outline:none; border-color:var(--amber2)}
+  .chipwrap{position:relative; margin-top:10px}
+  .chips{display:flex; gap:8px; flex-wrap:wrap}
+  .chip{background:#fff; border:1.5px solid var(--line); border-radius:20px; padding:7px 15px; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; transition:.15s; flex:0 0 auto; white-space:nowrap; -webkit-tap-highlight-color:transparent}
+  .chip:hover{border-color:var(--amber2)}
+  .chip.on{background:var(--amber); border-color:var(--amber); color:#fff}
+  .count{font-size:13px; color:var(--muted); margin-top:9px}
+
+  main{max-width:1120px; margin:0 auto; padding:22px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:16px; align-items:start}
+
+  .st{background:var(--card); border:1.5px solid var(--line); border-radius:14px; padding:18px 20px; transition:.18s; display:flex; flex-direction:column}
+  .st:hover{border-color:var(--amber2); box-shadow:0 5px 18px rgba(60,40,25,.08)}
+  .st.warn{border-color:#E8B4AC; background:#FFFBFA}
+  .top{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:9px}
+  .tag{font-size:11px; font-weight:800; border-radius:11px; padding:3px 9px; white-space:nowrap}
+  .tag.dog{background:var(--dog-soft); color:var(--dog)}
+  .tag.cat{background:var(--cat-soft); color:var(--cat)}
+  .tag.both{background:#EFF5EE; color:#3E7A4E}
+  .tag.a{background:#EAF2FA; color:var(--sci)}
+  .tag.b{background:#F1ECFA; color:#6A4BA8}
+  .tag.lim{background:#FDF0EE; color:var(--bad)}
+  .lbl{font-size:17.5px; font-weight:900; line-height:1.35; margin-bottom:10px}
+
+  .mythrow{background:#FDF0EE; border-left:4px solid #E8B4AC; border-radius:0 8px 8px 0; padding:9px 13px; font-size:13.8px; color:#8A3B33; margin-bottom:9px}
+  .mythrow b{color:var(--bad)}
+  .findrow{background:#EFF7F0; border-left:4px solid #9BC7A8; border-radius:0 8px 8px 0; padding:10px 13px; font-size:14.3px; color:#2C5E40; margin-bottom:11px; line-height:1.65}
+  .findrow b{color:#1F4A2E}
+  .num{display:inline-block; background:#2E2119; color:var(--amber2); font-weight:900; font-size:13px; border-radius:8px; padding:4px 11px; margin-bottom:11px}
+  .why{font-size:13.8px; color:var(--muted); line-height:1.68; flex:1}
+  .why b{color:var(--ink)}
+
+  .cite{margin-top:13px; padding-top:11px; border-top:1px dashed var(--line); font-size:12.4px; color:var(--muted); line-height:1.6}
+  .cite .j{font-weight:800; color:#5A4A3C}
+  .cite a{display:inline-block; margin-top:6px; color:var(--amber); font-weight:800; text-decoration:none; font-size:12.5px}
+  .cite a:hover{text-decoration:underline}
+
+  .section{margin-top:36px}
+  .section h2{font-size:22px; font-weight:900; margin-bottom:5px}
+  .section h2 span{color:var(--amber)}
+  .section .lead{font-size:14.5px; color:var(--muted); margin-bottom:14px}
+
+  .howto{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px}
+  .how{background:var(--amber-soft); border:1.5px solid var(--amber2); border-radius:12px; padding:15px 17px}
+  .how h3{font-size:15.5px; font-weight:800; color:#9A5E10; margin-bottom:6px}
+  .how p{font-size:13.8px; color:#6B4A28}
+
+  .promptbox{background:#2E2119; color:#EEE2D6; border-radius:14px; padding:18px 20px; position:relative; font-size:13.8px; line-height:1.75; white-space:pre-wrap}
+  .promptbox .cap{display:block; color:var(--amber2); font-weight:800; font-size:13px; letter-spacing:1.5px; margin-bottom:8px}
+  .promptbox .copybtn{position:absolute; top:14px; right:16px; background:var(--amber); border:none; color:#fff; font-size:12.5px; font-weight:800; padding:9px 16px; border-radius:16px; cursor:pointer; font-family:inherit; min-height:38px}
+
+  .extra{background:#F6F1EA; border:1.5px solid var(--line); border-radius:12px; padding:15px 18px; font-size:13.5px; color:var(--muted); line-height:1.8}
+  .extra li{margin-bottom:7px; margin-left:18px}
+  .extra a{color:var(--amber); font-weight:700; text-decoration:none}
+  .extra b{color:var(--ink)}
+
+  .disc{background:#F6F1EA; border:1.5px solid var(--line); border-radius:12px; padding:15px 18px; font-size:13.5px; color:var(--muted); margin-top:30px; line-height:1.78}
+  .disc b{color:var(--ink)}
+  footer{text-align:center; padding:26px 20px 10px; font-size:13px; color:var(--muted)}
+  .empty{text-align:center; padding:50px 20px; color:var(--muted); font-size:16px}
+
+  #toast{position:fixed; left:50%; bottom:calc(84px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(80px); background:var(--ink); color:#fff; padding:12px 20px; border-radius:24px; font-size:14.5px; font-weight:700; opacity:0; transition:.3s; z-index:60; box-shadow:0 6px 20px rgba(0,0,0,.25); max-width:92vw; text-align:center}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+  #totop{position:fixed; right:16px; bottom:calc(18px + env(safe-area-inset-bottom)); width:48px; height:48px; border-radius:50%; background:var(--amber); color:#fff; border:none; font-size:19px; cursor:pointer; box-shadow:0 5px 18px rgba(60,40,25,.3); opacity:0; pointer-events:none; transition:.25s; z-index:50}
+  #totop.show{opacity:1; pointer-events:auto}
+
+  @media (max-width:760px){
+    header{padding:22px 16px 20px}
+    header h1{font-size:24px; margin:6px 0 5px}
+    header p{font-size:13.8px; line-height:1.55}
+    .kick{font-size:11px; letter-spacing:3px}
+    .stats{gap:7px; margin-top:13px}
+    .stat{padding:6px 11px; font-size:11.5px; border-radius:8px}
+    .stat b{font-size:14px}
+    .backlink{font-size:12.8px; margin-right:12px}
+    .toolbar{padding:10px 14px 11px}
+    .chipwrap{margin-top:9px; margin-left:-14px; margin-right:-14px; padding:0 14px;
+              overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+    .chipwrap::-webkit-scrollbar{display:none}
+    .chips{flex-wrap:nowrap; padding-right:14px}
+    .chip{padding:10px 15px; font-size:13px}
+    .count{font-size:12.2px}
+    main{padding:15px 14px}
+    .grid{grid-template-columns:1fr; gap:13px}
+    .st{padding:15px 16px; border-radius:13px}
+    .lbl{font-size:16.5px}
+    .mythrow{font-size:13.2px; padding:9px 12px}
+    .findrow{font-size:13.8px; padding:10px 12px}
+    .why{font-size:13.2px}
+    .cite{font-size:12px}
+    .section{margin-top:28px}
+    .section h2{font-size:19px; line-height:1.4}
+    .section .lead{font-size:13.6px}
+    .howto{grid-template-columns:1fr}
+    .promptbox{padding:16px 15px; font-size:13px}
+    .promptbox .copybtn{position:static; display:block; width:100%; margin:0 0 12px; font-size:13px}
+    .extra,.disc{font-size:12.8px; padding:14px 15px}
+    footer{font-size:12px; line-height:1.7}
+  }
+  @media (max-width:380px){ header h1{font-size:21px} .lbl{font-size:15.5px} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="kick">AI 萌寵映畫誌｜單元二 延伸補充</div>
+    <h1>🔬 毛孩研究知識庫</h1>
+    <p>不是網路傳言，是發表在 Nature 系列、Current Biology、PLOS ONE 等期刊的同儕審查研究。每一篇都逐一查證過出處，附原文連結——包含幾篇「AI 判讀毛孩到底準不準」的最新實測。</p>
+    <div class="stats">
+      <div class="stat"><b id="sTotal">0</b> 篇已查證研究</div>
+      <div class="stat"><b id="sA">0</b> 行為科學 ／ <b id="sB">0</b> AI 應用</div>
+      <div class="stat">全部附 <b>DOI 原文連結</b></div>
+    </div>
+    <a class="backlink" href="index.html">🏠 課程資源首頁</a>
+    <a class="backlink" href="behaviors.html">← 行為資料庫（60 種）</a>
+    <a class="backlink" href="videos.html">🎬 影片資料庫（31 支）</a>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="twrap">
+    <input class="search" id="q" type="search" placeholder="搜尋：慢眨眼、疼痛、處罰、ChatGPT、準確率…" autocomplete="off">
+    <div class="chipwrap"><div class="chips" id="chips"></div></div>
+    <div class="count" id="count"></div>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">找不到符合的研究——換個關鍵字，或按「全部」看完整清單。</div>
+
+  <div class="section">
+    <h2>🧭 這一頁<span>怎麼用</span>？</h2>
+    <p class="lead">研究不是拿來背的，是拿來當「判斷標準」的。</p>
+    <div class="howto">
+      <div class="how"><h3>① 課堂上：破解一個迷思</h3><p>每張卡片都是「常見誤解 → 研究怎麼說」。挑一個你最有感的當開場話題，比任何說教都有效。</p></div>
+      <div class="how"><h3>② 遇到網路說法時：先查證</h3><p>看到「聽說貓咪…」的貼文，用下面的提示詞讓 AI 幫你找有沒有研究支持，並要求它標明期刊與年份。</p></div>
+      <div class="how"><h3>③ 用 AI 時：知道它的極限</h3><p>標紅色「⚠ AI 的極限」的那幾篇，是實測 AI 判讀毛孩準不準的研究——看完你會知道什麼可以問 AI、什麼一定要問獸醫。</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📋 <span>查證提示詞</span>：叫 AI 拿出證據</h2>
+    <p class="lead">這組提示詞的重點是「要求引用來源與年份」，能大幅減少 AI 憑印象亂講。</p>
+    <div class="promptbox">
+      <button class="copybtn" onclick="copyBox('pv',this)">複製</button><span class="cap">查證一個寵物說法（貼上後把【】換成你聽到的說法）</span><span id="pv">我聽到一個關於寵物的說法：【例如：貓咪呼嚕就代表牠很開心】
+請幫我查證，並用這個格式回答：
+
+1. 這個說法是「有研究支持」「部分正確但要看情境」還是「已被研究推翻」？先給結論。
+2. 支持或反駁它的研究：請列出 1–3 篇，每篇寫【作者 年份・期刊名稱・研究發現一句話】
+3. 這些研究的限制是什麼？（樣本數少？只做某個品種？年代久遠？）
+4. 對一般飼主的實際建議，1–2 句
+
+重要規則：
+・只引用你確定真實存在的研究，<b>不要編造論文標題、作者或 DOI</b>。
+・如果你找不到相關研究，請直接說「我找不到支持這個說法的研究」，不要用常識補完。
+・請標明哪些部分是研究結論、哪些是你的推論。</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📎 <span>延伸文獻</span>：引用正確，但本頁未讀到全文</h2>
+    <p class="lead">這幾篇的書目資料已向 DOI 登記機構查證無誤，但出版社頁面擋住了自動讀取，所以<b>沒有把它們的結論寫成卡片</b>。想引用請自行點開確認內容——這也是查證該有的誠實。</p>
+    <div class="extra">
+      <ul>
+        <li><b>狗搖尾巴的左右不對稱</b>｜Quaranta, Siniscalchi &amp; Vallortigara (2007). <i>Asymmetric tail-wagging responses by dogs to different emotive stimuli.</i> Current Biology 17(6): R199–R201.　<a href="https://doi.org/10.1016/j.cub.2007.02.008" target="_blank" rel="noopener">DOI ↗</a></li>
+        <li><b>狗看得懂別隻狗的尾巴方向</b>｜Siniscalchi, Lusito, Vallortigara &amp; Quaranta (2013). <i>Seeing Left- or Right-Asymmetric Tail Wagging Produces Different Emotional Responses in Dogs.</i> Current Biology 23: 2279–2282.　<a href="https://doi.org/10.1016/j.cub.2013.09.027" target="_blank" rel="noopener">DOI ↗</a></li>
+        <li><b>狗能跨感官辨識人的情緒</b>｜Albuquerque et al. (2016). <i>Dogs recognize dog and human emotions.</i> Biology Letters 12(1): 20150883.　<a href="https://doi.org/10.1098/rsbl.2015.0883" target="_blank" rel="noopener">DOI ↗</a></li>
+        <li><b>訓練飼主辨識恐懼有沒有用</b>｜Flint, Coe, Pearl, Serpell &amp; Niel (2018). <i>Effect of training for dog fear identification on dog owner ratings of fear in familiar and unfamiliar dogs.</i> Applied Animal Behaviour Science 208: 66–74.　<a href="https://doi.org/10.1016/j.applanim.2018.08.002" target="_blank" rel="noopener">DOI ↗</a></li>
+        <li><b>（社論，非研究）AI 進入動物行為與獸醫神經學</b>｜Nessler (2025). Frontiers in Veterinary Science 12: 1607623——文中提到「統計上的模式比對，和真正的臨床推理有本質差異」，很適合當引言。　<a href="https://doi.org/10.3389/fvets.2025.1607623" target="_blank" rel="noopener">DOI ↗</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="disc">
+    <b>關於查證與引用</b><br>
+    本頁每一篇卡片研究都經過<b>逐一查證</b>：實際開啟出版社頁面（Nature、Frontiers、PLOS、Springer）、PMC 全文或 DOI 登記資料，確認標題、作者、期刊、年份與關鍵數據無誤後才收錄。無法讀到全文的，一律移到上方「延伸文獻」區並標明，不寫成結論。<br>
+    <b>研究不等於真理</b>：單一研究有樣本數、品種、情境的限制，結論可能隨新證據修正。本頁的「關鍵數字」都直接取自原文，請點 DOI 連結看完整方法與限制。<br>
+    本頁為「AI 萌寵映畫誌」課程之教學補充，<b>不能取代獸醫師診斷或專業行為諮詢</b>。毛孩出現行為突然改變、疑似疼痛或健康警訊，請儘速尋求獸醫師協助。
+  </div>
+</main>
+
+<footer>
+  AI 萌寵映畫誌｜永豐餘 AI Club 九月企業內訓　·　葉明理 助理教授 × 鍾孟修 職能治療師
+</footer>
+
+<button id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到頂端">↑</button>
+<div id="toast"></div>
+
+<script>
+/* area: A=行為科學 B=AI應用；lim:true=AI 的極限 */
+const S = [
+{lbl:"慢眨眼是貓的微笑，而且有雙向效果", s:"cat", area:"A", k:"慢眨眼 眨眼 溝通 微笑",
+ myth:"以為貓瞇眼只是想睡覺，跟牠對看才是打招呼",
+ find:"人對貓<b>慢眨眼</b>，貓會回以更多的瞇眼／半眨眼；而且陌生人先慢眨眼之後，貓更願意主動靠近他伸出的手。",
+ num:"英國兩組實驗・Nature 系列期刊",
+ why:"這是少數<b>證實「人可以主動對貓示好」</b>的研究。直視是壓力，慢眨眼才是問候——課堂上現場讓學員對照片練一次，記得最牢。",
+ au:"Humphrey, T., Proops, L., Forman, J., Spooner, R. &amp; McComb, K.", yr:"2020",
+ j:"Scientific Reports 10: 16503", doi:"10.1038/s41598-020-73426-0"},
+
+{lbl:"會回應慢眨眼的收容所貓，被領養得更快", s:"cat", area:"A", k:"收容所 領養 眨眼 貓",
+ myth:"以為領養與否只看外型和年齡",
+ find:"收容所裡<b>對人類慢眨眼回應越多、閉眼越久</b>的貓，被重新安置的速度明顯較快。",
+ num:"收容所實地追蹤・Animals 期刊",
+ why:"貓的細微臉部訊號<b>真的會改變人的感受與決定</b>，不是貓奴的浪漫想像。也說明「牠喜不喜歡你」是看得出來的。",
+ au:"Humphrey, T., Stringer, F., Proops, L. &amp; McComb, K.", yr:"2020",
+ j:"Animals 10(12): 2256", doi:"10.3390/ani10122256"},
+
+{lbl:"約 65% 的貓對飼主有「安全型依附」", s:"cat", area:"A", k:"依附 安全感 貓 冷淡 attachment",
+ myth:"以為貓咪冷漠獨立，只是把你當開罐器",
+ find:"用測量人類嬰兒依附的同一套流程檢驗，貓表現出<b>與嬰兒、狗相同的安全／不安全依附模式</b>——飼主是牠的安全基地。",
+ num:"幼貓 64.3%、成貓 65.8% 為安全型",
+ why:"「貓不需要人陪」是這個領域最常被引用來反駁的迷思。<b>多數貓真的把你當依靠</b>，長期獨留造成的壓力是實在的。",
+ au:"Vitale, K. R., Behnke, A. C. &amp; Udell, M. A. R.", yr:"2019",
+ j:"Current Biology 29(18): R864–R865", doi:"10.1016/j.cub.2019.08.036"},
+
+{lbl:"狗的「愧疚表情」是被你罵出來的", s:"dog", area:"A", k:"愧疚 內疚 心虛 處罰 表情",
+ myth:"以為「牠一定知道自己做錯了，你看牠那個表情」",
+ find:"實驗把「狗有沒有真的犯錯」和「飼主有沒有責罵」拆開。結果愧疚表情<b>和犯錯無關，只跟被責罵有關</b>——甚至在<b>乖乖沒犯錯卻被罵</b>的狗身上最明顯。",
+ num:"經典研究・Behavioural Processes",
+ why:"你看到的不是反省，是<b>對你的恐懼與安撫</b>。事後處罰不但教不會，還會讓牠學會怕你回家——這一篇最適合當課堂的「破迷思」開場。",
+ au:"Horowitz, A.", yr:"2009",
+ j:"Behavioural Processes 81(3): 447–452", doi:"10.1016/j.beproc.2009.03.014"},
+
+{lbl:"貓分得出自己的名字，只是選擇不理你", s:"cat", area:"A", k:"名字 叫不來 聽得懂 貓",
+ myth:"以為貓根本聽不懂自己的名字",
+ find:"用習慣化—去習慣化實驗，貓對<b>自己的名字</b>反應明顯強於長度相近的一般名詞與其他貓的名字，<b>連陌生人念也一樣</b>。",
+ num:"日本・Nature 系列期刊",
+ why:"牠不是沒聽到，是<b>決定不理你</b>。理解這點能改變飼主的互動方式——與其一直叫名字，不如建立「名字＝有好事」的連結。",
+ au:"Saito, A., Shinozuka, K., Ito, Y. &amp; Hasegawa, T.", yr:"2019",
+ j:"Scientific Reports 9: 5394", doi:"10.1038/s41598-019-40616-4"},
+
+{lbl:"貓的疼痛寫在臉上，有一套驗證過的量表", s:"cat", area:"A", k:"疼痛 表情 量表 FGS 痛",
+ myth:"以為貓沒有叫、沒有跛，就是不痛",
+ find:"「貓咪疼痛表情量表（Feline Grimace Scale）」用<b>耳朵、眼眶緊縮、口鼻、鬍鬚、頭部位置</b>五個指標判斷疼痛，評分者間信度高（ICC 0.89）。",
+ num:"分數 >0.39 需止痛：敏感度 90.7%、特異度 86.6%",
+ why:"貓是<b>隱藏疼痛的高手</b>。這套量表讓飼主有客觀的觀察依據，而不是等到牠不吃不動才發現——也是後面 AI 自動判讀的基礎。",
+ au:"Evangelista, M. C. et al.（Steagall, P. V. 為通訊作者）", yr:"2019",
+ j:"Scientific Reports 9: 19128", doi:"10.1038/s41598-019-55693-8"},
+
+{lbl:"處罰式訓練會讓狗整天都處在壓力中", s:"dog", area:"A", k:"處罰 訓練 正向 壓力 皮質醇",
+ myth:"以為「兇一點比較快，牠才學得會」",
+ find:"92 隻狗分三組比較。處罰式訓練組出現<b>更多壓力行為、訓練後唾液皮質醇上升更多</b>，而且在<b>訓練情境之外</b>的認知測驗中表現得更悲觀。",
+ num:"92 隻狗・PLOS ONE",
+ why:"處罰的代價不只在當下：它改變了狗<b>看待世界的方式</b>。這是「為什麼不能處罰低吼」最有力的科學依據。",
+ au:"Vieira de Castro, A. C. et al.", yr:"2020",
+ j:"PLOS ONE 15(12): e0225023", doi:"10.1371/journal.pone.0225023"},
+
+{lbl:"飼主會把狗的害怕當成好笑", s:"dog", area:"A", k:"誤讀 害怕 恐懼 噪音 好笑 飼主",
+ myth:"以為「我最懂我家狗，牠只是在搞笑」",
+ find:"分析飼主自己上傳的影片：狗對吸塵器、電子音等家中噪音出現<b>發抖、喘氣、嚎叫</b>時，飼主的反應是<b>覺得好笑</b>遠多於擔心。",
+ num:"覺得好笑 45.6% vs 表達擔心 17.5%",
+ why:"這是全課程最該記住的一篇：<b>「我了解我的毛孩」不等於「我看得懂我的毛孩」</b>。你在社群上看到的好笑影片，很多是一隻正在害怕的動物。",
+ au:"Grigg, E. K., Chou, J., Parker, E., Gatesy-Davis, A., Clarkson, S. T. &amp; Hart, L. A.", yr:"2021",
+ j:"Frontiers in Veterinary Science 8: 760845", doi:"10.3389/fvets.2021.760845"},
+
+{lbl:"七成以上的貓有關節退化，飼主幾乎看不出來", s:"cat", area:"A", k:"關節 退化 疼痛 老貓 不跳 懶",
+ myth:"以為貓年紀大了「變懶、愛睡」很正常",
+ find:"101 隻貓的 X 光回溯分析中，<b>74.26% 有四肢關節退化性病變</b>；但在這些貓裡，<b>只有 1 位飼主察覺跛行</b>、1 位注意到步態異常。",
+ num:"74.26% 有病變 vs 101 位飼主中僅 1 位察覺",
+ why:"「不跳上流理台了」「叫牠也懶得動」——很可能不是老了，是<b>長期在痛</b>。這一篇讓「行為改變先看健康」變得非常具體。",
+ au:"Kimura, T. et al.", yr:"2020",
+ j:"Frontiers in Veterinary Science 7: 138", doi:"10.3389/fvets.2020.00138"},
+
+{lbl:"貓的討食呼嚕聲藏著像嬰兒哭的頻率", s:"cat", area:"A", k:"呼嚕 討食 嬰兒 哭聲 操控",
+ myth:"以為呼嚕就只有一種，代表舒服",
+ find:"貓在<b>要求食物</b>時的呼嚕，嵌入了一段<b>類似嬰兒哭聲的高頻成分</b>；把那段頻率移除後，聽眾覺得那個呼嚕的「急迫感」顯著下降。",
+ num:"Current Biology・英國 Sussex 大學",
+ why:"呼嚕不是單一的「開心訊號」——貓演化出一種<b>專門對人類有效</b>的聲音。也提醒飼主：呼嚕也可能出現在疼痛與緊張時。",
+ au:"McComb, K., Taylor, A. M., Wilson, C. &amp; Charlton, B. D.", yr:"2009",
+ j:"Current Biology 19(13): R507–R508", doi:"10.1016/j.cub.2009.05.033"},
+
+{lbl:"不用貼標記，AI 就能追蹤動物的每個關節", s:"both", area:"B", k:"姿態 追蹤 deeplabcut 深度學習 動作",
+ myth:"以為分析動物動作一定要實驗室設備",
+ find:"DeepLabCut 用<b>遷移學習</b>，只要約 <b>200 張標註影格</b>，就能在一般影片中追蹤使用者自訂的任何身體部位，準確度接近人工標註。",
+ num:"約 200 張標註影格達到人工水準",
+ why:"這是<b>「用手機就能量測動物怎麼動」</b>的技術起點。日後的步態異常偵測、疼痛評估都建立在這類方法上。",
+ au:"Mathis, A. et al.", yr:"2018",
+ j:"Nature Neuroscience 21: 1281–1289", doi:"10.1038/s41593-018-0209-y"},
+
+{lbl:"手機就能跑的貓咪疼痛 AI，準確率 95%", s:"cat", area:"B", k:"疼痛 自動 手機 app 深度學習 貓",
+ myth:"以為 AI 判讀疼痛還只是實驗室概念",
+ find:"端到端模型自動標定貓臉特徵點並預測疼痛分級，<b>分類準確率 95.5%、AUROC 0.97</b>，而且模型輕量到可放進手機應用。",
+ num:"準確率 95.5%・AUROC 0.97",
+ why:"這是最能讓學員「哇」一聲的一篇：<b>幾年內你的手機可能比你更早發現貓在痛</b>。但請搭配右邊標紅的那幾篇一起看。",
+ au:"Steagall, P. V. et al.", yr:"2023",
+ j:"Scientific Reports 13: 21584", doi:"10.1038/s41598-023-49031-2"},
+
+{lbl:"換成真實影片，貓痛辨識掉到 66–70%", s:"cat", area:"B", lim:true, k:"影片 疼痛 準確率 限制 貓",
+ myth:"以為實驗室的高準確率可以直接搬到日常",
+ find:"用 48 個貓臉特徵點做<b>影片</b>疼痛辨識：加入時間資訊確實比單張照片好，但兩個資料集上的準確率只有 <b>70% 與 66%</b>。",
+ num:"真實情境準確率 70% / 66%",
+ why:"<b>三次大約對兩次</b>。所以 AI 的角色是「提醒你帶去看獸醫」，不是「告訴你牠有沒有事」——這正是本課程一再強調的界線。",
+ au:"Martvel, G. et al.（Mills, Volk, Zamansky）", yr:"2024",
+ j:"Scientific Reports 14: 28006", doi:"10.1038/s41598-024-78406-2"},
+
+{lbl:"別把貓的照片丟給 ChatGPT 問牠痛不痛", s:"cat", area:"B", lim:true, k:"chatgpt gemini claude 聊天機器人 疼痛 低估 限制",
+ myth:"以為通用聊天機器人可以幫忙評估寵物疼痛",
+ find:"讓 ChatGPT（GPT-4o）、Gemini（1.5 Pro）、Claude（3.5 Sonnet）、Perplexity 對 50 張貓臉照片評分，與專家對照：<b>多數機器人一致性很差，且普遍低估疼痛</b>，誤差範圍大到會影響是否給止痛藥的決定。",
+ num:"4 種聊天機器人・50 張照片・普遍低估疼痛",
+ why:"<b>本課程最重要的一張投影片。</b>同樣是 AI，專門訓練過的模型有 95% 準確率，通用聊天機器人卻會把在痛的貓說成沒事——<b>低估的方向特別危險</b>。",
+ au:"Ngai, S. T., Bukhari, S. S. U. H., Alonso Sousa, S. &amp; Steagall, P. V.", yr:"2025",
+ j:"Scientific Reports 15: 43461", doi:"10.1038/s41598-025-27404-z"},
+
+{lbl:"AI 考獸醫選擇題有九成，但看圖就掉下來", s:"both", area:"B", lim:true, k:"llm 獸醫 考試 準確率 chatgpt 圖片",
+ myth:"以為 AI 答得流利就代表答得對",
+ find:"250 題獸醫系選擇題測試多個大型語言模型：最強的約 <b>90.8%</b>，較弱的只有 <b>64.8%</b>；而且題目越難、<b>越是需要看圖片</b>，正確率掉得越明顯。",
+ num:"250 題・最高 90.8%、最低 64.8%",
+ why:"寵物行為判讀<b>本質上就是看圖</b>——這正是 AI 最弱的那一類題目。拿來學知識可以，拿來決定要不要就醫不行。",
+ au:"Alonso Sousa, S. et al.", yr:"2025",
+ j:"Frontiers in Veterinary Science 12: 1616566", doi:"10.3389/fvets.2025.1616566"},
+
+{lbl:"AI 會一本正經地編出不存在的論文", s:"both", area:"B", lim:true, k:"幻覺 捏造 引用 假 參考文獻 hallucination",
+ myth:"以為 AI 講得有憑有據就是真的有依據",
+ find:"獸醫領域的生成式 AI 指引整理出：<b>GPT-3.5 有 55%、GPT-4 有 18% 的引用是捏造的</b>；在課程題目上 GPT-4 得 77%、GPT-3.5 得 55%，<b>都低於獸醫系學生的 86%</b>。",
+ num:"捏造引用率：GPT-3.5 55% / GPT-4 18%",
+ why:"這就是為什麼查證提示詞一定要寫<b>「不要編造論文標題與 DOI，找不到就說找不到」</b>。流暢不等於正確。",
+ au:"Chu, C. P.", yr:"2024",
+ j:"Frontiers in Veterinary Science 11: 1395934", doi:"10.3389/fvets.2024.1395934"},
+
+{lbl:"AI 判斷狗「危不危險」比判斷情緒準得多", s:"dog", area:"B", k:"情緒 辨識 深度學習 狗 危險 咬人",
+ myth:"以為 AI 能準確說出狗現在是什麼情緒",
+ find:"用影片做深度學習情緒辨識：分成五種情緒的準確率只有 <b>0.620</b>；但簡化成<b>「危險／不危險」</b>兩類時，準確率升到 <b>0.858</b>。",
+ num:"五類情緒 62% vs 危險判斷 86%",
+ why:"很好的期待管理：<b>AI 擅長示警，不擅長讀心</b>。所以課程教的是用 AI 找線索、由你和專業決定那是什麼情緒。",
+ au:"Franzoni, V., Biondi, G. &amp; Milani, A.", yr:"2024",
+ j:"Neural Computing and Applications 36: 17669–17688", doi:"10.1007/s00521-024-10042-3"},
+
+{lbl:"AI 動物福利監測已上線，但專家自己提出警告", s:"both", area:"B", k:"福利 監測 穿戴 感測 農場 未來",
+ myth:"以為 AI 照顧動物是遙遠的未來",
+ find:"回顧穿戴式感測、臉部情緒辨識、叫聲分析等技術在動物福利監測的實際應用；同時<b>警告過度自動化可能排擠真正的人與動物互動</b>。",
+ num:"Frontiers in Veterinary Science 回顧論文",
+ why:"技術方向已經確定，問題是<b>要不要讓螢幕取代你蹲下來看牠</b>。這一篇很適合當課程結尾的反思。",
+ au:"Neethirajan, S., Scott, N., Mancini, C., Boivin, X. &amp; Strand, E.", yr:"2024",
+ j:"Frontiers in Veterinary Science 11: 1490851", doi:"10.3389/fvets.2024.1490851"}
+];
+
+const CATS=["全部","🐈 貓咪","🐕 狗狗","🔬 行為科學","🤖 AI 應用","⚠️ AI 的極限"];
+let active="全部", kw="";
+const grid=document.getElementById('grid'), chips=document.getElementById('chips');
+const countEl=document.getElementById('count'), emptyEl=document.getElementById('empty');
+document.getElementById('sTotal').textContent=S.length;
+document.getElementById('sA').textContent=S.filter(x=>x.area==='A').length;
+document.getElementById('sB').textContent=S.filter(x=>x.area==='B').length;
+
+CATS.forEach(c=>{
+  const b=document.createElement('button');
+  b.className='chip'+(c==="全部"?' on':''); b.textContent=c;
+  b.onclick=()=>{active=c;[...chips.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+  chips.appendChild(b);
+});
+
+function match(x){
+  if(active==="🐈 貓咪" && !(x.s==='cat'||x.s==='both')) return false;
+  if(active==="🐕 狗狗" && !(x.s==='dog'||x.s==='both')) return false;
+  if(active==="🔬 行為科學" && x.area!=='A') return false;
+  if(active==="🤖 AI 應用" && x.area!=='B') return false;
+  if(active==="⚠️ AI 的極限" && !x.lim) return false;
+  if(kw){
+    const hay=(x.lbl+" "+x.k+" "+x.myth+" "+x.find+" "+x.why+" "+x.au+" "+x.j).toLowerCase();
+    if(!hay.includes(kw.toLowerCase())) return false;
+  }
+  return true;
+}
+function sTag(x){
+  if(x.s==='cat') return '<span class="tag cat">🐈 貓</span>';
+  if(x.s==='dog') return '<span class="tag dog">🐕 狗</span>';
+  return '<span class="tag both">🐕🐈 犬貓</span>';
+}
+
+function render(){
+  const list=S.filter(match);
+  countEl.textContent=`顯示 ${list.length} / ${S.length} 篇研究`;
+  emptyEl.style.display=list.length?'none':'block';
+  grid.innerHTML=list.map(x=>`<div class="st${x.lim?' warn':''}">
+    <div class="top">
+      ${sTag(x)}
+      <span class="tag ${x.area==='A'?'a':'b'}">${x.area==='A'?'🔬 行為科學':'🤖 AI 應用'}</span>
+      ${x.lim?'<span class="tag lim">⚠️ AI 的極限</span>':''}
+    </div>
+    <div class="lbl">${x.lbl}</div>
+    <div class="mythrow"><b>常見誤解：</b>${x.myth}</div>
+    <div class="findrow"><b>研究發現：</b>${x.find}</div>
+    <div class="num">${x.num}</div>
+    <div class="why">${x.why}</div>
+    <div class="cite">
+      ${x.au} (${x.yr}). <span class="j">${x.j}</span>.<br>
+      <a href="https://doi.org/${x.doi}" target="_blank" rel="noopener">🔗 doi.org/${x.doi} ↗</a>
+    </div>
+  </div>`).join('');
+}
+
+function copyBox(id,btn){
+  copyText(document.getElementById(id).innerText).then(ok=>{
+    const old=btn.textContent; btn.textContent=ok?'已複製 ✔':'請手動複製';
+    setTimeout(()=>btn.textContent=old,1600);
+  });
+}
+function copyText(t){
+  if(navigator.clipboard && window.isSecureContext)
+    return navigator.clipboard.writeText(t).then(()=>true).catch(()=>fallbackCopy(t));
+  return Promise.resolve(fallbackCopy(t));
+}
+function fallbackCopy(t){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=t; ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,999999);
+    const ok=document.execCommand('copy'); document.body.removeChild(ta); return ok;
+  }catch(e){return false;}
+}
+let tt;
+function toast(m){
+  const t=document.getElementById('toast');
+  t.textContent=m; t.classList.add('show');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2600);
+}
+const totop=document.getElementById('totop');
+window.addEventListener('scroll',()=>{totop.classList.toggle('show',window.scrollY>500);},{passive:true});
+document.getElementById('q').addEventListener('input',e=>{kw=e.target.value.trim();render();});
+render();
+</script>
+</body>
+</html>

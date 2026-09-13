@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2E2119">
+<title>毛孩行為資料庫｜AI 萌寵映畫誌</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --amber:#C05621; --amber2:#E08A47; --amber-soft:#FDF3E7;
+    --ink:#3B2B20; --muted:#7A6A5B; --paper:#FFFCF8; --card:#FFFFFF;
+    --line:#EADBCA; --dog:#2F6FB0; --dog-soft:#EAF2FA;
+    --cat:#8A5AA8; --cat-soft:#F3ECF8; --bad:#C0392B; --ok:#3E8E5A;
+    --tbh:0px;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper); color:var(--ink);
+       font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;
+       line-height:1.6; overflow-x:hidden; word-break:break-word;
+       padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+
+  header{background:linear-gradient(150deg,#3D2C21,#2E2119); color:#F6EDE4; padding:34px 22px 30px; position:relative; overflow:hidden}
+  header::after{content:""; position:absolute; right:-60px; top:-60px; width:230px; height:230px; border-radius:50%; background:rgba(224,138,71,.16)}
+  .hwrap{max-width:1120px; margin:0 auto; position:relative; z-index:2}
+  .kick{font-size:12.5px; letter-spacing:4px; font-weight:800; color:var(--amber2)}
+  header h1{font-size:34px; font-weight:900; margin:8px 0 6px; letter-spacing:1px}
+  header p{font-size:15px; color:#CDBCAC; max-width:640px}
+  .stats{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap}
+  .stat{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16); border-radius:10px; padding:8px 14px; font-size:13px}
+  .stat b{color:var(--amber2); font-size:17px}
+  .backlink{display:inline-block; margin-top:14px; color:var(--amber2); font-size:13.5px; font-weight:800; text-decoration:none; border-bottom:1.5px solid rgba(224,138,71,.4); padding-bottom:2px}
+
+  .toolbar{position:sticky; top:0; z-index:30; background:rgba(255,252,248,.97); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:14px 22px}
+  .twrap{max-width:1120px; margin:0 auto}
+  .search{width:100%; padding:13px 16px; font-size:16px; border:2px solid var(--line); border-radius:12px; font-family:inherit; background:#fff; color:var(--ink); -webkit-appearance:none}
+  .search:focus{outline:none; border-color:var(--amber2)}
+  .chipwrap{position:relative; margin-top:11px}
+  .chips{display:flex; gap:8px; flex-wrap:wrap}
+  .chip{background:#fff; border:1.5px solid var(--line); border-radius:20px; padding:7px 15px; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; transition:.15s; flex:0 0 auto; white-space:nowrap; -webkit-tap-highlight-color:transparent}
+  .chip:hover{border-color:var(--amber2)}
+  .chip.on{background:var(--amber); border-color:var(--amber); color:#fff}
+  .metarow{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px}
+  .count{font-size:13px; color:var(--muted)}
+  .expand{background:none; border:1.5px solid var(--line); border-radius:16px; padding:5px 13px; font-size:12.5px; font-weight:800; color:var(--muted); font-family:inherit; cursor:pointer; flex:0 0 auto; white-space:nowrap}
+  .expand:hover{border-color:var(--amber2); color:var(--amber)}
+  .langsel{display:flex; align-items:center; gap:7px; margin-left:auto; flex:0 0 auto}
+  .langlbl{font-size:12px; color:var(--muted); font-weight:700; white-space:nowrap}
+  .lang{border:1.5px solid var(--line); background:#fff; color:var(--muted); font-family:inherit; font-weight:800; font-size:12.5px; padding:5px 12px; cursor:pointer; white-space:nowrap}
+  .lang:first-of-type{border-radius:16px 0 0 16px}
+  .lang:last-of-type{border-radius:0 16px 16px 0; border-left-color:transparent; margin-left:-1.5px}
+  .lang.on{background:var(--amber); border-color:var(--amber); color:#fff}
+
+  main{max-width:1120px; margin:0 auto; padding:22px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:15px; align-items:start}
+
+  .item{background:var(--card); border:1.5px solid var(--line); border-radius:14px; overflow:hidden; transition:.18s}
+  .item:hover{border-color:var(--amber2); box-shadow:0 4px 16px rgba(60,40,25,.08)}
+  .item.open{border-color:var(--amber2)}
+  .head{padding:16px 18px; cursor:pointer; display:flex; gap:12px; align-items:flex-start; -webkit-tap-highlight-color:transparent}
+  .emo{font-size:27px; line-height:1; flex:0 0 auto}
+  .htext{flex:1; min-width:0}
+  .name{font-size:18px; font-weight:900; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .tag{font-size:11px; font-weight:800; border-radius:11px; padding:2px 9px; white-space:nowrap}
+  .tag.dog{background:var(--dog-soft); color:var(--dog)}
+  .tag.cat{background:var(--cat-soft); color:var(--cat)}
+  .tag.both{background:#EFF5EE; color:#3E7A4E}
+  .myth{font-size:13.5px; color:var(--muted); margin-top:5px}
+  .myth b{color:var(--bad)}
+  .caret{flex:0 0 auto; color:var(--amber); font-size:15px; transition:.2s; margin-top:4px}
+  .item.open .caret{transform:rotate(180deg)}
+
+  .body{display:none; padding:0 18px 18px; border-top:1px dashed var(--line); margin-top:2px}
+  .item.open .body{display:block}
+  .row{margin-top:13px}
+  .row h4{font-size:13px; font-weight:800; color:var(--amber); letter-spacing:1px; margin-bottom:4px}
+  .row p{font-size:14.5px; color:#4A3D33}
+  .row ul{padding-left:18px; font-size:14.5px; color:#4A3D33}
+  .row li{margin-bottom:3px}
+  .warn{background:#FDF0EE; border:1.5px solid #E8B4AC; border-radius:9px; padding:10px 13px; font-size:13.8px; color:#94332A; margin-top:13px}
+  .warn b{color:var(--bad)}
+
+  .seeit{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap}
+  .seeit .lbl{font-size:12.5px; font-weight:800; color:var(--muted); letter-spacing:1px; width:100%; margin-bottom:-2px}
+  .acts{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+  .btn{border:none; border-radius:20px; padding:10px 16px; font-size:13.5px; font-weight:800; cursor:pointer; font-family:inherit; color:#fff; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:42px; -webkit-tap-highlight-color:transparent}
+  .btn.g{background:#4285F4} .btn.c{background:#10A37F} .btn.copy{background:var(--amber)}
+  .btn.yt{background:#FF0000} .btn.img{background:#5F6B7A}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:active{transform:scale(.97)}
+
+  .section{margin-top:34px}
+  .section h2{font-size:22px; font-weight:900; margin-bottom:5px}
+  .section h2 span{color:var(--amber)}
+  .section .lead{font-size:14.5px; color:var(--muted); margin-bottom:14px}
+
+  .redgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px}
+  .red{background:#FDF0EE; border:1.5px solid #E8B4AC; border-radius:12px; padding:14px 16px}
+  .red h3{font-size:15.5px; font-weight:800; color:var(--bad); margin-bottom:5px}
+  .red p{font-size:13.8px; color:#7A3B33}
+
+  .reslist{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px}
+  .res{display:block; background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; text-decoration:none; color:inherit; transition:.15s}
+  .res:hover{border-color:var(--amber2); box-shadow:0 4px 14px rgba(60,40,25,.07)}
+  .res h3{font-size:15.5px; font-weight:800; margin-bottom:4px; display:flex; gap:7px; align-items:center}
+  .res p{font-size:13.5px; color:var(--muted)}
+  .res .go{font-size:12.5px; color:var(--amber); font-weight:800; margin-top:7px; display:block}
+
+  .promptbox{background:#2E2119; color:#EEE2D6; border-radius:14px; padding:18px 20px; position:relative; font-size:14px; line-height:1.75; white-space:pre-wrap}
+  .promptbox .cap{display:block; color:var(--amber2); font-weight:800; font-size:13px; letter-spacing:2px; margin-bottom:8px}
+  .promptbox .copybtn{position:absolute; top:14px; right:16px; background:var(--amber); border:none; color:#fff; font-size:12.5px; font-weight:800; padding:9px 16px; border-radius:16px; cursor:pointer; font-family:inherit; min-height:38px}
+
+  .howto{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px}
+  .how{background:var(--amber-soft); border:1.5px solid var(--amber2); border-radius:12px; padding:15px 17px}
+  .how h3{font-size:16px; font-weight:800; color:#9A5E10; margin-bottom:5px; display:flex; gap:8px; align-items:center}
+  .how .n{background:var(--amber); color:#fff; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:13px; flex:0 0 auto}
+  .how p{font-size:14px; color:#6B4A28}
+
+  .disc{background:#F6F1EA; border:1.5px solid var(--line); border-radius:12px; padding:15px 18px; font-size:13.8px; color:var(--muted); margin-top:30px; line-height:1.75}
+  .disc b{color:var(--ink)}
+
+  footer{text-align:center; padding:26px 20px 10px; font-size:13px; color:var(--muted)}
+  .empty{text-align:center; padding:50px 20px; color:var(--muted); font-size:16px}
+
+  #toast{position:fixed; left:50%; bottom:calc(84px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(80px); background:var(--ink); color:#fff; padding:12px 20px; border-radius:24px; font-size:14.5px; font-weight:700; opacity:0; transition:.3s; z-index:60; box-shadow:0 6px 20px rgba(0,0,0,.25); max-width:92vw; text-align:center}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  #totop{position:fixed; right:16px; bottom:calc(18px + env(safe-area-inset-bottom)); width:48px; height:48px; border-radius:50%; background:var(--amber); color:#fff; border:none; font-size:19px; cursor:pointer; box-shadow:0 5px 18px rgba(60,40,25,.3); opacity:0; pointer-events:none; transition:.25s; z-index:50}
+  #totop.show{opacity:1; pointer-events:auto}
+
+  /* ---------- 手機版 ---------- */
+  @media (max-width:760px){
+    header{padding:22px 16px 20px}
+    header h1{font-size:25px; margin:6px 0 5px}
+    header p{font-size:13.8px; line-height:1.55}
+    .kick{font-size:11px; letter-spacing:3px}
+    .stats{gap:7px; margin-top:13px}
+    .stat{padding:6px 11px; font-size:11.5px; border-radius:8px}
+    .stat b{font-size:14px}
+
+    .toolbar{padding:10px 14px 11px}
+    .search{padding:12px 14px; border-radius:11px}
+    .chipwrap{margin-top:9px; margin-left:-14px; margin-right:-14px; padding:0 14px;
+              overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+    .chipwrap::-webkit-scrollbar{display:none}
+    .chips{flex-wrap:nowrap; padding-right:14px}
+    .chip{padding:10px 15px; font-size:13px}
+    .metarow{margin-top:8px; flex-wrap:wrap; row-gap:8px}
+    .count{font-size:12.2px; order:1}
+    .expand{padding:9px 13px; font-size:12px; order:2}
+    .langsel{order:3; width:100%; margin-left:0; justify-content:flex-start; padding-top:2px; border-top:1px dashed var(--line)}
+    .langlbl{font-size:11.5px}
+    .lang{padding:10px 16px; font-size:12.5px}
+
+    main{padding:15px 14px}
+    .grid{grid-template-columns:1fr; gap:12px}
+    .item{border-radius:13px}
+    .head{padding:14px; gap:10px}
+    .emo{font-size:24px}
+    .name{font-size:16.5px; gap:6px}
+    .tag{font-size:10.5px; padding:2px 8px}
+    .myth{font-size:13px; margin-top:4px}
+    .body{padding:0 14px 16px}
+    .row p,.row ul{font-size:14px}
+    .warn{font-size:13.2px; padding:10px 12px}
+
+    .seeit{gap:7px}
+    .seeit .btn{flex:1 1 calc(50% - 4px)}
+    .acts{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+    .acts .btn.copy{grid-column:1 / -1}
+    .btn{font-size:13.2px; padding:11px 10px; min-height:44px}
+
+    .section{margin-top:28px}
+    .section h2{font-size:19px; line-height:1.4}
+    .section .lead{font-size:13.6px}
+    .redgrid,.howto,.reslist{grid-template-columns:1fr}
+
+    .promptbox{padding:16px 15px; font-size:13.2px; line-height:1.7}
+    .promptbox .copybtn{position:static; display:block; width:100%; margin:0 0 12px; font-size:13px}
+    .disc{font-size:13px; padding:14px 15px}
+    footer{font-size:12px; line-height:1.7}
+  }
+  @media (max-width:380px){
+    header h1{font-size:22px}
+    .name{font-size:15.5px}
+    .btn{font-size:12.5px; padding:11px 6px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="kick">AI 萌寵映畫誌｜教學資源</div>
+    <h1>🐾 毛孩行為資料庫</h1>
+    <p>牠那個動作到底是什麼意思？先在這裡查專業怎麼說，再帶著問題去問 AI——查得到，才記得住。</p>
+    <div class="stats">
+      <div class="stat"><b id="sTotal">60</b> 種常見行為</div>
+      <div class="stat">🐕 犬 <b id="sDog">30</b> ／ 🐈 貓 <b id="sCat">30</b></div>
+      <div class="stat">每則都能 <b>看影片 · 看圖片 · 問 AI</b></div>
+    </div>
+    <a class="backlink" href="index.html">🏠 課程資源首頁</a>
+    <a class="backlink" href="videos.html">🎬 前往毛孩行為影片資料庫（31 支精選影片＋頻道推薦）→</a>
+    <a class="backlink" href="research.html" style="margin-left:16px">🔬 研究知識庫（18 篇論文）→</a>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="twrap">
+    <input class="search" id="q" type="search" placeholder="搜尋行為：飛機耳、翻肚、母雞蹲、哈氣、亂尿…" autocomplete="off">
+    <div class="chipwrap"><div class="chips" id="chips"></div></div>
+    <div class="metarow">
+      <div class="count" id="count"></div>
+      <div class="langsel">
+        <span class="langlbl">影片／圖片語言</span>
+        <button class="lang on" id="lz" onclick="setLang('zh')">中文</button><button class="lang" id="le" onclick="setLang('en')">English</button>
+      </div>
+      <button class="expand" id="expandBtn" onclick="toggleAll()">全部展開</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">找不到符合的行為——換個關鍵字試試，或直接把情況描述給 AI 問問看。</div>
+
+  <div class="section">
+    <h2>🚨 <span>紅旗警訊</span>：出現這些，先看獸醫不要問 AI</h2>
+    <p class="lead">行為突然改變往往是身體不舒服的第一個訊號。以下狀況請優先就醫評估。</p>
+    <div class="redgrid">
+      <div class="red"><h3>行為突然改變</h3><p>原本親人突然躲藏、原本溫和突然攻擊——先排除疼痛與疾病，不要當成「個性變了」。</p></div>
+      <div class="red"><h3>食慾或飲水異常</h3><p>不吃、暴食、突然大量喝水，尤其貓咪超過 24 小時不進食風險很高。</p></div>
+      <div class="red"><h3>排泄異常</h3><p>亂尿、頻繁進出貓砂盆卻尿不出來（公貓尿道阻塞可能致命）、血尿、腹瀉。</p></div>
+      <div class="red"><h3>持續舔咬同一部位</h3><p>舔到脫毛、紅腫、出血，可能是皮膚病、疼痛或強迫行為。</p></div>
+      <div class="red"><h3>呼吸急促或張口呼吸</h3><p>貓咪張口呼吸是急症；狗狗休息時仍喘不停也要盡快就醫。</p></div>
+      <div class="red"><h3>走路姿勢改變</h3><p>跛行、不願跳上沙發、起身變慢，多半是關節或肌肉疼痛。</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>怎麼把資料庫<span>接到 AI</span>？三步驟</h2>
+    <p class="lead">資料庫給你專業的判讀方向，AI 幫你對照自家毛孩的實際情境。</p>
+    <div class="howto">
+      <div class="how"><h3><span class="n">1</span>先查行為</h3><p>用上方搜尋框找到那個動作，看「真正意義」與「要一起看什麼」。</p></div>
+      <div class="how"><h3><span class="n">2</span>看影片對照</h3><p>點「看影片／看圖片」，用眼睛記住那個動作長什麼樣——文字看十次不如看一次。上方可切換中文／英文搜尋。</p></div>
+      <div class="how"><h3><span class="n">3</span>點「問 AI」補情境</h3><p>按鈕會自動複製提問模板並開啟 AI，把【】換成你家毛孩的狀況、再上傳照片，判讀會準很多。</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔎 <span>搜尋語言</span>怎麼選？（實測過的結論）</h2>
+    <p class="lead">很多人會把中英文打在同一句裡，以為可以「兩邊都搜到」——實際上結果最差。</p>
+    <div class="howto">
+      <div class="how" style="background:#FDF0EE; border-color:#E8B4AC">
+        <h3 style="color:#94332A">❌ 中英混打＝最差</h3>
+        <p style="color:#7A3B33">搜尋引擎是把字拆成詞去比對，而<b>幾乎沒有影片同時含中文和英文標題</b>。混打不會把兩邊結果聯集起來，只會偏向其中一邊、另一邊整批消失。實測 <code>dog ears back body language 狗 飛機耳</code>，英文教學影片<b>一支都沒出現</b>。</p>
+      </div>
+      <div class="how">
+        <h3><span class="n">中</span>中文：好懂、但品質不穩</h3>
+        <p>看得懂、零門檻，適合現場快速理解。但中文結果容易混進萌寵剪輯與新聞片段——尤其是「飛機耳」這種網路用語，搜出來幾乎全是可愛影片而不是教學。想找圖解文章時，中文反而很好用。</p>
+      </div>
+      <div class="how" style="background:#EAF2FA; border-color:#7FA8D0">
+        <h3 style="color:#1F5484"><span class="n" style="background:#2F6FB0">EN</span>英文：教學品質最穩</h3>
+        <p style="color:#2A4C6B">同一個行為用英文搜，出來的幾乎都是獸醫、行為學家做的解說與示範片，也更容易找到專業圖表。缺點是語言門檻——建議搭配 YouTube 自動翻譯字幕看。</p>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:12px">所以這個資料庫把兩種語言<b>分開送出</b>：卡片上方的「影片／圖片語言」切換鍵決定用哪一種，絕不混在同一句查詢裡。<b>建議：先用中文快速抓概念，看不夠清楚再切英文找示範片。</b></p>
+  </div>
+
+  <div class="section">
+    <h2>📋 <span>啟動提示詞</span>：開新對話先貼這段</h2>
+    <p class="lead">免費版 ChatGPT／Gemini 都能用——貼上後整段對話 AI 都會照這個角色回答。</p>
+    <div class="promptbox">
+      <button class="copybtn" onclick="copyMain(this)">複製提示詞</button><span class="cap">AI 毛孩行為解讀助理</span><span id="mainPrompt">你是犬貓行為觀察助理，整段對話請遵守此設定。
+我家毛孩：【狗／貓、品種、年齡、性別】，個性：【怕生／親人／容易緊張】。
+我描述行為或上傳照片時，請用這個格式回覆：
+1. 你在畫面／描述中看到的具體線索（耳朵、眼睛、尾巴、重心、情境）
+2. 最可能的情緒或需求，以及可能性次高的另一種解釋
+3. 當下我可以怎麼做（1–2 個具體動作）
+4. 出現哪些訊號代表要停止互動或就醫
+規則：資訊不足時先問我，不要憑空推測；你的判讀僅供參考，行為問題與健康異常請提醒我諮詢獸醫或行為專業人員。</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎬 <span>延伸學習</span>：值得訂閱的專業頻道與圖表</h2>
+    <p class="lead">卡片裡的「看影片／看圖片」是即時搜尋；想有系統地學，直接看這幾個國際公認的來源。</p>
+    <div class="reslist">
+      <a class="res" href="videos.html" style="background:var(--amber-soft); border-color:var(--amber2)">
+        <h3>🎬 毛孩行為影片資料庫（本課程整理）</h3>
+        <p>31 支逐一查證過的犬貓行為影片，分成整合型與單一主題、華語與英文，每支都附「重點整理提示詞」，可直接餵給問問 YouTube 或 Chrome 的 Gemini。另有 16 個國內外頻道推薦。</p>
+        <span class="go">前往影片資料庫 →</span></a>
+      <a class="res" href="https://www.youtube.com/playlist?list=PLS6BvTsc8oc20r58Jl3k_EWEzaRAiul-u" target="_blank" rel="noopener">
+        <h3>📺 狗狗肢體語言與安撫訊號（播放清單）</h3>
+        <p>Kikopup（Emily Larlham）整理的犬隻溝通與安撫訊號系列，每支都短、示範清楚，是入門肢體語言最推薦的一組影片。</p>
+        <span class="go">前往 YouTube 播放清單 →</span></a>
+      <a class="res" href="https://www.youtube.com/channel/UC-qnqaajTk6bfs3UZuue6IQ" target="_blank" rel="noopener">
+        <h3>🐕 Dog Training by Kikopup</h3>
+        <p>全正向訓練頻道，上千支免費教學，涵蓋分離焦慮、資源守護、看獸醫減敏等本資料庫提到的主題。</p>
+        <span class="go">前往頻道 →</span></a>
+      <a class="res" href="https://www.youtube.com/channel/UCafmHlo4ujLs66xSJZWTrOw" target="_blank" rel="noopener">
+        <h3>🐈 Jackson Galaxy</h3>
+        <p>《管教惡貓》主持人的官方頻道，貓咪肢體語言、亂尿、多貓衝突、環境豐富化都有專門影片。</p>
+        <span class="go">前往頻道 →</span></a>
+      <a class="res" href="https://www.jacksongalaxy.com/blogs/news/cat-mojo-how-to-read-cat-body-language" target="_blank" rel="noopener">
+        <h3>📖 How To Read Cat Body Language</h3>
+        <p>圖文版的貓咪肢體語言總覽（耳朵、眼睛、尾巴、姿態），適合印出來貼在家裡。</p>
+        <span class="go">前往文章 →</span></a>
+      <a class="res" href="https://icatcare.org/cat-advice" target="_blank" rel="noopener">
+        <h3>🏥 International Cat Care｜貓咪照護建議</h3>
+        <p>國際貓科醫學組織的飼主衛教專區，行為、健康、就醫壓力減敏都有實證整理。</p>
+        <span class="go">前往資料庫 →</span></a>
+      <a class="res" href="https://cattledogpublishing.com/poster-download/" target="_blank" rel="noopener">
+        <h3>📷 Dr. Sophia Yin 肢體語言海報</h3>
+        <p>獸醫行為學經典教材：狗與貓的恐懼／焦慮姿態圖解海報，一張圖看懂壓力升高的順序。</p>
+        <span class="go">前往下載頁 →</span></a>
+    </div>
+  </div>
+
+  <div class="disc">
+    <b>使用說明與免責聲明</b><br>
+    本資料庫為「AI 萌寵映畫誌」課程之教學參考整理，目的是幫助飼主建立觀察與溝通的基本概念。動物行為<b>高度依賴情境與個體差異</b>，同一個動作在不同狀況下意義可能完全不同，請務必搭配當下環境、毛孩的整體姿態與你對牠的了解一起判斷。<br>
+    卡片依<b>飼主實際遇到的常見程度</b>排序，越前面越常見；要找特定行為請直接用上方搜尋框。<br>
+    「看影片／看圖片」按鈕會連到 YouTube 與 Google 圖片的<b>即時搜尋結果</b>，內容由第三方提供、品質不一，請以專業來源（上方延伸學習）為準。<br>
+    本資料庫<b>不能取代獸醫師診斷或專業行為諮詢</b>；AI 的回覆同樣僅供參考。若毛孩出現上方紅旗警訊、行為突然改變或疑似疼痛，請儘速尋求獸醫師協助。
+  </div>
+</main>
+
+<footer>
+  AI 萌寵映畫誌｜永豐餘 AI Club 九月企業內訓　·　葉明理 助理教授 × 鍾孟修 職能治療師
+</footer>
+
+<button id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到頂端">↑</button>
+<div id="toast"></div>
+
+<script>
+const DATA = [
+/* ============ 狗狗 30 ============ */
+{e:"🐕",n:"飛機耳（耳朵向後貼平）",s:"dog",c:"安撫訊號",k:"耳朵 後貼 飛機耳 貼平",r:2,vz:"狗狗 耳朵往後貼 飛機耳 情緒 意思",ve:"dog ears back body language what it means",
+ myth:"以為牠在生氣、要咬人",
+ real:"多數情況是<b>緊張、不安，或主動對你示好的安撫訊號</b>——牠想表達「我沒有威脅」。少數在極度放鬆被撫摸時也會出現。",
+ look:["眼睛是否放鬆或露出眼白","嘴角是否後拉、有沒有喘","身體重心向前還是向後","當下環境有沒有陌生人、聲響"],
+ doit:"降低刺激：別直視、別伸手到頭頂，蹲下側身給牠空間，讓牠自己決定要不要靠近。",
+ warn:"若同時出現僵直、低吼、露牙，代表壓力已很高，立刻停止互動並拉開距離。"},
+
+{e:"🙃",n:"翻肚露出肚子",s:"dog",c:"安撫訊號",k:"翻肚 露肚 肚皮 仰躺",r:3,vz:"狗狗 翻肚 露肚子 信任還是順從",ve:"dog rolling belly up trust or appeasement",
+ myth:"以為一定是要人摸肚肚",
+ real:"可能是<b>放鬆與信任</b>，也可能是<b>壓力下的順從表現</b>——用「我把要害給你」來化解緊張。兩者處理方式完全不同。",
+ look:["身體是鬆軟還是僵硬","尾巴有沒有夾緊","是否同時舔嘴、轉頭迴避","是主動靠過來還是被靠近才翻"],
+ doit:"先輕摸胸口或肩膀觀察反應：放鬆的狗會更靠近；順從型的會僵住或想離開，這時就別再摸了。",
+ warn:"若翻肚同時尿了一點尿，是高度順從或恐懼的訊號，代表牠壓力很大。"},
+
+{e:"〰️",n:"搖尾巴",s:"dog",c:"情緒訊號",k:"搖尾 尾巴 擺尾",r:1,vz:"狗狗 搖尾巴 不一定是開心 尾巴高度",ve:"dog tail wagging not always happy tail position",
+ myth:"以為搖尾巴一定等於開心",
+ real:"搖尾巴代表<b>情緒被喚起</b>，但不一定是正向。要看<b>尾巴高度與擺動方式</b>：低而大幅度的擺動多為友善；高舉而僵硬的快速小幅擺動，常是警戒或緊張。",
+ look:["尾巴高度（高／中／低）","擺動幅度大還是小、快還是慢","全身是鬆的還是繃的","耳朵與眼神同時在說什麼"],
+ doit:"高舉僵硬時先停下腳步、不要伸手；低而放鬆時可以正常互動。",
+ warn:"尾巴高舉僵硬＋身體前傾＋直視，是準備防衛或攻擊的組合，請立刻停止接近。"},
+
+{e:"👅",n:"一直舔嘴巴／舔鼻子",s:"dog",c:"安撫訊號",k:"舔嘴 舔鼻 舌頭",r:9,vz:"狗狗 一直舔嘴 安撫訊號 壓力",ve:"dog lip licking calming signal stress",
+ myth:"以為是肚子餓或食物好吃",
+ real:"沒有食物的情況下，這是典型的<b>安撫訊號（calming signal）</b>，代表牠感到壓力或想緩和氣氛。",
+ look:["附近有沒有食物","是否同時打呵欠、轉頭","環境是否剛有變化（客人、噪音、被罵）"],
+ doit:"降低當下的壓力來源：說話放輕、動作放慢、給牠一個可以退開的空間。",
+ warn:"持續舔嘴伴隨流口水、乾嘔、腹部不適，可能是噁心或腸胃問題，請就醫。"},
+
+{e:"🥱",n:"打呵欠（明明不想睡）",s:"dog",c:"安撫訊號",k:"打呵欠 呵欠 哈欠",r:11,vz:"狗狗 打呵欠 不是想睡 壓力訊號",ve:"dog yawning stress signal not tired",
+ myth:"以為只是想睡覺、很無聊",
+ real:"在被擁抱、被罵、看獸醫、或環境吵雜時打呵欠，多半是<b>壓力反應與自我安撫</b>，不是想睡。",
+ look:["發生的時機（剛被抱？剛被念？）","是否同時舔嘴、轉頭、抖毛","呵欠是不是特別慢、特別大"],
+ doit:"把牠正在承受的刺激降低，或暫停當下的互動，讓牠喘口氣。",
+ warn:"若在訓練中頻繁出現，代表你要求得太多太快，請縮短時間、降低難度。"},
+
+{e:"↩️",n:"轉頭迴避、不看你",s:"dog",c:"安撫訊號",k:"轉頭 迴避 別過頭 不看",r:31,vz:"狗狗 轉頭 不看你 安撫訊號",ve:"dog head turn away calming signal",
+ myth:"以為是不理人、鬧脾氣、心虛",
+ real:"這是<b>禮貌與安撫的表達</b>——狗的世界裡直視是壓力，轉開頭代表「我不想衝突」。",
+ look:["是不是在你靠近／盯著牠時發生","身體有沒有同時往後","有無同時舔嘴或打呵欠"],
+ doit:"你也把視線移開、側身站，牠反而會願意靠近。",
+ warn:"若轉頭同時身體僵硬、露出眼白，代表壓力已高，請立即停止逼近。"},
+
+{e:"💦",n:"抖毛（身上明明是乾的）",s:"dog",c:"安撫訊號",k:"抖毛 甩身體 抖動",r:32,vz:"狗狗 抖毛 甩身體 壓力 重置",ve:"dog shake off stress reset body language",
+ myth:"以為是冷或身上有東西",
+ real:"這是<b>壓力後的自我重置</b>——像人深呼吸一樣，常出現在緊張事件剛結束時。",
+ look:["剛剛發生了什麼（被抱、遇到別的狗、打完針）","抖完後是否恢復走動與嗅聞"],
+ doit:"讓牠抖完、給幾秒鐘，再繼續下一步，別急著又抱上去。",
+ warn:"頻繁抖動加上抓耳朵、歪頭，可能是耳朵問題，請檢查。"},
+
+{e:"👃",n:"突然低頭猛嗅地面",s:"dog",c:"安撫訊號",k:"嗅聞 聞地板 低頭 轉移",r:54,vz:"狗狗 散步 一直聞地板 轉移行為",ve:"dog sniffing ground displacement behavior",
+ myth:"以為地上有好吃的東西",
+ real:"在陌生狗靠近、被叫名字卻不想過來時突然狂嗅地面，多半是<b>轉移行為與安撫訊號</b>——用「我在忙別的」來降低緊張。",
+ look:["發生前是不是有狗或人靠近","地面真的有食物氣味嗎","嗅完後是否繞開對方"],
+ doit:"別急著把牠拉走，讓牠用嗅聞完成自我調節；散步時多給嗅聞時間，本身就是很好的減壓。",
+ warn:"若每次外出都必須靠嗅聞迴避，代表牠對環境壓力偏高，可考慮縮短路線或找行為訓練師。"},
+
+{e:"🙇",n:"前腳趴低、屁股翹高（鞠躬）",s:"dog",c:"遊戲／正常",k:"鞠躬 play bow 趴低 邀玩",r:20,vz:"狗狗 邀玩 鞠躬 前腳趴低",ve:"dog play bow invitation body language",
+ myth:"以為是要撲上來",
+ real:"經典的<b>遊戲邀請（play bow）</b>——表示「接下來的動作都是玩，不是認真的」。",
+ look:["尾巴是否放鬆大幅擺動","表情是否嘴角放鬆、像在笑","有沒有蹦跳、繞圈"],
+ doit:"回應牠：拍拍地板、拿玩具，或也做一個誇張的邀玩動作，互動品質會很好。",
+ warn:"玩太久過度興奮時，記得主動喊停休息，避免情緒失控咬太用力。"},
+
+{e:"⏸️",n:"玩到一半突然定住幾秒",s:"dog",c:"遊戲／正常",k:"玩 定格 暫停 play pause",r:55,vz:"狗狗 玩耍 暫停 判斷 是不是在吵架",ve:"dog play pause healthy play vs fight",
+ myth:"以為是玩到不高興了",
+ real:"良性的狗狗互動會出現<b>週期性的自我暫停</b>——雙方停下、抖毛、再重新邀玩，是情緒調節良好的指標。",
+ look:["停下後有沒有回到鞠躬邀玩","角色是否有互換（追人／被追）","有沒有一方一直被壓在下面"],
+ doit:"如果玩超過 1–2 分鐘都沒有自然暫停，主動把兩隻分開 10 秒再放開，教牠們踩煞車。",
+ warn:"定住後身體變僵硬、盯著對方、毛豎起，那不是暫停而是衝突前兆，請立刻隔開。"},
+
+{e:"👁️",n:"露出眼白（鯨魚眼）",s:"dog",c:"警告訊號",k:"眼白 鯨魚眼 whale eye 白眼",r:35,vz:"狗狗 眼白 鯨魚眼 咬人前 警告",ve:"dog whale eye warning before bite",
+ myth:"以為只是斜眼看你、很可愛",
+ real:"頭不動、眼睛斜看而露出眼白，是<b>明確的高壓力訊號</b>，常出現在被抱住、東西被拿走、被陌生人靠近時。",
+ look:["是否同時僵直不動","嘴巴是否緊閉","牠是否無法離開現場（被抱著、被逼到角落）"],
+ doit:"立刻停止當下的動作，鬆手、退開，給牠退路。",
+ warn:"鯨魚眼常出現在咬人前的最後幾秒，<b>絕對不要繼續逼近或處罰</b>。"},
+
+{e:"🧊",n:"突然僵直不動",s:"dog",c:"警告訊號",k:"僵直 不動 定住 僵硬",r:37,vz:"狗狗 突然僵住 不動 咬人前兆",ve:"dog freezing stiff body language warning",
+ myth:"以為牠冷靜下來了、很乖",
+ real:"身體突然定住、呼吸變淺，是<b>攻擊或逃跑前的高風險狀態</b>，代表牠正在決定怎麼辦。",
+ look:["是否發生在吃飯、啃咬玩具、被摸敏感部位時","眼神是否死盯某處","有無伴隨低吼"],
+ doit:"停止動作、緩慢後退，不要伸手去拿牠正在守護的東西。",
+ warn:"這是最容易被忽略、卻最危險的訊號之一。反覆發生請尋求專業行為訓練師協助。"},
+
+{e:"🔊",n:"低吼",s:"dog",c:"警告訊號",k:"低吼 吼叫 咆哮 警告",r:23,vz:"狗狗 低吼 不能處罰 原因",ve:"dog growling do not punish why",
+ myth:"以為要立刻處罰，不然會變壞狗",
+ real:"低吼是<b>牠在好好講話</b>——用聲音告訴你「我不舒服，請停下」。這是非常寶貴的溝通。",
+ look:["牠在守護什麼（食物、玩具、休息處）","身體是前傾還是後退","誰在靠近牠"],
+ doit:"停止靠近，把空間還給牠，事後再用交換、訓練的方式處理資源守護問題。",
+ warn:"<b>處罰低吼會讓牠學會「不先警告，直接咬」</b>——最危險的狗是不會低吼的狗。反覆出現請找專業訓練師。"},
+
+{e:"😬",n:"皺鼻、露出牙齒",s:"dog",c:"警告訊號",k:"露牙 齜牙 皺鼻 呲牙",r:36,vz:"狗狗 露牙 齜牙 警告 表情",ve:"dog snarling showing teeth warning signal",
+ myth:"以為牠在對你笑",
+ real:"鼻子上方皺起、嘴唇往上拉露出犬齒，是<b>明確的最後警告</b>，下一步很可能就是咬。",
+ look:["鼻樑是否有明顯皺褶","耳朵是否向前立起（自信攻擊）或後貼（恐懼攻擊）","身體重心前傾或後縮"],
+ doit:"立即停止、不要對視、緩慢退開，讓牠有離開的路。",
+ warn:"任何情況下都不要用打罵回應——會讓恐懼升高、攻擊更嚴重。請尋求專業協助。"},
+
+{e:"🍽️",n:"靠近飯碗就緊張、護食",s:"dog",c:"警告訊號",k:"護食 資源守護 飯碗 搶食",r:38,vz:"狗狗 護食 資源守護 訓練",ve:"dog resource guarding food bowl training",
+ myth:"以為要常去搶碗「訓練牠服從」",
+ real:"這是<b>資源守護（resource guarding）</b>，是天性不是壞。<b>反覆去搶碗只會證實牠的擔心</b>，讓守護更嚴重。",
+ look:["吃飯時是否加速吞嚥、身體壓低蓋住碗","眼睛是否斜看你（鯨魚眼）","守護的只有食物還是也包含玩具、沙發、人"],
+ doit:"改成「靠近＝加菜」：經過時丟一塊更好吃的進碗再走開，讓牠學到你靠近是好事。",
+ warn:"已出現低吼、露牙或咬的紀錄，請務必先隔開用餐空間，並尋求專業訓練師介入，不要自行嘗試。"},
+
+{e:"😖",n:"夾尾巴、拱背縮小",s:"dog",c:"恐懼防衛",k:"夾尾 拱背 縮起來 害怕",r:34,vz:"狗狗 夾尾巴 害怕 姿勢 不是心虛",ve:"dog tucked tail fearful body posture",
+ myth:"以為牠做錯事在心虛",
+ real:"這是<b>恐懼與想把自己變小</b>的姿態，不是「知道錯了」——狗其實不理解事後處罰。",
+ look:["當下有沒有巨大聲響、陌生人、剛被責罵","是否同時發抖、喘氣、找地方躲"],
+ doit:"移除壓力源，蹲低、側身、用輕柔的聲音，讓牠自己靠過來，不要硬抱。",
+ warn:"長期處在恐懼狀態會發展成焦慮症，請調整環境並諮詢專業。"},
+
+{e:"🫨",n:"發抖（明明不冷）",s:"dog",c:"恐懼防衛",k:"發抖 顫抖 抖 害怕",r:39,vz:"狗狗 發抖 不是冷 原因 打雷 鞭炮",ve:"dog trembling shaking not cold causes",
+ myth:"以為只是怕冷、多穿件衣服就好",
+ real:"排除低溫後，發抖常見於<b>恐懼（打雷、鞭炮、看獸醫）、疼痛、過度興奮，也可能是中毒或低血糖</b>——小型犬尤其要注意。",
+ look:["環境溫度是否真的低","有沒有巨大聲響或陌生環境","是否同時喘氣、流口水、無力","牙齦顏色是否蒼白"],
+ doit:"恐懼型：提供牠自己選的躲藏處、關窗降噪、陪在旁邊但不強抱。怕鞭炮可事先與獸醫討論抗焦慮方案。",
+ warn:"發抖伴隨嘔吐、無力、步態不穩、牙齦蒼白，或曾誤食不明物品，請<b>立即就醫</b>。"},
+
+{e:"🦶",n:"一直舔自己的腳掌",s:"dog",c:"壓力／健康",k:"舔腳 舔腳掌 舔手",r:29,vz:"狗狗 一直舔腳 原因 過敏 焦慮",ve:"dog licking paws allergy anxiety causes",
+ myth:"以為只是在洗澡、清潔",
+ real:"偶爾舔是正常清潔；<b>長時間、重複舔同一隻腳</b>，常見於焦慮、無聊，也可能是過敏、疼痛或異物。",
+ look:["是否只舔固定一隻腳","腳掌有無紅腫、脫毛、氣味","是否在你出門或獨處時特別嚴重"],
+ doit:"增加嗅聞散步與互動遊戲降低焦慮，同時檢查腳掌皮膚。",
+ warn:"舔到脫毛、紅腫、破皮，請就醫排除過敏、皮膚炎或關節疼痛。"},
+
+{e:"🚪",n:"你一出門就破壞、亂叫、尿尿",s:"dog",c:"壓力／健康",k:"分離焦慮 破壞 亂叫 出門 獨處",r:30,vz:"狗狗 分離焦慮 出門 破壞 改善",ve:"dog separation anxiety signs and training",
+ myth:"以為是故意報復、在使壞",
+ real:"多數是<b>分離焦慮</b>——牠在你離開後陷入恐慌，破壞行為往往集中在門口與出入口。",
+ look:["是否只在獨處時發生","破壞位置是否集中在門窗","你回家時是否過度激動迎接"],
+ doit:"出門與回家都保持平淡；建立短時間離開的漸進練習；出門前給嗅聞或啃咬的消耗性玩具。",
+ warn:"回家後處罰完全無效且會加重焦慮。嚴重個案請諮詢獸醫與行為專業，可能需要藥物合併行為治療。"},
+
+{e:"🌀",n:"一直追自己的尾巴",s:"dog",c:"壓力／健康",k:"追尾巴 轉圈 咬尾巴 強迫",r:52,vz:"狗狗 追尾巴 轉圈 強迫行為",ve:"dog chasing tail compulsive behavior",
+ myth:"以為只是在玩、很好笑就一直拍",
+ real:"偶爾追著玩是正常；<b>頻繁、停不下來、甚至咬到受傷</b>，可能是刺激不足、焦慮造成的<b>強迫行為</b>，也可能是肛門腺、皮膚或神經問題。",
+ look:["一天發生幾次、能不能被叫停","尾巴末端有無咬傷、脫毛","是否在你不理牠時特別容易發生"],
+ doit:"增加嗅聞遊戲、益智餵食與規律運動；不要在牠追尾時大笑或拍手（那是在增強這個行為）。",
+ warn:"已造成自我傷害或無法中斷，請就醫排除疼痛與神經問題，並諮詢行為專業。"},
+
+{e:"🛌",n:"躺下前一直繞圈、扒床",s:"dog",c:"遊戲／正常",k:"繞圈 挖床 扒床 睡前",r:49,vz:"狗狗 睡前 繞圈 扒床 原因",ve:"dog circling digging before lying down",
+ myth:"以為是把床弄壞、在搗蛋",
+ real:"多被解釋為<b>祖先留下的築巢本能</b>——壓平草地、調整溫度、確認安全。偶爾做完就躺下是完全正常的。",
+ look:["繞幾圈就躺下，還是一直停不下來","起身後是否有跛行或不敢躺下"],
+ doit:"給一張夠大、支撐性好的床即可，不需要糾正。",
+ warn:"若突然變成躺下很久都喬不好姿勢、頻繁起身換位置，可能是關節疼痛，請就醫。"},
+
+{e:"🫂",n:"騎乘動作（抱腿、騎玩具）",s:"dog",c:"情緒訊號",k:"騎乘 抱腿 爬跨 mounting",r:53,vz:"狗狗 抱腿 騎乘 行為 原因 處理",ve:"dog mounting humping behavior meaning",
+ myth:"以為一定跟性或「爭地位」有關",
+ real:"結紮後仍出現很常見。<b>多數是過度興奮、壓力發洩或學習來的引起注意</b>，只有少部分與性行為有關。",
+ look:["發生前是不是剛玩瘋、剛有客人來","對象是人、狗還是玩具","被打斷後是否更興奮"],
+ doit:"平靜地把牠帶開、給一個可以做的替代動作（嗅聞墊、咬咬玩具），降低整體興奮度比糾正更有效。",
+ warn:"若伴隨頻繁舔生殖器、排尿異常，請就醫排除泌尿或皮膚問題。"},
+
+{e:"🧸",n:"把玩具叼來放你腳邊",s:"dog",c:"需求表達",k:"叼玩具 送玩具 丟球 邀請",r:41,vz:"狗狗 叼玩具給主人 意思",ve:"dog bringing toy to owner meaning",
+ myth:"以為只是要你丟球",
+ real:"多數是<b>互動邀請與分享</b>：牠把最有價值的東西帶給最重要的對象。有些狗則是學會了「叼玩具＝有人理我」。",
+ look:["叼過來後是否退開等你動作","是不是在你忙／滑手機時特別常發生","有沒有叼來卻不給（那是邀玩追逐）"],
+ doit:"想陪玩就回應；沒空時給一個明確的替代（嗅聞墊、咬膠），比完全不理更不會演變成吠叫。",
+ warn:"—"},
+
+{e:"🪑",n:"屁股在地上磨、拖著走",s:"dog",c:"壓力／健康",k:"拖地 磨屁股 肛門腺 scooting",r:51,vz:"狗狗 屁股拖地 磨屁股 肛門腺",ve:"dog scooting anal gland problem",
+ myth:"以為是身上有蟲、覺得好笑",
+ real:"最常見的原因是<b>肛門腺阻塞或發炎</b>，其次是寄生蟲、過敏造成的搔癢，或糞便沾黏。",
+ look:["肛門周圍是否紅腫、有異味","便便是否偏軟","是否同時一直舔屁股"],
+ doit:"先觀察排便狀況與飲食纖維量，並帶去給獸醫檢查肛門腺。",
+ warn:"肛門腺化膿破裂會很痛且需要治療，出現紅腫、流血、坐立難安請儘速就醫。"},
+
+{e:"🌿",n:"散步時一直吃草",s:"dog",c:"壓力／健康",k:"吃草 啃草 嘔吐",r:50,vz:"狗狗 吃草 原因 要不要阻止",ve:"dog eating grass reasons should you stop",
+ myth:"以為一定是胃不舒服想催吐",
+ real:"研究顯示<b>多數吃草的狗事後並沒有嘔吐</b>；常見解釋包含好奇、口感、無聊與正常覓食行為。",
+ look:["吃完是否嘔吐","是否同時食慾下降、拉肚子","草地有無噴灑除草劑"],
+ doit:"偶爾吃一點通常無害，但避開噴藥草地；若很頻繁，增加嗅聞遊戲與咀嚼機會。",
+ warn:"吃草伴隨反覆嘔吐、食慾差、體重下降，請就醫檢查腸胃。"},
+
+{e:"🔔",n:"門鈴一響就狂吠衝門口",s:"dog",c:"情緒訊號",k:"門鈴 狂吠 吠叫 訪客",r:19,vz:"狗狗 門鈴 狂吠 訓練 減敏",ve:"dog barking at doorbell desensitization training",
+ myth:"以為是兇、要更大聲罵回去",
+ real:"多數是<b>警戒＋高度興奮</b>的混合：門鈴已經和「有人入侵」建立了強烈連結，吼叫反而會讓牠更亢奮。",
+ look:["吠完是否很久才冷靜下來","客人進門後是繼續吠還是想躲","對熟人也一樣嗎"],
+ doit:"改變門鈴的意義：錄一段門鈴聲，小聲播放→立刻丟零食，重複到牠聽見門鈴會轉頭看你，再慢慢加大音量。",
+ warn:"若對進門的客人出現撲咬、逼近，請先用圍欄隔開並尋求專業訓練協助。"},
+
+{e:"😽",n:"一直舔你的臉和手",s:"dog",c:"親密行為",k:"舔人 舔臉 舔手",r:16,vz:"狗狗 舔人 舔臉 意思",ve:"dog licking owner face meaning",
+ myth:"以為就是單純的親親",
+ real:"可能是<b>親近與招呼（源自幼犬舔母犬嘴角）</b>、也可能是<b>安撫訊號</b>，或單純喜歡你皮膚上的味道與鹽分。",
+ look:["是在你靠得很近、盯著牠時發生嗎","是否同時耳朵後貼、身體壓低","舔完是否退開"],
+ doit:"不喜歡被舔就平靜地把臉移開、給一個牠會的替代動作（坐下）再稱讚，不需要責罵。",
+ warn:"免疫力低的成員、傷口、嬰幼兒應避免被舔；狂舔牆壁、地板或空氣則要就醫排除腸胃問題。"},
+
+{e:"🫶",n:"用身體或頭靠著你不動",s:"dog",c:"親密行為",k:"靠著 倚靠 貼著 leaning",r:40,vz:"狗狗 靠著主人 貼著 意思",ve:"dog leaning on owner meaning",
+ myth:"以為是在撒嬌討摸而已",
+ real:"<b>靠著＝尋求接觸與安心</b>。在放鬆環境是親密；但在吵雜、陌生場合突然靠過來，是<b>在跟你要安全感</b>。",
+ look:["當下環境吵不吵、有沒有陌生人","身體是鬆的還是繃的、有沒有發抖","尾巴位置高低"],
+ doit:"放鬆時就享受；緊張版請帶牠離開刺激源，安撫害怕的狗不會寵壞牠。",
+ warn:"若突然變得異常黏人又坐立難安，先排除疼痛與身體不適。"},
+
+{e:"🌬️",n:"一直倒抽氣、像鵝叫（反向噴嚏）",s:"dog",c:"壓力／健康",k:"反向噴嚏 倒抽氣 打噴嚏 呼吸",r:56,vz:"狗狗 反向噴嚏 倒抽氣 怎麼辦",ve:"dog reverse sneezing what to do",
+ myth:"以為是被東西噎到、快不能呼吸",
+ real:"<b>反向噴嚏</b>是軟顎受刺激引起的短暫痙攣，發作幾十秒後多會自行停止，短吻犬與小型犬常見，本身通常無害。",
+ look:["發作多久、多常發生","是否在拉牽繩、興奮或聞到刺激氣味後發生","平常呼吸聲是否就偏大"],
+ doit:"輕輕順著喉嚨往下摸、或短暫蓋住鼻孔讓牠吞嚥，多半能中斷。散步改用胸背帶減少頸部壓迫。",
+ warn:"若頻率變高、伴隨咳嗽、鼻涕帶血、呼吸費力或牙齦發紫，請就醫排除氣管塌陷、過敏或異物。"},
+
+{e:"🐾",n:"用前腳拍你、扒你",s:"dog",c:"需求表達",k:"拍你 扒手 撓 要求",r:15,vz:"狗狗 用手拍你 扒你 討關注",ve:"dog pawing at owner attention seeking",
+ myth:"以為是撒嬌，很可愛就一直回應",
+ real:"通常是<b>學習而來的需求表達</b>——牠發現這樣做你就會給關注、食物或開門。",
+ look:["每次發生前你都給了什麼回應","是否伴隨盯著門、盯著飼料碗"],
+ doit:"想維持就回應；不想被一直拍，就在牠安靜時主動給關注，拍你時暫時不回應。",
+ warn:"若突然變得頻繁又焦躁，先排除身體不適或疼痛。"},
+
+/* ============ 貓咪 30 ============ */
+{e:"🍞",n:"母雞蹲（麵包貓）",s:"cat",c:"壓力／健康",k:"母雞蹲 麵包 蹲坐 收手",r:26,vz:"貓咪 母雞蹲 麵包貓 是舒服還是生病",ve:"cat loaf position relaxed or in pain",
+ myth:"以為一定是舒服、放鬆",
+ real:"四肢收在身體下方可能是<b>放鬆保暖</b>，<b>但也可能是身體不適、疼痛或發燒時的保護姿勢</b>——這是最容易被誤判的姿勢之一。",
+ look:["眼睛是半瞇（放鬆）還是圓睜微瞇（不適）","鬍鬚是否向後收、耳朵是否微微外翻","有沒有呼嚕但不願被碰","食慾與活動量有沒有下降"],
+ doit:"放鬆版不用打擾；若伴隨眼神緊繃、不理人、少吃少動，請提高警覺。",
+ warn:"母雞蹲＋食慾下降＋躲藏，是貓咪生病的經典組合，請儘速就醫。"},
+
+{e:"😌",n:"對你慢慢眨眼",s:"cat",c:"親密行為",k:"慢眨眼 眨眼 瞇眼",r:13,vz:"貓咪 慢眨眼 貓的微笑 怎麼回應",ve:"cat slow blink meaning how to respond",
+ myth:"以為只是想睡覺",
+ real:"這是貓咪版的微笑——<b>表示放鬆、信任、對你沒有敵意</b>。研究也發現人對貓慢眨眼，貓更願意靠近。",
+ look:["眼睛是否半瞇","身體是否放鬆躺臥","距離你多遠"],
+ doit:"回敬牠：緩緩瞇眼再張開，這是跨物種最簡單的示好方式。",
+ warn:"—"},
+
+{e:"🐾",n:"踩奶（前腳交替踩踏）",s:"cat",c:"親密行為",k:"踩奶 踏踏 按摩 揉",r:5,vz:"貓咪 踩奶 踏踏 原因",ve:"cat kneading why do cats knead",
+ myth:"以為是要抓破沙發、故意的",
+ real:"源自<b>幼貓吸奶時刺激乳汁的本能</b>，成貓踩奶代表<b>安心、滿足與依附</b>，對你踩奶是很高的信任。",
+ look:["是否同時呼嚕、流口水","是否在你身上或熟悉的毯子上"],
+ doit:"怕痛就墊一條厚毯子；定期修剪指甲，不要把牠推開否則會打斷牠的安心感。",
+ warn:"—"},
+
+{e:"❓",n:"尾巴直立、尖端微彎（問號尾）",s:"cat",c:"親密行為",k:"尾巴直立 問號尾 打招呼",r:12,vz:"貓咪 尾巴直立 問號尾 打招呼",ve:"cat tail up question mark greeting",
+ myth:"以為只是隨便翹著",
+ real:"這是貓科動物<b>友善打招呼</b>的經典訊號，通常伴隨小跑步靠近、磨蹭。",
+ look:["尾巴尖是否輕輕抖動（興奮期待）","是否同時磨蹭你的腳"],
+ doit:"蹲下伸出食指讓牠自己來碰鼻，這是貓的禮貌打招呼方式。",
+ warn:"—"},
+
+{e:"⚡",n:"尾巴豎直、末端快速顫抖",s:"cat",c:"親密行為",k:"尾巴顫抖 抖尾 開心 噴尿",r:48,vz:"貓咪 尾巴抖動 顫抖 開心 還是噴尿",ve:"cat tail quivering happy or spraying",
+ myth:"以為牠在生氣發抖",
+ real:"多數是<b>極度開心與期待</b>（你剛回家、要開罐頭時最常見）。少部分未結紮的貓會伴隨後退貼牆、噴尿標記。",
+ look:["是全身放鬆還是後退對著牆","牆面或家具上有無尿味","是否已結紮"],
+ doit:"開心版直接回應牠、給予互動；若確認是噴尿標記，請與獸醫討論結紮與環境壓力調整。",
+ warn:"突然開始噴尿標記，常代表環境壓力（新成員、外面的貓）或泌尿問題，請就醫評估。"},
+
+{e:"💢",n:"尾巴快速拍打地面",s:"cat",c:"警告訊號",k:"尾巴拍打 甩尾 拍地 煩躁",r:8,vz:"貓咪 尾巴拍打 甩尾 生氣 不耐煩",ve:"cat tail thumping flicking irritated meaning",
+ myth:"以為像狗一樣是開心",
+ real:"貓的甩尾與狗完全相反——<b>快速拍打代表煩躁、不耐或內心衝突</b>，是「我快受不了了」。",
+ look:["幅度越大、頻率越快＝情緒越高","耳朵是否開始向外翻","是否剛被摸很久"],
+ doit:"立刻停止撫摸，讓牠自己離開。",
+ warn:"忽略這個訊號是最常見的「摸一摸突然被咬」原因（撫摸誘發攻擊）。"},
+
+{e:"✈️",n:"耳朵往兩側外翻（貓飛機耳）",s:"cat",c:"警告訊號",k:"貓 飛機耳 耳朵外翻 耳朵往後",r:25,vz:"貓咪 飛機耳 耳朵外翻 情緒 警告",ve:"cat flattened airplane ears warning body language",
+ myth:"以為跟狗一樣是安撫",
+ real:"貓的耳朵向兩側壓平外翻，代表<b>恐懼、防衛或即將攻擊</b>——與狗的飛機耳意義不同，是明確的警告。",
+ look:["瞳孔是否放大","鬍鬚是否向前張開或緊貼","身體是否壓低、重心後移"],
+ doit:"停止一切靠近動作，保持安靜，讓牠有退路可以離開。",
+ warn:"伴隨哈氣、低鳴、身體壓低準備跳開時，請完全不要伸手。"},
+
+{e:"🤬",n:"哈氣（嘶嘶叫）",s:"cat",c:"警告訊號",k:"哈氣 嘶嘶 hiss 兇",r:24,vz:"貓咪 哈氣 嘶嘶 為什麼 怎麼處理",ve:"cat hissing meaning fear what to do",
+ myth:"以為是壞脾氣、要處罰牠",
+ real:"哈氣是<b>恐懼下的自我保護</b>，不是攻擊宣言——牠在說「別過來，我不想打架」。模仿蛇的聲音是天生的嚇阻策略。",
+ look:["對象是人、新貓還是外面的聲音","是否同時後退、壓低身體","事後多久才恢復"],
+ doit:"立刻停止靠近、把對象隔開，降低環境刺激。<b>不要懲罰哈氣</b>，那會讓牠下次直接動口。",
+ warn:"新貓入住時哈氣很常見，請用漸進的隔離與氣味交換流程，不要直接放在同一空間。"},
+
+{e:"😼",n:"摸一摸突然咬你一口就跑",s:"cat",c:"警告訊號",k:"咬人 愛的小咬 過度撫摸 突然咬",r:10,vz:"貓咪 摸一摸 突然咬人 撫摸 過度",ve:"cat petting induced aggression sudden bite",
+ myth:"以為是「愛的小咬」、突然翻臉不認人",
+ real:"這通常是<b>撫摸誘發攻擊</b>——牠其實早就發出訊號（甩尾、耳朵外翻、皮膚抽動），只是我們沒接收到。貓的耐受度有上限。",
+ look:["咬之前尾巴有沒有開始拍打","背部皮膚是否抽動","你摸的是不是肚子、尾巴根部"],
+ doit:"改成短時間、重複確認：摸三下就停手，看牠有沒有主動蹭回來才繼續；集中摸下巴、臉頰、頭頂。",
+ warn:"被咬出血請消毒就醫（貓咬傷感染率高）。若頻繁且無預警發生，請就醫排除疼痛與皮膚問題。"},
+
+{e:"🙀",n:"弓背、毛炸起來、側身站",s:"cat",c:"恐懼防衛",k:"弓背 炸毛 拱背 萬聖節貓",r:33,vz:"貓咪 弓背 炸毛 側身 害怕",ve:"cat arched back puffed up fear posture",
+ myth:"以為牠很兇、要打架",
+ real:"這是<b>恐懼下的虛張聲勢</b>——把自己變大嚇退對方，牠其實很害怕、想避免打架。",
+ look:["尾巴是否也炸開像刷子","有沒有陌生貓、狗或聲響","是否邊退邊維持側身"],
+ doit:"不要靠近或安撫，移除嚇到牠的來源，關掉噪音或隔開對方，給牠時間自己冷靜。",
+ warn:"高度緊張的貓可能出現「轉向攻擊」——攻擊身邊最近的人，請保持距離。"},
+
+{e:"👀",n:"瞳孔突然放到最大",s:"cat",c:"情緒訊號",k:"瞳孔 放大 圓眼 黑眼珠",r:47,vz:"貓咪 瞳孔放大 代表什麼",ve:"cat dilated pupils meaning",
+ myth:"以為只是可愛的圓眼睛",
+ real:"瞳孔放大代表<b>情緒被強烈喚起</b>——可能是玩到很興奮，也可能是恐懼或疼痛，光線變暗時也會。",
+ look:["現場光線是不是變暗了","是否同時耳朵外翻、身體壓低（恐懼）","還是尾巴翹高、蹲低準備撲（遊戲）"],
+ doit:"遊戲版就繼續逗牠玩到「撲到」為止；恐懼版請移除刺激源、不要伸手。",
+ warn:"兩眼瞳孔大小不一樣、長時間持續放大、或伴隨走路不穩，請立即就醫。"},
+
+{e:"😻",n:"用頭磨蹭你、用身體蹭腿",s:"cat",c:"親密行為",k:"磨蹭 頭蹭 蹭腿 標記",r:4,vz:"貓咪 磨蹭 蹭腿 標記 意思",ve:"cat rubbing against you scent marking",
+ myth:"以為只是在搔癢",
+ real:"貓的臉頰有費洛蒙腺體，磨蹭是<b>把你標記為「自己人」</b>，同時是示好與確認關係。",
+ look:["是用臉頰還是用整個身體","是否同時尾巴直立","發生時機（你剛回家？）"],
+ doit:"回應牠：輕摸下巴與臉頰兩側，這是貓最喜歡被摸的部位。",
+ warn:"突然過度磨蹭並伴隨大叫，母貓可能是發情，建議與獸醫討論結紮。"},
+
+{e:"🤕",n:"用頭撞你（頭槌）",s:"cat",c:"親密行為",k:"頭撞 頭槌 bunting 撞頭",r:43,vz:"貓咪 頭槌 用頭撞你 意思",ve:"cat head bunting bonking meaning",
+ myth:"以為是想把你推開",
+ real:"<b>頭槌（bunting）是很高規格的社交行為</b>——用額頭的腺體把氣味留在你身上，代表接納與信任，貓之間也會這樣做。",
+ look:["力道是輕碰還是用力撞","是否同時呼嚕、尾巴直立"],
+ doit:"回摸牠的額頭與臉頰兩側，或把你的額頭輕輕靠過去回應。",
+ warn:"若變成用頭抵著牆壁不動（head pressing），那是<b>神經異常的急症</b>，請立即就醫——那和頭槌完全不同。"},
+
+{e:"🛋️",n:"露肚皮躺在你面前",s:"cat",c:"情緒訊號",k:"貓 露肚 翻肚 肚皮",r:14,vz:"貓咪 露肚皮 可以摸肚子嗎",ve:"cat showing belly trust not petting invitation",
+ myth:"以為是在邀請你摸肚子",
+ real:"對貓來說這是<b>極度信任的表現</b>，但<b>不等於同意被摸肚子</b>——肚子是要害，多數貓被摸會本能反擊。",
+ look:["尾巴是否放鬆","是否同時慢眨眼、呼嚕"],
+ doit:"欣賞就好，或改摸下巴、臉頰、頭頂。想摸肚子請先短暫一秒鐘測試反應。",
+ warn:"被摸肚子時抱住你的手踢後腳，是本能防衛不是玩，請立刻收手。"},
+
+{e:"🪶",n:"尾巴纏住你的腿或別隻貓的尾巴",s:"cat",c:"親密行為",k:"尾巴纏 勾尾 交纏 感情",r:44,vz:"貓咪 尾巴纏 勾尾巴 感情好",ve:"cat tail wrapping affiliative behaviour",
+ myth:"以為只是走路不小心掃到",
+ real:"尾巴主動纏繞是<b>親密與友好的訊號</b>；兩隻貓的尾巴交纏走路，代表關係良好，是多貓家庭和諧的好指標。",
+ look:["是否同時尾巴直立、小跑步過來","兩貓是否也會互相理毛、一起睡"],
+ doit:"當作關係良好的指標；多貓家庭仍要維持「貓口數＋1」的貓砂盆與分開的食盆。",
+ warn:"—"},
+
+{e:"😴",n:"睡在你頭邊或胸口",s:"cat",c:"親密行為",k:"睡在頭邊 睡胸口 一起睡",r:42,vz:"貓咪 睡在主人頭邊 胸口 原因",ve:"cat sleeping on owner head chest why",
+ myth:"以為只是在搶位子",
+ real:"貓睡覺時最脆弱，願意貼著你睡代表<b>高度安全感</b>；同時你的頭部與胸口是床上最溫暖、最穩定的地方。",
+ look:["是否選固定位置與固定時間","有沒有先踩奶再躺下"],
+ doit:"想維持就別打擾；不希望上床可以在床邊放一張加熱墊或牠喜歡的毯子作替代。",
+ warn:"有過敏或氣喘的家人建議維持臥室不進貓，並加強寢具清潔。"},
+
+{e:"😿",n:"躲起來不出來",s:"cat",c:"壓力／健康",k:"躲起來 藏 不出來 躲床底",r:22,vz:"貓咪 一直躲起來 不出來 生病 壓力",ve:"cat hiding all the time sick or stressed",
+ myth:"以為只是怕生、過幾天就好",
+ real:"短暫躲藏是貓面對變化的正常策略；<b>但持續躲藏、連吃飯都不出來，常是生病或高度壓力</b>。",
+ look:["家裡最近有無變動（搬家、新成員、裝潢）","有沒有正常吃喝與上廁所","是否連最愛的零食都不回應"],
+ doit:"提供安靜的高處與躲避空間，把食物水碗放近一點，不要硬把牠拉出來。",
+ warn:"超過 24 小時不吃不喝、或原本親人的貓突然長期躲藏，請儘速就醫。"},
+
+{e:"🚽",n:"在貓砂盆外面尿尿",s:"cat",c:"壓力／健康",k:"亂尿 不進貓砂 尿在外面 亂大小便",r:27,vz:"貓咪 亂尿 貓砂盆外 原因 泌尿",ve:"cat peeing outside litter box causes",
+ myth:"以為是故意報復、教不會",
+ real:"貓<b>不會為了報復而亂尿</b>。最常見原因是<b>泌尿道疾病、貓砂盆問題（髒、數量不足、位置不佳）或環境壓力</b>。",
+ look:["是否頻繁進出貓砂盆卻尿很少","尿液有無血色","貓砂盆數量是否為貓口數＋1","最近環境有無改變"],
+ doit:"先就醫排除泌尿問題；之後檢查貓砂盆清潔、數量、位置與砂的種類。",
+ warn:"<b>公貓頻繁蹲尿卻尿不出來是急症</b>（尿道阻塞），可能數小時內致命，請立即就醫。"},
+
+{e:"🕳️",n:"不埋便便、或一直刨盆邊",s:"cat",c:"壓力／健康",k:"不埋 刨盆 貓砂 挖牆",r:58,vz:"貓咪 不埋便便 一直刨盆邊 原因",ve:"cat not covering poop litter box problem",
+ myth:"以為只是懶、沒教好",
+ real:"不埋可能是<b>不喜歡這種砂的觸感、盆太小太淺、盆太髒</b>，少數與社交壓力（多貓家庭的宣示）有關；一直刨邊牆則常是砂量不足。",
+ look:["貓砂深度是否有 5 公分以上","盆的長度是否為貓身長 1.5 倍","是否有蓋、放在吵雜或角落","多貓家庭盆數夠不夠"],
+ doit:"換成無香精細顆粒礦砂、加深砂量、改用大型無蓋開放式貓砂盆，多半能改善。",
+ warn:"若同時出現排便姿勢久蹲、便血或便秘，請就醫。"},
+
+{e:"🤮",n:"吐毛球、頻繁乾嘔",s:"cat",c:"壓力／健康",k:"吐毛球 嘔吐 乾嘔 毛球",r:28,vz:"貓咪 吐毛球 一直乾嘔 正常嗎",ve:"cat vomiting hairballs how often is normal",
+ myth:"以為貓本來就常吐，很正常",
+ real:"偶爾（數月一次）吐出毛球屬常見；<b>但「每週吐」並不正常</b>，可能是腸胃疾病、食物不耐、過度理毛（壓力或皮膚癢）造成。",
+ look:["一個月吐幾次","吐的是毛球、未消化飼料還是黃水","身上有無脫毛區塊","體重有沒有下降"],
+ doit:"每日梳毛減少吞入的毛量、補充水分與適量纖維；記錄嘔吐頻率與內容拍照給獸醫看。",
+ warn:"一週吐超過一次、吐後食慾差、體重下降或嘔吐物帶血，請就醫。"},
+
+{e:"🌙",n:"半夜突然暴衝狂奔",s:"cat",c:"遊戲／正常",k:"暴衝 半夜 跑酷 午夜狂奔",r:21,vz:"貓咪 半夜暴衝 跑酷 原因 改善",ve:"cat zoomies at night why how to stop",
+ myth:"以為牠在發瘋或見鬼了",
+ real:"貓是<b>晨昏型動物</b>，清晨與黃昏活動力最高；白天睡太多、能量沒消耗，就會在半夜爆發。",
+ look:["白天是否幾乎都在睡","有沒有足夠的遊戲與狩獵型互動","是否在固定時間發生"],
+ doit:"睡前安排 10–15 分鐘逗貓棒遊戲（模擬狩獵→撲到→給食物），能明顯減少夜間暴衝。",
+ warn:"若暴衝伴隨對自己尾巴攻擊、皮膚抽動、瞳孔異常放大，請就醫評估。"},
+
+{e:"🛋️",n:"抓沙發、到處磨爪",s:"cat",c:"遊戲／正常",k:"抓沙發 磨爪 抓家具 貓抓板",r:17,vz:"貓咪 抓沙發 磨爪 貓抓板 訓練",ve:"cat scratching furniture how to redirect",
+ myth:"以為是報復或壞習慣，想剪掉爪子",
+ real:"磨爪是<b>必要的天性</b>：維護指甲、伸展背部肌肉、留下視覺與氣味標記。問題不在「抓」，在「抓的位置」。",
+ look:["抓的是垂直面還是水平面","位置是不是在出入口、睡覺處旁邊","現有貓抓板夠不夠高、夠不夠穩"],
+ doit:"把夠高（60cm 以上）、穩固的抓板<b>放到牠原本抓的家具旁邊</b>，材質選瓦楞紙或麻繩，抓對時給零食，再慢慢移位。",
+ warn:"<b>去爪手術是截去指骨，會造成長期疼痛與行為問題</b>，多國已禁止，請改用定期修剪與指甲套。"},
+
+{e:"🐦",n:"看窗外鳥發出喀喀聲",s:"cat",c:"情緒訊號",k:"喀喀 咂嘴 chattering 看鳥",r:46,vz:"貓咪 看鳥 喀喀叫 咂嘴 原因",ve:"cat chattering at birds why",
+ myth:"以為是在跟鳥打招呼",
+ real:"目前主流解釋是<b>狩獵被阻擋時的挫折與高度興奮</b>，也有假說認為是在模擬咬住獵物的頸部動作。",
+ look:["是否同時尾巴快速抖動、瞳孔放大","事後是否轉而追家人的腳（轉向攻擊）"],
+ doit:"看完鳥之後立刻安排一段逗貓棒遊戲並以零食收尾，讓牠「完成狩獵」，避免挫折累積。",
+ warn:"若每次看完窗外就攻擊家人或同居貓，請先遮蔽窗戶下半部並諮詢行為專業。"},
+
+{e:"😾",n:"呼嚕聲",s:"cat",c:"情緒訊號",k:"呼嚕 打呼嚕 咕嚕",r:6,vz:"貓咪 呼嚕 不一定是開心 疼痛",ve:"cat purring not always happy pain",
+ myth:"以為呼嚕一定代表開心",
+ real:"呼嚕多數時候是舒服滿足，<b>但貓在疼痛、緊張或生病時也會呼嚕來自我安撫</b>——甚至有研究認為有助自我修復。",
+ look:["身體是鬆軟還是縮緊","是否在獸醫院、受傷或呼吸急促時發生","有沒有同時食慾下降"],
+ doit:"放鬆情境下的呼嚕安心享受；不尋常情境的呼嚕請多觀察其他指標。",
+ warn:"呼嚕＋躲藏＋不吃＋呼吸快，請立即就醫。"},
+
+{e:"😮",n:"張著嘴發呆（裂唇嗅反應）",s:"cat",c:"情緒訊號",k:"張嘴 發呆 裂唇嗅 Flehmen 臭臉",r:60,vz:"貓咪 張嘴 發呆 裂唇嗅 反應",ve:"cat flehmen response open mouth smell",
+ myth:"以為聞到臭味在嫌棄，或嘴巴不舒服",
+ real:"這是<b>裂唇嗅反應（Flehmen）</b>：牠把氣味送到上顎的犁鼻器做「深度分析」，常發生在聞到其他動物氣味、你的鞋子或費洛蒙時。",
+ look:["剛剛聞了什麼東西","表情只維持幾秒就恢復嗎","有沒有流口水或口臭"],
+ doit:"完全正常，不需處理，是很好的拍照時機。",
+ warn:"若是長時間張口呼吸、流口水、用爪子撥嘴巴，那不是裂唇嗅——<b>貓張口呼吸是急症</b>，請立即就醫。"},
+
+{e:"🗣️",n:"一直對你叫（成貓）",s:"cat",c:"需求表達",k:"一直叫 喵叫 叫不停 討食",r:7,vz:"貓咪 一直叫 喵喵叫 討食 原因",ve:"cat meowing excessively at owner why",
+ myth:"以為天生就是話多",
+ real:"成貓之間很少用叫聲溝通——<b>持續對「人」叫，多半是學習而來的有效要求</b>（叫了就有飯、有開門、有關注）。",
+ look:["叫的時間點是否固定（餵食前、你進門時）","叫聲是短促要求還是長而低沉的痛苦","年齡是否偏高"],
+ doit:"要調整就改在牠安靜時給予回應；固定餵食時間也能減少討食叫聲。",
+ warn:"高齡貓突然半夜大叫，需排除甲狀腺亢進、高血壓或認知障礙，請就醫。"},
+
+{e:"⌨️",n:"趴在鍵盤、書本或報紙上",s:"cat",c:"需求表達",k:"鍵盤 趴筆電 擋螢幕 書本",r:18,vz:"貓咪 趴鍵盤 擋螢幕 原因",ve:"cat sitting on keyboard laptop why",
+ myth:"以為只是故意搗蛋",
+ real:"三個原因疊加：<b>那裡溫暖、那裡有你的氣味、而且牠發現坐上去你一定會理牠</b>——這是效果極好的引起注意。",
+ look:["是不是只在你專注工作時發生","筆電是否正在發熱","牠當天有沒有足夠的互動時間"],
+ doit:"在桌邊放一個加熱墊或紙箱當「合法座位」，並在工作前先陪玩 10 分鐘，效果比推開好很多。",
+ warn:"—"},
+
+{e:"🧼",n:"被念完或失手後突然開始理毛",s:"cat",c:"安撫訊號",k:"理毛 舔毛 尷尬 轉移行為",r:59,vz:"貓咪 突然理毛 尷尬 轉移行為",ve:"cat displacement grooming stress",
+ myth:"以為是在裝沒事、很搞笑",
+ real:"這是<b>轉移行為（displacement grooming）</b>——面對壓力或內心衝突時，用熟悉的動作讓自己冷靜下來，跟人緊張時摸頭髮一樣。",
+ look:["發生前是不是剛被嚇到、跳空、被罵","理毛是短暫幾下還是停不下來","是否有固定部位被舔到脫毛"],
+ doit:"降低當下的責備與音量，給牠幾秒鐘自己平復，不要追過去安慰。",
+ warn:"若演變成長時間過度理毛、腹部或大腿內側脫毛，請就醫排除皮膚病、疼痛與焦慮。"},
+
+{e:"🎁",n:"叼獵物或玩具給你",s:"cat",c:"親密行為",k:"叼獵物 送禮 叼玩具 老鼠",r:45,vz:"貓咪 叼老鼠 送禮 給主人 意思",ve:"cat bringing prey gift to owner meaning",
+ myth:"以為是在炫耀或嚇你",
+ real:"通常被解讀為<b>分享與教導行為</b>——把你當成同伴或需要照顧的對象；也可能只是把「戰利品」帶回安全的窩。",
+ look:["是叼到你面前還是放在固定角落","是否伴隨特殊的低鳴叫聲"],
+ doit:"平靜地收下、給予稱讚再處理掉。罵牠會讓牠困惑，因為這是善意。",
+ warn:"戶外獵物可能帶寄生蟲，請做好定期驅蟲並考慮室內飼養。"},
+
+{e:"🤝",n:"兩貓互相理毛後突然開打",s:"cat",c:"遊戲／正常",k:"理毛 互舔 打架 突然翻臉",r:57,vz:"兩隻貓 互舔 突然打架 是玩還是真打",ve:"cats grooming then fighting play or aggression",
+ myth:"以為感情破裂、必須分開",
+ real:"理毛後轉為扭打常是<b>正常的社交轉換或玩鬧</b>；但若一方持續逃避、發出哈氣，就是真的衝突。",
+ look:["有沒有發出哈氣、慘叫","事後是否還能共處同一空間","有沒有一方被堵在角落"],
+ doit:"提供足夠的垂直空間與多組資源（食盆、水、貓砂盆分開放）可大幅減少衝突。",
+ warn:"出現持續追打、單方受傷或有貓不敢進食，請分區並諮詢行為專業。"}
+];
+
+/* 依「飼主實際遇到的頻率」排序，越常見越前面 */
+DATA.sort((a,b)=>a.r-b.r);
+
+const CATS = ["全部","🐕 狗狗","🐈 貓咪","安撫訊號","警告訊號","親密行為","情緒訊號","壓力／健康","恐懼防衛","需求表達","遊戲／正常"];
+let active = "全部", kw = "", allOpen = false, lang = "zh";
+
+const grid = document.getElementById('grid');
+const chips = document.getElementById('chips');
+const countEl = document.getElementById('count');
+const emptyEl = document.getElementById('empty');
+document.getElementById('sTotal').textContent = DATA.length;
+document.getElementById('sDog').textContent = DATA.filter(d=>d.s==='dog').length;
+document.getElementById('sCat').textContent = DATA.filter(d=>d.s==='cat').length;
+
+CATS.forEach(c=>{
+  const b=document.createElement('button');
+  b.className='chip'+(c==="全部"?' on':''); b.textContent=c;
+  b.onclick=()=>{ active=c; [...chips.children].forEach(x=>x.classList.remove('on')); b.classList.add('on'); render(); };
+  chips.appendChild(b);
+});
+
+function match(d){
+  if(active==="🐕 狗狗") return d.s==="dog" && kwOk(d);
+  if(active==="🐈 貓咪") return d.s==="cat" && kwOk(d);
+  if(active!=="全部" && d.c!==active) return false;
+  return kwOk(d);
+}
+function kwOk(d){
+  if(!kw) return true;
+  const hay = (d.n+" "+d.k+" "+d.c+" "+d.myth+" "+d.real+" "+d.doit).toLowerCase();
+  return hay.includes(kw.toLowerCase());
+}
+
+function plain(n){ return n.replace(/（.*?）/g,'').trim(); }
+
+function aiPrompt(d){
+  return `我家的${d.s==='dog'?'狗':'貓'}出現「${plain(d.n)}」這個行為。
+我的毛孩：【品種、年齡、性別、個性】
+當下情境：【例如：家裡來客人／剛洗完澡／我剛回家／半夜】
+已經持續：【多久／多常發生】
+
+請用這個格式回答我：
+1. 依我描述的情境，這個行為最可能代表什麼？還有沒有第二種可能？
+2. 我還應該觀察哪些線索才能判斷得更準（耳朵、眼睛、尾巴、重心、食慾）？
+3. 我現在可以做的 1–2 件具體的事
+4. 出現哪些訊號代表要停止互動或帶去看獸醫
+
+這是一般照顧參考，不取代獸醫診斷；不確定的地方請告訴我不確定。`;
+}
+
+/* 搜尋語言：中文與英文分開送，絕不混用（混語言會讓兩邊的結果互相抵銷） */
+function query(d){ return lang==='en' ? d.ve : d.vz; }
+function ytURL(d){
+  return 'https://www.youtube.com/results?search_query='+encodeURIComponent(query(d));
+}
+function imgURL(d){
+  return 'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query(d));
+}
+
+function render(){
+  const list = DATA.filter(match);
+  countEl.textContent = `顯示 ${list.length} / ${DATA.length} 種行為`;
+  emptyEl.style.display = list.length ? 'none' : 'block';
+  grid.innerHTML = list.map(d=>{
+    const idx = DATA.indexOf(d);
+    return `<div class="item${allOpen?' open':''}" id="it${idx}">
+      <div class="head" onclick="toggle(${idx})">
+        <div class="emo">${d.e}</div>
+        <div class="htext">
+          <div class="name">${d.n}<span class="tag ${d.s}">${d.s==='dog'?'🐕 狗':'🐈 貓'}</span><span class="tag both">${d.c}</span></div>
+          <div class="myth"><b>常誤會：</b>${d.myth}</div>
+        </div>
+        <div class="caret">▼</div>
+      </div>
+      <div class="body">
+        <div class="row"><h4>真正的意義</h4><p>${d.real}</p></div>
+        <div class="row"><h4>要一起看什麼</h4><ul>${d.look.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div class="row"><h4>你可以這樣做</h4><p>${d.doit}</p></div>
+        ${d.warn!=="—"?`<div class="warn"><b>⚠ 注意：</b>${d.warn}</div>`:''}
+        <div class="seeit">
+          <span class="lbl">看實際畫面（${lang==='en'?'英文':'中文'}搜尋）</span>
+          <a class="btn yt" href="${ytURL(d)}" target="_blank" rel="noopener">▶ 看影片</a>
+          <a class="btn img" href="${imgURL(d)}" target="_blank" rel="noopener">📷 看圖片</a>
+        </div>
+        <div class="acts">
+          <button class="btn copy" onclick="askAI(${idx},'copy')">📋 複製提問模板</button>
+          <button class="btn g" onclick="askAI(${idx},'gemini')">✦ 問 Gemini</button>
+          <button class="btn c" onclick="askAI(${idx},'chatgpt')">⬡ 問 ChatGPT</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggle(i){
+  const el = document.getElementById('it'+i);
+  el.classList.toggle('open');
+}
+
+function setLang(l){
+  lang=l;
+  document.getElementById('lz').classList.toggle('on', l==='zh');
+  document.getElementById('le').classList.toggle('on', l==='en');
+  render();
+  toast(l==='zh' ? '已切換：搜尋中文影片與圖片' : '已切換：搜尋英文影片與圖片（教學品質通常較穩）');
+}
+
+function toggleAll(){
+  allOpen = !allOpen;
+  document.getElementById('expandBtn').textContent = allOpen ? '全部收合' : '全部展開';
+  render();
+}
+
+function askAI(i, where){
+  const p = aiPrompt(DATA[i]);
+  const open = ()=>setTimeout(()=>{
+    window.open(where==='gemini' ? 'https://gemini.google.com' : 'https://chatgpt.com', '_blank');
+  }, 700);
+  copyText(p).then(ok=>{
+    if(!ok){ toast('請手動長按選取複製（瀏覽器未允許剪貼簿）'); return; }
+    if(where==='copy'){ toast('✅ 已複製提問模板，貼到 AI 就能問'); return; }
+    toast('✅ 已複製——開啟後貼上即可（長按貼上）');
+    open();
+  });
+}
+
+function copyText(t){
+  if(navigator.clipboard && window.isSecureContext){
+    return navigator.clipboard.writeText(t).then(()=>true).catch(()=>fallbackCopy(t));
+  }
+  return Promise.resolve(fallbackCopy(t));
+}
+function fallbackCopy(t){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=t; ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,999999);
+    const ok=document.execCommand('copy'); document.body.removeChild(ta); return ok;
+  }catch(e){ return false; }
+}
+
+function copyMain(btn){
+  copyText(document.getElementById('mainPrompt').innerText).then(ok=>{
+    const old=btn.textContent; btn.textContent= ok?'已複製 ✔':'請手動複製';
+    setTimeout(()=>btn.textContent=old,1600);
+  });
+}
+
+let tt;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+const totop=document.getElementById('totop');
+window.addEventListener('scroll',()=>{
+  totop.classList.toggle('show', window.scrollY>500);
+},{passive:true});
+
+document.getElementById('q').addEventListener('input', e=>{ kw=e.target.value.trim(); render(); });
+render();
+</script>
+</body>
+</html>

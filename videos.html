@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2E2119">
+<title>毛孩行為影片資料庫｜AI 萌寵映畫誌</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --amber:#C05621; --amber2:#E08A47; --amber-soft:#FDF3E7;
+    --ink:#3B2B20; --muted:#7A6A5B; --paper:#FFFCF8; --card:#FFFFFF;
+    --line:#EADBCA; --dog:#2F6FB0; --dog-soft:#EAF2FA;
+    --cat:#8A5AA8; --cat-soft:#F3ECF8; --bad:#C0392B; --ok:#3E8E5A; --yt:#FF0000;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper); color:var(--ink);
+       font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;
+       line-height:1.6; overflow-x:hidden; word-break:break-word;
+       padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+
+  header{background:linear-gradient(150deg,#3D2C21,#2E2119); color:#F6EDE4; padding:34px 22px 30px; position:relative; overflow:hidden}
+  header::after{content:""; position:absolute; right:-60px; top:-60px; width:230px; height:230px; border-radius:50%; background:rgba(224,138,71,.16)}
+  .hwrap{max-width:1120px; margin:0 auto; position:relative; z-index:2}
+  .kick{font-size:12.5px; letter-spacing:4px; font-weight:800; color:var(--amber2)}
+  header h1{font-size:33px; font-weight:900; margin:8px 0 6px; letter-spacing:1px}
+  header p{font-size:15px; color:#CDBCAC; max-width:660px}
+  .stats{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap}
+  .stat{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16); border-radius:10px; padding:8px 14px; font-size:13px}
+  .stat b{color:var(--amber2); font-size:17px}
+  .backlink{display:inline-block; margin-top:14px; color:var(--amber2); font-size:13.5px; font-weight:800; text-decoration:none; border-bottom:1.5px solid rgba(224,138,71,.4); padding-bottom:2px}
+
+  .toolbar{position:sticky; top:0; z-index:30; background:rgba(255,252,248,.97); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:13px 22px}
+  .twrap{max-width:1120px; margin:0 auto}
+  .search{width:100%; padding:13px 16px; font-size:16px; border:2px solid var(--line); border-radius:12px; font-family:inherit; background:#fff; color:var(--ink); -webkit-appearance:none}
+  .search:focus{outline:none; border-color:var(--amber2)}
+  .chipwrap{position:relative; margin-top:10px}
+  .chips{display:flex; gap:8px; flex-wrap:wrap}
+  .chip{background:#fff; border:1.5px solid var(--line); border-radius:20px; padding:7px 15px; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; transition:.15s; flex:0 0 auto; white-space:nowrap; -webkit-tap-highlight-color:transparent}
+  .chip:hover{border-color:var(--amber2)}
+  .chip.on{background:var(--amber); border-color:var(--amber); color:#fff}
+  .count{font-size:13px; color:var(--muted); margin-top:9px}
+
+  main{max-width:1120px; margin:0 auto; padding:22px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:16px; align-items:start}
+
+  .vid{background:var(--card); border:1.5px solid var(--line); border-radius:14px; overflow:hidden; transition:.18s; display:flex; flex-direction:column}
+  .vid:hover{border-color:var(--amber2); box-shadow:0 5px 18px rgba(60,40,25,.09)}
+  .thumbwrap{position:relative; display:block; aspect-ratio:16/9; background:#2E2119; overflow:hidden; text-decoration:none}
+  .thumbwrap img{width:100%; height:100%; object-fit:cover; display:block}
+  .thumbwrap .ph{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#8A7563; font-size:34px}
+  .play{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:54px; height:38px; border-radius:9px; background:rgba(255,0,0,.92); display:flex; align-items:center; justify-content:center; color:#fff; font-size:17px; box-shadow:0 3px 12px rgba(0,0,0,.3)}
+  .badges{position:absolute; left:8px; top:8px; display:flex; gap:5px; flex-wrap:wrap; max-width:calc(100% - 16px)}
+  .bdg{font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:9px; background:rgba(46,33,25,.88); color:#F6EDE4; backdrop-filter:blur(4px)}
+  .bdg.tier1{background:rgba(62,142,90,.94)}
+  .bdg.tier2{background:rgba(192,86,33,.94)}
+  .bdg.sum{background:rgba(47,111,176,.94)}
+
+  .vbody{padding:14px 16px 16px; display:flex; flex-direction:column; flex:1}
+  .vtitle{font-size:15.5px; font-weight:800; line-height:1.45}
+  .vtitle a{color:inherit; text-decoration:none}
+  .vtitle a:hover{color:var(--amber)}
+  .vmeta{display:flex; gap:7px; align-items:center; flex-wrap:wrap; margin-top:7px}
+  .tag{font-size:11px; font-weight:800; border-radius:11px; padding:2px 9px; white-space:nowrap}
+  .tag.dog{background:var(--dog-soft); color:var(--dog)}
+  .tag.cat{background:var(--cat-soft); color:var(--cat)}
+  .tag.both{background:#EFF5EE; color:#3E7A4E}
+  .tag.ch{background:#F4EEE6; color:var(--muted)}
+  .vnote{font-size:13.5px; color:var(--muted); margin-top:9px; flex:1}
+  .vacts{display:flex; gap:8px; margin-top:13px; flex-wrap:wrap}
+  .btn{border:none; border-radius:20px; padding:10px 15px; font-size:13.2px; font-weight:800; cursor:pointer; font-family:inherit; color:#fff; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:42px; -webkit-tap-highlight-color:transparent; flex:1}
+  .btn.yt{background:var(--yt)} .btn.copy{background:var(--amber)} .btn.g{background:#4285F4}
+  .btn:hover{filter:brightness(1.08)} .btn:active{transform:scale(.97)}
+
+  .section{margin-top:36px}
+  .section h2{font-size:22px; font-weight:900; margin-bottom:5px}
+  .section h2 span{color:var(--amber)}
+  .section .lead{font-size:14.5px; color:var(--muted); margin-bottom:14px}
+
+  .howto{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px}
+  .how{background:var(--amber-soft); border:1.5px solid var(--amber2); border-radius:12px; padding:15px 17px}
+  .how h3{font-size:15.5px; font-weight:800; color:#9A5E10; margin-bottom:6px; display:flex; gap:8px; align-items:center}
+  .how .n{background:var(--amber); color:#fff; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:13px; flex:0 0 auto}
+  .how p{font-size:13.8px; color:#6B4A28}
+  .how .lim{display:block; margin-top:7px; font-size:12.5px; color:#8A6440; border-top:1px dashed #D9AF86; padding-top:7px}
+
+  .promptbox{background:#2E2119; color:#EEE2D6; border-radius:14px; padding:18px 20px; position:relative; font-size:13.8px; line-height:1.75; white-space:pre-wrap; margin-bottom:12px}
+  .promptbox .cap{display:block; color:var(--amber2); font-weight:800; font-size:13px; letter-spacing:1.5px; margin-bottom:8px}
+  .promptbox .copybtn{position:absolute; top:14px; right:16px; background:var(--amber); border:none; color:#fff; font-size:12.5px; font-weight:800; padding:9px 16px; border-radius:16px; cursor:pointer; font-family:inherit; min-height:38px}
+
+  .chgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:12px}
+  .chcard{display:block; background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; text-decoration:none; color:inherit; transition:.15s}
+  .chcard:hover{border-color:var(--amber2); box-shadow:0 4px 14px rgba(60,40,25,.07)}
+  .chcard h3{font-size:15.5px; font-weight:800; margin-bottom:5px; display:flex; gap:7px; align-items:center; flex-wrap:wrap}
+  .chcard p{font-size:13.3px; color:var(--muted)}
+  .chcard .go{font-size:12.5px; color:var(--amber); font-weight:800; margin-top:7px; display:block}
+  .chcard.nonyt{background:#F6F1EA}
+
+  .disc{background:#F6F1EA; border:1.5px solid var(--line); border-radius:12px; padding:15px 18px; font-size:13.6px; color:var(--muted); margin-top:30px; line-height:1.75}
+  .disc b{color:var(--ink)}
+  footer{text-align:center; padding:26px 20px 10px; font-size:13px; color:var(--muted)}
+  .empty{text-align:center; padding:50px 20px; color:var(--muted); font-size:16px}
+
+  #toast{position:fixed; left:50%; bottom:calc(84px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(80px); background:var(--ink); color:#fff; padding:12px 20px; border-radius:24px; font-size:14.5px; font-weight:700; opacity:0; transition:.3s; z-index:60; box-shadow:0 6px 20px rgba(0,0,0,.25); max-width:92vw; text-align:center}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+  #totop{position:fixed; right:16px; bottom:calc(18px + env(safe-area-inset-bottom)); width:48px; height:48px; border-radius:50%; background:var(--amber); color:#fff; border:none; font-size:19px; cursor:pointer; box-shadow:0 5px 18px rgba(60,40,25,.3); opacity:0; pointer-events:none; transition:.25s; z-index:50}
+  #totop.show{opacity:1; pointer-events:auto}
+
+  @media (max-width:760px){
+    header{padding:22px 16px 20px}
+    header h1{font-size:24px; margin:6px 0 5px}
+    header p{font-size:13.8px; line-height:1.55}
+    .kick{font-size:11px; letter-spacing:3px}
+    .stats{gap:7px; margin-top:13px}
+    .stat{padding:6px 11px; font-size:11.5px; border-radius:8px}
+    .stat b{font-size:14px}
+    .toolbar{padding:10px 14px 11px}
+    .chipwrap{margin-top:9px; margin-left:-14px; margin-right:-14px; padding:0 14px;
+              overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+    .chipwrap::-webkit-scrollbar{display:none}
+    .chips{flex-wrap:nowrap; padding-right:14px}
+    .chip{padding:10px 15px; font-size:13px}
+    .count{font-size:12.2px}
+    main{padding:15px 14px}
+    .grid{grid-template-columns:1fr; gap:13px}
+    .vtitle{font-size:15px}
+    .vnote{font-size:13.2px}
+    .btn{font-size:12.8px; padding:11px 8px; min-height:44px}
+    .section{margin-top:28px}
+    .section h2{font-size:19px; line-height:1.4}
+    .section .lead{font-size:13.6px}
+    .howto,.chgrid{grid-template-columns:1fr}
+    .promptbox{padding:16px 15px; font-size:13px}
+    .promptbox .copybtn{position:static; display:block; width:100%; margin:0 0 12px; font-size:13px}
+    .disc{font-size:12.8px; padding:14px 15px}
+    footer{font-size:12px; line-height:1.7}
+  }
+  @media (max-width:380px){ header h1{font-size:21px} .btn{font-size:12.2px} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="kick">AI 萌寵映畫誌｜教學資源</div>
+    <h1>🎬 毛孩行為影片資料庫</h1>
+    <p>精選國內外可信的犬貓行為影片，每一支都附「重點整理提示詞」——用 YouTube 內建的問問 YouTube、或 Chrome 的問問 Gemini，幾秒鐘就把一支 20 分鐘的影片變成你要的重點。</p>
+    <div class="stats">
+      <div class="stat"><b id="sTotal">0</b> 支已查證影片</div>
+      <div class="stat"><b id="sZh">0</b> 華語 ／ <b id="sEn">0</b> 英文</div>
+      <div class="stat"><b id="sCh">0</b> 個推薦頻道</div>
+    </div>
+    <a class="backlink" href="index.html">🏠 課程資源首頁</a>
+    <a class="backlink" href="behaviors.html">← 行為資料庫（60 種行為）</a>
+    <a class="backlink" href="research.html" style="margin-left:16px">🔬 研究知識庫（18 篇論文）→</a>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="twrap">
+    <input class="search" id="q" type="search" placeholder="搜尋：肢體語言、尾巴、安撫訊號、護食、咬人、多貓…" autocomplete="off">
+    <div class="chipwrap"><div class="chips" id="chips"></div></div>
+    <div class="count" id="count"></div>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">找不到符合的影片——換個關鍵字，或按「全部」看完整清單。</div>
+
+  <div class="section">
+    <h2>🤖 三種方法把影片<span>變成重點</span></h2>
+    <p class="lead">同一支影片，三種抽重點的路徑。課堂上建議從第一種開始，因為完全不用安裝任何東西。</p>
+    <div class="howto">
+      <div class="how">
+        <h3><span class="n">1</span>YouTube 內建「問問 YouTube」</h3>
+        <p>在影片觀看頁面找「問問 YouTube」（Ask）按鈕，直接對這支影片提問或請它整理重點，手機 App、電腦瀏覽器、智慧電視都能用。</p>
+        <span class="lim">⚠ 官方說明：需登入且年滿 13 歲、<b>僅部分影片支援</b>、目前限特定國家（台灣在支援範圍內）、支援 100 種以上語言。Google 也明講「尚在發展階段，可能提供不準確的資訊，<b>不應視為醫療建議</b>」——毛孩健康問題還是要問獸醫。</span>
+      </div>
+      <div class="how">
+        <h3><span class="n">2</span>Chrome 的「問問 Gemini」</h3>
+        <p>在 Chrome 開著影片分頁，叫出 Gemini 直接針對<b>目前這一頁</b>提問；還能一次分享<b>最多 10 個分頁</b>讓它交叉比對——很適合同時開三支影片問「哪裡說法不一樣」。</p>
+        <span class="lim">⚠ 需登入 Chrome（<b>無痕模式不支援</b>）、年滿 13 歲、限 Chromebook Plus／Mac／Windows 桌機版與支援地區語言；公司或學校帳號需管理員開通。官方功能說明未特別點名 YouTube，它讀的是頁面內容（含字幕與說明欄），<b>沒有字幕的影片效果會明顯變差</b>。</span>
+      </div>
+      <div class="how">
+        <h3><span class="n">3</span>直接把網址貼給 AI</h3>
+        <p>最不挑環境的做法：複製影片網址，貼進 ChatGPT 或 Gemini 對話框，加上下面的提示詞。手機、公司電腦、任何瀏覽器都能做。</p>
+        <span class="lim">⚠ 免費版對影片的讀取能力不穩定，AI 讀不到時會「用猜的」。<b>請務必在提示詞裡要求它：讀不到就直說</b>——下面三組提示詞都已經寫進這一句。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📋 三組<span>重點整理提示詞</span></h2>
+    <p class="lead">貼到「問問 YouTube」、Chrome 的 Gemini，或直接貼進 AI 對話框都能用。</p>
+
+    <div class="promptbox">
+      <button class="copybtn" onclick="copyBox('p1',this)">複製</button><span class="cap">① 單支影片：擠出可以馬上用的重點</span><span id="p1">請幫我整理這支影片的重點，用下面的格式，不要超過 400 字：
+1. 這支影片主要在講哪一件事（一句話）
+2. 它提到的「行為訊號」清單——每一項寫：訊號長什麼樣 → 代表什麼意思
+3. 它建議飼主「該做」與「絕對不要做」的事，各列 2–3 點
+4. 影片中有沒有提到需要看獸醫的警訊？有的話列出來
+5. 有哪些說法是這支影片的個人經驗、而不是有研究支持的？請標出來
+
+如果你讀不到影片內容或字幕，請直接告訴我「讀不到」，不要用猜的補完。</span>
+    </div>
+
+    <div class="promptbox">
+      <button class="copybtn" onclick="copyBox('p2',this)">複製</button><span class="cap">② 多支影片交叉比對（Chrome 可一次開最多 10 個分頁）</span><span id="p2">我開了幾個分頁，都是在講同一個毛孩行為。請幫我比對它們：
+1. 這幾支影片<b>說法一致</b>的部分有哪些？（這些最可信）
+2. 哪些地方<b>彼此矛盾</b>？分別是誰說的、各自的理由是什麼？
+3. 有沒有哪一支明顯是舊觀念或已被推翻的說法（例如用支配理論、處罰法解釋行為）？
+4. 綜合起來，給我一個 5 點的行動清單
+
+請標明每一點是來自哪一個分頁。讀不到的分頁請直接說，不要略過不提。</span>
+    </div>
+
+    <div class="promptbox">
+      <button class="copybtn" onclick="copyBox('p3',this)">複製</button><span class="cap">③ 把影片重點轉成「我家毛孩」的觀察清單</span><span id="p3">看完這支影片後，請幫我把內容轉成適合我家毛孩的觀察清單。
+我的毛孩：【狗／貓、品種、年齡、性別】，個性：【怕生／親人／容易緊張】
+我最在意的問題：【例如：帶去看獸醫就發抖／客人來就狂吠／摸一摸突然咬我】
+
+請產出：
+1. 接下來一週我要觀察的 5 個具體訊號（寫成我可以打勾的句子）
+2. 每個訊號出現時，我當下該做的一個動作
+3. 出現哪 3 種情況代表要停止自行處理、去找獸醫或行為專業
+4. 一段可以貼在冰箱上的提醒（30 字以內）
+
+影片沒有講到的部分，請標註「影片未提及，以下為一般建議」，不要混在一起。</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📺 <span>頻道推薦</span>：國際</h2>
+    <p class="lead">以獸醫、動物行為專家、動物福利組織為主，是英文圈公認的可靠來源。</p>
+    <div class="chgrid" id="chInt"></div>
+  </div>
+
+  <div class="section">
+    <h2>🇹🇼 <span>頻道推薦</span>：國內與華語</h2>
+    <p class="lead">台灣在地的訓犬師、貓行為專家與相關頻道。部分專家主要經營社群而非 YouTube，也一併列出。</p>
+    <div class="chgrid" id="chTw"></div>
+  </div>
+
+  <div class="disc">
+    <b>關於這份清單怎麼挑的</b><br>
+    每一支影片都<b>逐一查證過確實存在、標題與頻道名稱正確</b>（已剔除失效連結與內容農場型頻道）。排序以<b>來源可信度</b>為主：🏅 代表獸醫、動物福利組織或專業機構出品；🎓 代表具專業背景的訓練師或行為諮詢師；📚 代表內容整理型頻道——好入門、好懂，但不是專業機構出品，請搭配前兩類一起看。<br>
+    <b>觀看數與按讚數本頁不快取</b>：那些數字每天都在變，寫死反而會誤導；點進去 YouTube 就會看到當下的真實數字。清單中的影片都是各關鍵字搜尋結果的前段班，代表能見度本來就高。<br>
+    AI 摘要是<b>輔助工具不是結論</b>：它會漏掉影片裡的示範畫面（而肢體語言最重要的就是畫面），也可能把影片沒說的內容補進去。重要的行為判斷，請自己把影片看過一次。<br>
+    本頁為「AI 萌寵映畫誌」課程教學參考，<b>不能取代獸醫師診斷或專業行為諮詢</b>。毛孩出現行為突然改變、疑似疼痛或健康警訊，請儘速尋求獸醫師協助。
+  </div>
+</main>
+
+<footer>
+  AI 萌寵映畫誌｜永豐餘 AI Club 九月企業內訓　·　葉明理 助理教授 × 鍾孟修 職能治療師
+</footer>
+
+<button id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到頂端">↑</button>
+<div id="toast"></div>
+
+<script>
+/* tier: 1=機構／獸醫　2=訓練師／行為專家　3=內容整理型
+   kind: '整合'=一支看完整套　'單一'=單一主題深入 */
+const VIDS = [
+/* ---- 國際 · 犬 ---- */
+{id:"Rqu1ChFFT9U",t:"Dog Body Language: COMPLETE GUIDE to Dog Stress Signals",ch:"Get A Calm Dog",s:"dog",lang:"en",kind:"整合",tier:2,
+ k:"壓力訊號 完整 整合 stress signals",
+ note:"英文圈最常被推薦的入門整合片，把壓力訊號從最輕微到最危險依序講完，適合先看這一支建立整體架構。"},
+{id:"PGaU0LXVBis",t:"Understanding Dog BODY LANGUAGE & BEHAVIOR – Calming Signals Part 2",ch:"Get A Calm Dog",s:"dog",lang:"en",kind:"單一",tier:2,
+ k:"安撫訊號 calming signals",
+ note:"上一支的延伸，專門講安撫訊號（舔嘴、打呵欠、轉頭、抖毛）的實際畫面判讀。"},
+{id:"pp292OmXZz0",t:"Dog Body Language Explained: How to Recognize Displacement Behaviors and Calming Signals",ch:"K9 of Mine",s:"dog",lang:"en",kind:"單一",tier:2,
+ k:"轉移行為 安撫訊號 displacement",
+ note:"專講「轉移行為」——突然嗅地板、突然理毛這類容易被當成沒事的訊號，正是課程裡最容易漏掉的一塊。"},
+{id:"tY2kVlLL54w",t:"Canine Ladder of Aggression",ch:"Talk to the Paw",s:"dog",lang:"en",kind:"單一",tier:2,
+ k:"攻擊階梯 ladder of aggression 咬人前兆",
+ note:"獸醫行為學的經典模型「攻擊階梯」：從舔嘴、轉頭一路到咬，中間有多少階被人忽略。看懂這張圖等於看懂一半。"},
+{id:"08tWJRp1RXg",t:"Canine body language: what do ears tell us?",ch:"K9 Turbo Training",s:"dog",lang:"en",kind:"單一",tier:2,
+ k:"耳朵 飛機耳 ears",
+ note:"只講耳朵，示範不同耳位的對照畫面——正好對應資料庫裡「飛機耳」那一則最容易被誤判的行為。"},
+{id:"WcZKBoGn6uc",t:"Calming signals - Learning to Listen",ch:"HeartDog with Janet Finlay and Michelle Dart",s:"dog",lang:"en",kind:"單一",tier:2,
+ k:"安撫訊號 calming signals 傾聽",
+ note:"從「學會聽狗說話」的角度切入，講為什麼忽略安撫訊號會讓狗放棄溝通、直接跳到咬。"},
+{id:"HX2fpaD1qFA",t:"Is your dog stressed out? Stress Signals in Dog Body Language",ch:"Rescue Dogs 101",s:"dog",lang:"en",kind:"整合",tier:3,
+ k:"壓力 stress 收容 中途",
+ note:"以中途與收容犬的角度整理壓力訊號，節奏快、字幕清楚，適合當第一支入門片。"},
+{id:"bstvG_SUzMo",t:"Dog Body Language - What your dog is desperately trying to tell you!",ch:"thefamilydog",s:"dog",lang:"en",kind:"單一",tier:1,
+ k:"小孩 兒童 咬人預防 安全 family",
+ note:"兒童與狗安全教育組織出品，專講「小孩靠近狗時狗發出的求救訊號」。家裡有小孩或訪客帶小孩來的人一定要看。"},
+{id:"V0jXXm65vjI",t:"Dog Body Language - Signs of stress and discomfort",ch:"VetVine Hub",s:"dog",lang:"en",kind:"單一",tier:1,
+ k:"獸醫 壓力 不適 vet",
+ note:"獸醫繼續教育平台出品，從醫療角度講壓力與不適的訊號——包含「行為改變其實是痛」這個常被漏掉的重點。"},
+
+/* ---- 國際 · 貓 ---- */
+{id:"WzuhuaeS0aQ",t:"Cat Body Language 101",ch:"Jackson Galaxy",s:"cat",lang:"en",kind:"整合",tier:2,
+ k:"肢體語言 整合 101",
+ note:"《管教惡貓》主持人的官方整合片，耳朵、眼睛、尾巴、姿態一次講完，是貓咪肢體語言最好的起點。"},
+{id:"ZI-usLLWerI",t:"Cat body language | Cats Protection behaviour guides",ch:"Cats Protection",s:"cat",lang:"en",kind:"整合",tier:1,
+ k:"貓保護協會 機構 整合 behaviour",
+ note:"英國最大貓咪福利組織的官方行為指南，內容嚴謹、有實證基礎，是本清單裡最「機構級」的貓咪整合片。"},
+{id:"JLi3Z_Mlshk",t:"Quivering, Wagging, Puffed Up: What is Your Cat's Tail Trying to Tell You?",ch:"Jackson Galaxy",s:"cat",lang:"en",kind:"單一",tier:2,
+ k:"尾巴 顫抖 炸毛 tail",
+ note:"專講尾巴：顫抖、甩動、炸毛分別代表什麼，正好對應資料庫裡三則最容易搞混的尾巴行為。"},
+{id:"UWohxDOXsl4",t:"Can my Cats Get Along? Cat-to-Cat Body Language basics & Introduction Tips",ch:"Jackson Galaxy",s:"cat",lang:"en",kind:"單一",tier:2,
+ k:"多貓 介紹 新貓 衝突 打架",
+ note:"多貓家庭必看：怎麼分辨兩隻貓是在玩還是真的在打，以及新貓入住的漸進介紹流程。"},
+{id:"o2kSYwTkjUM",t:"4 Things Your Cat is Trying to Tell You with Jackson Galaxy",ch:"Chewy",s:"cat",lang:"en",kind:"整合",tier:2,
+ k:"四件事 入門 短片",
+ note:"短而精的入門片，四個最常見的貓咪訊號，很適合當課堂上播放的暖身素材。"},
+{id:"_9qFjqYFAas",t:"Cat Body Language: Learn To Speak Cat!",ch:"Class Act Cats",s:"cat",lang:"en",kind:"整合",tier:2,
+ k:"貓語 整合 行為顧問",
+ note:"貓咪行為顧問經營的頻道，用「學一種語言」的比喻帶你認識貓的訊號系統，講解結構很清楚。"},
+{id:"3mD6U8h7gik",t:"Cat Tail Language EXPLAINED",ch:"Catster",s:"cat",lang:"en",kind:"單一",tier:3,
+ k:"尾巴 tail 圖解",
+ note:"老牌貓咪媒體出品的尾巴語言解說，畫面示意做得好，適合搭配上面 Jackson Galaxy 那支一起看。"},
+
+/* ---- 國際 · 犬貓通用 ---- */
+{id:"go8JoKbkMsQ",t:"Understanding The Body Language of Cats and Dogs",ch:"ASPCA Pet Health Insurance",s:"both",lang:"en",kind:"整合",tier:1,
+ k:"犬貓 通用 對照 aspca 機構",
+ note:"難得的犬貓對照片：同一個動作（例如翻肚、搖尾）在狗和貓身上意義完全相反，一支講完最有記憶點。"},
+
+/* ---- 國內／華語 · 犬 ---- */
+{id:"tUJy85xXz8Q",t:"狗狗在等你讀懂他，狗語速成班！速狗語捏～｜熊爸估狗",ch:"熊爸估狗",s:"dog",lang:"zh",kind:"整合",tier:2,
+ k:"狗語 速成 肢體語言 熊爸 台灣",
+ note:"台灣知名訓犬師熊爸（王昱智）的狗語整合片，中文、在地、正向訓練觀念，是華語圈最推薦的第一支。"},
+{id:"fjP-IA7oZ24",t:"真的不能處罰？正向訓練為的是這個！【熊爸有話說】3｜熊爸估狗",ch:"熊爸估狗",s:"dog",lang:"zh",kind:"單一",tier:2,
+ k:"處罰 正向訓練 觀念 熊爸",
+ note:"直接回答「為什麼不能處罰低吼」這個課堂上最常被問的問題，觀念釐清得很清楚。"},
+{id:"KSR0m8DMf1g",t:"【熊爸估狗】突襲知名訓犬師的家！竟然遇到他的小三！？解決狗狗護食問題｜鏡週刊",ch:"鏡週刊",s:"dog",lang:"zh",kind:"單一",tier:2,
+ k:"護食 資源守護 熊爸 示範",
+ note:"實際示範護食問題怎麼處理——有現場畫面，比任何文字說明都有效。標題是媒體風格，內容是正經的訓練示範。"},
+{id:"DnJnDxUUZfs",t:"狗與鹿｜看懂狗狗的肢體語言 | 狗狗暖知識",ch:"mydeerdog狗與鹿",s:"dog",lang:"zh",kind:"整合",tier:3,
+ k:"肢體語言 圖解 中文 入門",
+ note:"中文的肢體語言入門整理，節奏輕鬆、圖示清楚，適合完全沒基礎的人當第一支。"},
+{id:"2nzVXlejx_k",t:"狗狗聽我的 - 認識狗狗身體語言 (learning dog interaction body language)",ch:"Annie Plasse",s:"dog",lang:"zh",kind:"整合",tier:3,
+ k:"身體語言 互動 中英",
+ note:"中英對照的身體語言解說，適合想同時建立中英文詞彙的人——之後要用英文搜尋時會方便很多。"},
+
+/* ---- 國內／華語 · 貓 ---- */
+{id:"MCDmGrfLnnE",t:"別再說貓不用人陪！狂吸貓恐被貓討厭！ft. 貓行為諮詢師 葛雁《強者我朋友》EP 203｜志祺七七",ch:"志祺七七",s:"cat",lang:"zh",kind:"整合",tier:2,
+ k:"貓行為諮詢師 葛雁 訪談 台灣 迷思",
+ note:"台灣貓行為諮詢師的長篇訪談，破除一堆常見迷思。訪談型影片特別適合用 AI 摘要——這支是課堂示範 AI 整理重點的最佳素材。"},
+{id:"clVYTlPjHAk",t:"[橘圓貓] 貓咪行為學入門篇[18] – 貓咪在說什麼？(1)",ch:"橘圓貓渡假樂園 (OWO Cat Villa)",s:"cat",lang:"zh",kind:"整合",tier:2,
+ k:"貓咪行為學 入門 台灣 貓旅館",
+ note:"台灣貓旅館經營者的行為學系列，長期接觸大量貓咪的實務觀察，在地情境（公寓、多貓）貼近台灣飼主。"},
+{id:"qDQNt-F-VMU",t:"貓的10種肢體語言，愛貓的你一定要懂！【貓咪行為學EP5】",ch:"靜靜養貓",s:"cat",lang:"zh",kind:"整合",tier:3,
+ k:"十種 肢體語言 整合",
+ note:"華語圈流傳最廣的貓咪肢體語言整理片之一，一次講完十種，好記好懂，但屬內容整理型、請搭配機構來源交叉驗證。"},
+{id:"KmrUYthOim4",t:"解讀貓尾巴有8種語言，貓咪的尾巴會說話！別在貓不耐煩時還去招惹它！【初識貓咪EP22】",ch:"靜靜養貓",s:"cat",lang:"zh",kind:"單一",tier:3,
+ k:"尾巴 八種 不耐煩",
+ note:"專講尾巴的八種狀態，可以跟上面 Jackson Galaxy 的尾巴影片對照——正好是「多支交叉比對」提示詞的示範組合。"},
+{id:"sQedy1mdLP0",t:"貓咪咬人的4種含義！咬你就對了，誰叫你不懂它的心！【貓咪行為學EP39】",ch:"靜靜養貓",s:"cat",lang:"zh",kind:"單一",tier:3,
+ k:"咬人 愛的小咬 撫摸",
+ note:"對應資料庫裡「摸一摸突然咬你就跑」這則高頻行為，中文解說完整。"},
+{id:"YbpvlqBGxlc",t:"貓為什麼咬你一口再舔你？這是對你的暗示，養貓的你一定要懂！【貓咪行為學EP31】",ch:"靜靜養貓",s:"cat",lang:"zh",kind:"單一",tier:3,
+ k:"咬 舔 暗示 行為",
+ note:"咬完再舔這個組合動作的解讀，是飼主最常困惑的情境之一。"},
+{id:"7fc0c7-jorQ",t:"揭露10種貓咪叫聲的含義，聽懂小貓咪到底想說什麼！【養貓必看EP14】",ch:"靜靜養貓",s:"cat",lang:"zh",kind:"單一",tier:3,
+ k:"叫聲 喵 聲音 呼嚕",
+ note:"聲音訊號專篇——肢體語言之外的另一半資訊，對應資料庫裡「一直對你叫」與「呼嚕聲」兩則。"},
+{id:"SNxpW1NOMOY",t:"【貓奴必看】貓咪的15種肢體語言，學會就不用找動物傳心師了｜藍莓豆花 Blueberry Tofa",ch:"藍莓豆花 Blueberry Tofa",s:"cat",lang:"zh",kind:"整合",tier:3,
+ k:"十五種 肢體語言 貓奴",
+ note:"一次整理 15 種訊號，涵蓋面廣、剪輯活潑，適合當輕鬆複習用。"},
+{id:"m1VEpmFEU4Y",t:"是不是貓奴都可以看的：10種貓尾巴解讀，貓咪炸毛、搖尾巴代表什麼？",ch:"貓咪為什麼",s:"cat",lang:"zh",kind:"單一",tier:3,
+ k:"尾巴 炸毛 搖尾 十種",
+ note:"尾巴主題的中文整理，跟前面兩支尾巴影片湊成三支，是交叉比對練習的現成教材。"}
+];
+
+const CHANNELS_INT = [
+ {n:"Dog Training by Kikopup",u:"https://www.youtube.com/channel/UC-qnqaajTk6bfs3UZuue6IQ",tier:2,
+  d:"全正向訓練的經典頻道，上千支免費教學，肢體語言、分離焦慮、看獸醫減敏都有專篇。英文圈訓練師最常互相推薦的來源。"},
+ {n:"狗狗肢體語言與安撫訊號（Kikopup 播放清單）",u:"https://www.youtube.com/playlist?list=PLS6BvTsc8oc20r58Jl3k_EWEzaRAiul-u",tier:2,
+  d:"整理好的系列播放清單，一支接一支看完就是一套完整的犬隻溝通課程。想系統學習從這裡開始。"},
+ {n:"Jackson Galaxy",u:"https://www.youtube.com/channel/UCafmHlo4ujLs66xSJZWTrOw",tier:2,
+  d:"《管教惡貓》主持人的官方頻道。貓咪肢體語言、亂尿、多貓衝突、環境豐富化都有專門影片，是英文圈貓行為的第一品牌。"},
+ {n:"Cats Protection",u:"https://www.youtube.com/@CatsProtection",tier:1,
+  d:"英國最大的貓咪福利慈善組織官方頻道，行為指南系列有實證基礎、立場中立，可信度最高的貓咪來源之一。"},
+ {n:"The Family Dog",u:"https://www.youtube.com/@thefamilydog",tier:1,
+  d:"專注「小孩與狗」安全教育的組織，把咬傷前的訊號拍成家長看得懂的影片。家裡有小孩的飼主必看。"},
+ {n:"Class Act Cats",u:"https://www.youtube.com/@ClassActCats",tier:2,
+  d:"貓咪行為顧問經營，主題涵蓋肢體語言、攻擊行為、多貓介紹，解說結構清楚、少誇大。"},
+ {n:"K9 of Mine",u:"https://www.youtube.com/@K9ofMine",tier:2,
+  d:"以實證為底的犬隻資訊頻道，肢體語言與行為主題整理得很細，適合想看深一點的人。"}
+];
+
+const CHANNELS_TW = [
+ {n:"熊爸估狗",u:"https://www.youtube.com/channel/UCRuFRg-5BQDF3NLXgYqVfFw",tier:2,
+  d:"台灣知名訓犬師熊爸（王昱智）的頻道，正向訓練觀念、到府解決案例、狗語教學都有，是華語圈犬類行為的首選。"},
+ {n:"寵里 My Dog Fits 犬隻訓練學院",u:"https://www.youtube.com/@MyDogFits",tier:2,
+  d:"台灣犬隻訓練學院的頻道，行為問題處理與訓練示範，實務性強。"},
+ {n:"橘圓貓渡假樂園 (OWO Cat Villa)",u:"https://www.youtube.com/@owocatvilla",tier:2,
+  d:"台灣貓旅館經營者的「貓咪行為學」系列，長期照顧大量貓咪的實務觀察，情境貼近台灣公寓飼養環境。"},
+ {n:"志祺七七",u:"https://www.youtube.com/@shasha77",tier:3,
+  d:"時事議題頻道，《強者我朋友》系列訪談過貓行為諮詢師等專業人士。專業內容集中在少數幾集，建議搜尋「寵物」「貓」再看。"},
+ {n:"mydeerdog 狗與鹿",u:"https://www.youtube.com/@mydeerdog",tier:3,
+  d:"中文的狗狗暖知識頻道，肢體語言、照顧常識做得平易近人，適合入門與複習。"},
+ {n:"靜靜養貓",u:"https://www.youtube.com/@%E9%9D%9C%E9%9D%9C%E9%A4%8A%E8%B2%93",tier:3,
+  d:"華語圈流傳最廣的貓咪行為系列（貓咪行為學 EP、初識貓咪 EP），量大、好懂。屬內容整理型，重要結論請與機構來源交叉驗證。"},
+ {n:"貓行為獸醫林子軒",u:"https://www.instagram.com/catbehaviordoctor/",tier:1,nonyt:true,
+  d:"台灣少數專攻貓咪行為的獸醫師。主要經營 Instagram 與 Threads 而非 YouTube，內容專業度高，適合追蹤日常短篇。"},
+ {n:"動物行為治療師 戴更基",u:"https://www.facebook.com/AnimalBehaviorTW/",tier:1,nonyt:true,
+  d:"台灣動物行為治療的前輩，長期推廣「行為問題要先排除疼痛與疾病」的觀念。主要在 Facebook 發表。"},
+ {n:"會思考的狗 行為獸醫團隊",u:"https://www.facebook.com/TheThinkingDogVBT/",tier:1,nonyt:true,
+  d:"獸醫行為醫學團隊，處理焦慮、攻擊等需要醫療介入的個案。主要在 Facebook，適合遇到嚴重行為問題時參考與求助。"}
+];
+
+const CATS = ["全部","🐕 狗狗","🐈 貓咪","🇹🇼 華語","🌍 英文","📚 整合型（一支看完）","🎯 單一主題","🏅 機構／獸醫"];
+let active="全部", kw="";
+const grid=document.getElementById('grid'), chips=document.getElementById('chips');
+const countEl=document.getElementById('count'), emptyEl=document.getElementById('empty');
+
+document.getElementById('sTotal').textContent=VIDS.length;
+document.getElementById('sZh').textContent=VIDS.filter(v=>v.lang==='zh').length;
+document.getElementById('sEn').textContent=VIDS.filter(v=>v.lang==='en').length;
+document.getElementById('sCh').textContent=CHANNELS_INT.length+CHANNELS_TW.length;
+
+CATS.forEach(c=>{
+  const b=document.createElement('button');
+  b.className='chip'+(c==="全部"?' on':''); b.textContent=c;
+  b.onclick=()=>{active=c;[...chips.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+  chips.appendChild(b);
+});
+
+function match(v){
+  if(active==="🐕 狗狗" && !(v.s==='dog'||v.s==='both')) return false;
+  if(active==="🐈 貓咪" && !(v.s==='cat'||v.s==='both')) return false;
+  if(active==="🇹🇼 華語" && v.lang!=='zh') return false;
+  if(active==="🌍 英文" && v.lang!=='en') return false;
+  if(active==="📚 整合型（一支看完）" && v.kind!=='整合') return false;
+  if(active==="🎯 單一主題" && v.kind!=='單一') return false;
+  if(active==="🏅 機構／獸醫" && v.tier!==1) return false;
+  if(kw){
+    const hay=(v.t+" "+v.ch+" "+v.k+" "+v.note).toLowerCase();
+    if(!hay.includes(kw.toLowerCase())) return false;
+  }
+  return true;
+}
+
+const TIER={1:{c:'tier1',l:'🏅 機構／獸醫'},2:{c:'tier2',l:'🎓 專家'},3:{c:'',l:'📚 整理型'}};
+function sLabel(v){return v.s==='dog'?'🐕 狗':v.s==='cat'?'🐈 貓':'🐕🐈 犬貓';}
+function sClass(v){return v.s==='both'?'both':v.s;}
+function url(v){return 'https://www.youtube.com/watch?v='+v.id;}
+
+function render(){
+  const list=VIDS.filter(match);
+  countEl.textContent=`顯示 ${list.length} / ${VIDS.length} 支影片`;
+  emptyEl.style.display=list.length?'none':'block';
+  grid.innerHTML=list.map(v=>{
+    const i=VIDS.indexOf(v), tier=TIER[v.tier];
+    return `<div class="vid">
+      <a class="thumbwrap" href="${url(v)}" target="_blank" rel="noopener">
+        <div class="ph">🎬</div>
+        <img src="https://i.ytimg.com/vi/${v.id}/mqdefault.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
+        <div class="play">▶</div>
+        <div class="badges">
+          <span class="bdg ${tier.c}">${tier.l}</span>
+          <span class="bdg ${v.kind==='整合'?'sum':''}">${v.kind==='整合'?'📚 整合型':'🎯 單一主題'}</span>
+        </div>
+      </a>
+      <div class="vbody">
+        <div class="vtitle"><a href="${url(v)}" target="_blank" rel="noopener">${v.t}</a></div>
+        <div class="vmeta">
+          <span class="tag ${sClass(v)}">${sLabel(v)}</span>
+          <span class="tag ch">${v.lang==='zh'?'🇹🇼 華語':'🌍 英文'}</span>
+          <span class="tag ch">${v.ch}</span>
+        </div>
+        <div class="vnote">${v.note}</div>
+        <div class="vacts">
+          <a class="btn yt" href="${url(v)}" target="_blank" rel="noopener">▶ 看影片</a>
+          <button class="btn copy" onclick="copyAsk(${i})">📋 複製重點提示詞</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function askPrompt(v){
+  return `請幫我整理這支影片的重點：${v.t}（頻道：${v.ch}）
+${url(v)}
+
+用下面的格式，不要超過 400 字：
+1. 這支影片主要在講哪一件事（一句話）
+2. 它提到的「行為訊號」清單——每一項寫：訊號長什麼樣 → 代表什麼意思
+3. 它建議飼主「該做」與「絕對不要做」的事，各列 2–3 點
+4. 影片中有沒有提到需要看獸醫的警訊？有的話列出來
+5. 有哪些說法是個人經驗、而不是有研究支持的？請標出來
+
+如果你讀不到影片內容或字幕，請直接告訴我「讀不到」，不要用猜的補完。`;
+}
+
+function copyAsk(i){
+  copyText(askPrompt(VIDS[i])).then(ok=>{
+    toast(ok?'✅ 已複製——貼到「問問 YouTube」或 AI 對話框':'請手動長按選取複製');
+  });
+}
+function copyBox(id,btn){
+  copyText(document.getElementById(id).innerText).then(ok=>{
+    const old=btn.textContent; btn.textContent=ok?'已複製 ✔':'請手動複製';
+    setTimeout(()=>btn.textContent=old,1600);
+  });
+}
+function copyText(t){
+  if(navigator.clipboard && window.isSecureContext)
+    return navigator.clipboard.writeText(t).then(()=>true).catch(()=>fallbackCopy(t));
+  return Promise.resolve(fallbackCopy(t));
+}
+function fallbackCopy(t){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=t; ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,999999);
+    const ok=document.execCommand('copy'); document.body.removeChild(ta); return ok;
+  }catch(e){return false;}
+}
+let tt;
+function toast(m){
+  const t=document.getElementById('toast');
+  t.textContent=m; t.classList.add('show');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+function chCard(c){
+  const tier=TIER[c.tier];
+  return `<a class="chcard${c.nonyt?' nonyt':''}" href="${c.u}" target="_blank" rel="noopener">
+    <h3>${c.n}<span class="tag ch">${tier.l}</span>${c.nonyt?'<span class="tag ch">非 YouTube</span>':''}</h3>
+    <p>${c.d}</p><span class="go">前往 →</span></a>`;
+}
+document.getElementById('chInt').innerHTML=CHANNELS_INT.map(chCard).join('');
+document.getElementById('chTw').innerHTML=CHANNELS_TW.map(chCard).join('');
+
+const totop=document.getElementById('totop');
+window.addEventListener('scroll',()=>{totop.classList.toggle('show',window.scrollY>500);},{passive:true});
+document.getElementById('q').addEventListener('input',e=>{kw=e.target.value.trim();render();});
+render();
+</script>
+</body>
+</html>

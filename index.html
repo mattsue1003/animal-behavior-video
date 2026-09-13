@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2E2119">
+<title>AI 萌寵映畫誌｜課程資源總入口</title>
+<meta name="description" content="永豐餘 AI Club 企業內訓「AI 萌寵映畫誌」課程資源：毛孩行為資料庫、行為影片資料庫、研究知識庫與完整課程簡報。">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --amber:#C05621; --amber2:#E08A47; --amber-soft:#FDF3E7;
+    --ink:#3B2B20; --muted:#7A6A5B; --paper:#FFFCF8; --card:#FFFFFF;
+    --line:#EADBCA;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper); color:var(--ink);
+       font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;
+       line-height:1.6; overflow-x:hidden; word-break:break-word;
+       padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+
+  header{background:linear-gradient(150deg,#3D2C21,#2E2119); color:#F6EDE4; padding:52px 22px 46px; position:relative; overflow:hidden}
+  header::after{content:""; position:absolute; right:-70px; top:-70px; width:290px; height:290px; border-radius:50%; background:rgba(224,138,71,.16)}
+  .hwrap{max-width:1060px; margin:0 auto; position:relative; z-index:2}
+  .kick{font-size:12.5px; letter-spacing:4px; font-weight:800; color:var(--amber2)}
+  header h1{font-size:40px; font-weight:900; margin:10px 0 8px; letter-spacing:1px; line-height:1.25}
+  header .sub{font-size:16px; color:#CDBCAC; max-width:660px}
+  .meta{margin-top:20px; font-size:13.5px; color:#A99684; line-height:1.8}
+  .meta b{color:#E4D5C6}
+
+  main{max-width:1060px; margin:0 auto; padding:28px 22px}
+  .lead{font-size:15.5px; color:var(--muted); margin-bottom:20px; max-width:720px}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px}
+  .c{display:flex; flex-direction:column; background:var(--card); border:1.5px solid var(--line); border-radius:16px;
+     padding:24px 24px 22px; text-decoration:none; color:inherit; transition:.18s}
+  .c:hover{border-color:var(--amber2); box-shadow:0 7px 22px rgba(60,40,25,.1); transform:translateY(-2px)}
+  .c .ic{font-size:34px; line-height:1; margin-bottom:11px}
+  .c h2{font-size:21px; font-weight:900; margin-bottom:6px}
+  .c .n{font-size:13px; font-weight:800; color:var(--amber); letter-spacing:1px; margin-bottom:9px; display:block}
+  .c p{font-size:14.3px; color:var(--muted); line-height:1.7; flex:1}
+  .c ul{margin:10px 0 0 18px; font-size:13.5px; color:var(--muted); line-height:1.75}
+  .c .go{margin-top:14px; display:inline-flex; align-items:center; gap:7px; background:var(--amber); color:#fff;
+         font-size:14.5px; font-weight:800; padding:10px 20px; border-radius:24px; align-self:flex-start}
+  .c.wide{grid-column:1 / -1; background:linear-gradient(140deg,#FDF3E7,#FFFCF8); border-color:var(--amber2)}
+
+  .note{background:var(--amber-soft); border:1.5px solid var(--amber2); border-radius:13px; padding:17px 20px;
+        margin-top:26px; font-size:14px; color:#6B4A28; line-height:1.8}
+  .note b{color:#8A4A16}
+  .disc{background:#F6F1EA; border:1.5px solid var(--line); border-radius:13px; padding:16px 20px;
+        margin-top:14px; font-size:13.3px; color:var(--muted); line-height:1.8}
+  .disc b{color:var(--ink)}
+  footer{text-align:center; padding:30px 20px 12px; font-size:13px; color:var(--muted); line-height:1.8}
+
+  @media (max-width:760px){
+    header{padding:34px 16px 30px}
+    header h1{font-size:27px}
+    header .sub{font-size:14px}
+    .kick{font-size:11px; letter-spacing:3px}
+    .meta{font-size:12.5px; margin-top:16px}
+    main{padding:20px 14px}
+    .lead{font-size:14px}
+    .grid{grid-template-columns:1fr; gap:13px}
+    .c{padding:19px 18px 18px; border-radius:14px}
+    .c h2{font-size:18.5px}
+    .c p{font-size:13.6px}
+    .c ul{font-size:13px}
+    .c .go{width:100%; justify-content:center; padding:13px 18px; min-height:46px}
+    .note,.disc{font-size:13px; padding:14px 16px}
+    footer{font-size:12px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="kick">永豐餘 AI CLUB｜企業內訓</div>
+    <h1>🐾 AI 萌寵映畫誌</h1>
+    <div class="sub">用 AI 讀懂毛孩的微表情，再把牠的心聲做成一支會說話的短影音。</div>
+    <div class="meta">
+      講師：<b>葉明理 助理教授</b>（動物輔助治療）× <b>鍾孟修 職能治療師</b>（AI 應用）<br>
+      課程資源永久保存於此頁，課後隨時可查、可分享。
+    </div>
+  </div>
+</header>
+
+<main>
+  <p class="lead">下面四個資源都可以直接在手機上使用，建議把這一頁加入書籤或做成手機捷徑，遇到毛孩的狀況隨手就能查。</p>
+
+  <div class="grid">
+
+    <a class="c" href="behaviors.html">
+      <span class="ic">🐾</span>
+      <span class="n">資源 01</span>
+      <h2>毛孩行為資料庫</h2>
+      <p>60 種犬貓常見行為（狗 30／貓 30），依飼主實際遇到的頻率排序。每一則都是「常見誤解 → 真正意義 → 還要看什麼 → 你可以怎麼做 → 什麼時候該就醫」。</p>
+      <ul>
+        <li>可搜尋、可依情緒類型篩選</li>
+        <li>每則都能一鍵看影片、看圖片</li>
+        <li>一鍵複製提問模板並開啟 AI</li>
+        <li>另有 6 個必須就醫的紅旗警訊</li>
+      </ul>
+      <span class="go">開啟資料庫 →</span>
+    </a>
+
+    <a class="c" href="videos.html">
+      <span class="ic">🎬</span>
+      <span class="n">資源 02</span>
+      <h2>毛孩行為影片資料庫</h2>
+      <p>31 支逐一查證過的專業影片，分成「整合型（一支看完）」與「單一主題」、華語與英文，並標示來源可信度層級。</p>
+      <ul>
+        <li>國際：Jackson Galaxy、Cats Protection、Kikopup 等</li>
+        <li>國內：熊爸估狗、橘圓貓、貓行為諮詢師訪談</li>
+        <li>每支都附「重點整理提示詞」</li>
+        <li>教你用問問 YouTube／Chrome Gemini 抓重點</li>
+      </ul>
+      <span class="go">開啟影片庫 →</span>
+    </a>
+
+    <a class="c" href="research.html">
+      <span class="ic">🔬</span>
+      <span class="n">資源 03</span>
+      <h2>毛孩研究知識庫</h2>
+      <p>18 篇同儕審查研究，發表於 Nature 系列、Current Biology、PLOS ONE 等期刊，全部附 DOI 原文連結。</p>
+      <ul>
+        <li>破解迷思：狗的「愧疚表情」其實是被罵出來的</li>
+        <li>飼主誤讀：看到狗害怕時覺得好笑 45.6%、擔心 17.5%</li>
+        <li>AI 的極限：4 篇實測 AI 判讀毛孩到底準不準</li>
+        <li>附查證提示詞，教你叫 AI 拿出證據</li>
+      </ul>
+      <span class="go">開啟知識庫 →</span>
+    </a>
+
+    <a class="c wide" href="deck.html">
+      <span class="ic">📊</span>
+      <span class="n">資源 04</span>
+      <h2>完整課程簡報</h2>
+      <p>當天上課的完整簡報，所有提示詞都可以直接複製。電腦上用方向鍵或右下角箭頭換頁；手機開啟會自動切換成上下滑動的閱讀模式。</p>
+      <span class="go">開啟簡報 →</span>
+    </a>
+
+  </div>
+
+  <div class="note">
+    <b>📱 手機使用小技巧</b><br>
+    iPhone：用 Safari 開啟這一頁 → 點下方分享鍵 → 加入主畫面，就會像一個 App 一樣放在桌面。<br>
+    Android：用 Chrome 開啟 → 右上角選單 → 加到主畫面。<br>
+    四個資源的「複製提示詞」按鈕在這個網址上都能正常運作（本機直接開檔案有時會被瀏覽器擋住剪貼簿）。
+  </div>
+
+  <div class="disc">
+    <b>使用說明與免責聲明</b><br>
+    本站為「AI 萌寵映畫誌」課程之教學參考資源。動物行為<b>高度依賴情境與個體差異</b>，同一個動作在不同狀況下意義可能完全不同，請搭配當下環境與你對毛孩的了解一起判斷。<br>
+    本站內容<b>不能取代獸醫師診斷或專業行為諮詢</b>；AI 的回覆同樣僅供參考。若毛孩出現行為突然改變、疑似疼痛或健康警訊，請儘速尋求獸醫師協助。<br>
+    影片與圖片按鈕連結至 YouTube 與 Google 的<b>即時搜尋結果</b>，內容由第三方提供、品質不一。
+  </div>
+</main>
+
+<footer>
+  AI 萌寵映畫誌｜永豐餘 AI Club 九月企業內訓<br>
+  葉明理 助理教授 × 鍾孟修 職能治療師
+</footer>
+
+</body>
+</html>
