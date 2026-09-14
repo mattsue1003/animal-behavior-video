@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2E2119">
+<title>毛孩品種猜猜樂｜AI 萌寵映畫誌</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --amber:#C05621; --amber2:#E08A47; --amber-soft:#FDF3E7;
+    --ink:#3B2B20; --muted:#7A6A5B; --paper:#FFFCF8; --card:#FFFFFF;
+    --line:#EADBCA; --dog:#2F6FB0; --dog-soft:#EAF2FA;
+    --cat:#8A5AA8; --cat-soft:#F3ECF8; --bad:#C0392B; --ok:#3E8E5A;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper); color:var(--ink);
+       font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;
+       line-height:1.6; overflow-x:hidden; word-break:break-word;
+       padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+
+  header{background:linear-gradient(150deg,#3D2C21,#2E2119); color:#F6EDE4; padding:30px 22px 26px; position:relative; overflow:hidden}
+  header::after{content:""; position:absolute; right:-60px; top:-60px; width:220px; height:220px; border-radius:50%; background:rgba(224,138,71,.16)}
+  .hwrap{max-width:960px; margin:0 auto; position:relative; z-index:2}
+  .kick{font-size:12.5px; letter-spacing:4px; font-weight:800; color:var(--amber2)}
+  header h1{font-size:31px; font-weight:900; margin:8px 0 6px; letter-spacing:1px}
+  header p{font-size:14.5px; color:#CDBCAC; max-width:620px}
+  .backlink{display:inline-block; margin-top:13px; margin-right:15px; color:var(--amber2); font-size:13.5px; font-weight:800; text-decoration:none; border-bottom:1.5px solid rgba(224,138,71,.4); padding-bottom:2px}
+
+  main{max-width:960px; margin:0 auto; padding:22px}
+
+  /* ---------- 開始畫面 ---------- */
+  .start{background:var(--card); border:1.5px solid var(--line); border-radius:18px; padding:32px 34px 30px}
+  .start h2{font-size:26px; font-weight:900; margin-bottom:9px; line-height:1.35}
+  .start h2 span{color:var(--amber)}
+  .start .p{font-size:15px; color:var(--muted); max-width:640px; margin:0 0 22px; line-height:1.8}
+  .rules{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 22px}
+  .rule{background:var(--amber-soft); border:1.5px solid #EFD3B4; border-radius:13px; padding:14px 16px}
+  .rule b{display:block; font-size:15px; color:#9A5E10; margin-bottom:4px}
+  .rule span{font-size:13.4px; color:#6B4A28; line-height:1.7}
+  .picks{display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
+  .modes{display:grid; grid-template-columns:repeat(3,1fr); gap:13px}
+  .mode{display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left;
+        background:#fff; border:2px solid var(--amber); border-radius:16px; padding:19px 20px 17px;
+        font-family:inherit; cursor:pointer; color:var(--ink); transition:.16s; min-height:150px}
+  .mode:hover{background:var(--amber-soft); box-shadow:0 6px 18px rgba(60,40,25,.1); transform:translateY(-2px)}
+  .mode .mi{font-size:27px; line-height:1; margin-bottom:6px}
+  .mode b{font-size:19px; font-weight:900; letter-spacing:.5px}
+  .mode em{font-style:normal; font-size:15px; font-weight:900; color:var(--amber); margin-bottom:5px}
+  .mode .ms{font-size:13px; color:var(--muted); line-height:1.65; font-weight:600}
+  .mode.dark{background:#2E2119; border-color:#2E2119; color:#F6EDE4}
+  .mode.dark:hover{background:#3D2C21}
+  .mode.dark em{color:var(--amber2)}
+  .mode.dark .ms{color:#C9B7A6}
+  .util{margin-top:20px; padding-top:17px; border-top:1px dashed var(--line)}
+  .linkish{background:none; border:none; color:var(--amber); font-family:inherit; font-size:14px;
+           font-weight:800; cursor:pointer; padding:8px 0; min-height:40px}
+  .linkish:hover{text-decoration:underline}
+  .linkish:disabled{color:var(--muted); cursor:default; text-decoration:none}
+  .pick{background:var(--amber); color:#fff; border:none; border-radius:28px; padding:15px 30px; font-size:16.5px;
+        font-weight:900; font-family:inherit; cursor:pointer; min-height:52px; -webkit-tap-highlight-color:transparent}
+  .pick.alt{background:#fff; color:var(--amber); border:2px solid var(--amber)}
+  .pick:hover{filter:brightness(1.07)} .pick:active{transform:scale(.97)}
+  .scorebest{margin-top:16px; font-size:13.5px; color:var(--muted)}
+
+  .phbox{position:relative; aspect-ratio:4/3; border-radius:13px; overflow:hidden; background:#EFE3D2}
+  .phbox img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:none; background:#EFE3D2}
+  .phbox img.on{display:block}
+  #shim{position:absolute; inset:0; background:linear-gradient(90deg,#F0E2CE,#FBF3E7,#F0E2CE);
+        background-size:200% 100%; animation:sh 1.3s linear infinite; pointer-events:none}
+  @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .phnote{font-size:12.2px; color:var(--muted); text-align:center; margin-top:8px; line-height:1.5}
+  .credit{font-size:12.2px; color:var(--muted); line-height:1.65; margin-top:10px; padding-top:9px; border-top:1px dashed var(--line)}
+  .credit a{color:var(--amber); font-weight:700; text-decoration:none}
+  .credit b{color:#5A4A3C}
+  #testout{font-size:13.2px; color:var(--muted); line-height:1.7; margin-top:10px}
+  .phbox.failed{display:flex; align-items:center; justify-content:center}
+  .phfail{text-align:center; font-size:15px; font-weight:800; color:#8A7563; line-height:1.9; padding:20px}
+  .phfail span{font-size:13px; font-weight:600; color:var(--muted)}
+
+  /* ---------- 遊戲畫面 ---------- */
+  .bar{display:flex; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap}
+  .prog{flex:1; min-width:140px; height:9px; background:#EFE4D6; border-radius:6px; overflow:hidden}
+  .prog i{display:block; height:100%; background:var(--amber); border-radius:6px; transition:.3s}
+  .pnum{font-size:13.5px; font-weight:800; color:var(--muted); white-space:nowrap}
+  .stage{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:start}
+  .pic{background:linear-gradient(165deg,#FFF8EE,#F7EBDB); border:1.5px solid var(--line); border-radius:18px; padding:10px; position:relative}
+
+  .panel{display:flex; flex-direction:column; gap:12px}
+  .pkind{font-size:12.5px; font-weight:800; padding:5px 13px; border-radius:13px; white-space:nowrap}
+  .pkind.dog{background:var(--dog-soft); color:var(--dog)}
+  .pkind.cat{background:var(--cat-soft); color:var(--cat)}
+  .hcount{font-weight:900; opacity:.7; font-size:13px}
+  .sm.reveal{background:var(--amber); color:#fff; border:none}
+  .rv{display:block; text-decoration:none; color:inherit; transition:.15s}
+  .rv:hover{border-color:var(--amber2); box-shadow:0 3px 12px rgba(60,40,25,.08)}
+  .ask{font-size:20px; font-weight:900; line-height:1.45}
+  .ask span{color:var(--amber)}
+  .sub{font-size:13.5px; color:var(--muted); margin-top:-6px}
+  .hintbtn{background:#fff; border:2px dashed var(--amber2); color:var(--amber); border-radius:13px; padding:12px 18px;
+           font-size:14.5px; font-weight:800; font-family:inherit; cursor:pointer; min-height:48px; width:100%}
+  .hintbtn:hover{background:var(--amber-soft)}
+  .hintbtn:disabled{opacity:.45; cursor:default; border-style:solid}
+
+  .hints{display:flex; flex-direction:column; gap:8px}
+  .hint{background:var(--amber-soft); border-left:4px solid var(--amber2); border-radius:0 10px 10px 0;
+        padding:10px 14px; font-size:14.3px; color:#6B4A28; line-height:1.65; animation:pop .25s ease}
+  .hint b{color:#9A5E10}
+  @keyframes pop{from{opacity:0; transform:translateY(-5px)} to{opacity:1; transform:none}}
+
+  .result{border-radius:14px; padding:16px 18px; animation:pop .25s ease}
+  .result.ok{background:#EFF7F0; border:2px solid #9BC7A8}
+  .result h3{font-size:19px; font-weight:900; margin-bottom:4px}
+  .result.ok h3{color:#2C6B44}
+  .result .name{font-size:24px; font-weight:900; color:var(--ink); margin:6px 0 8px}
+  .result .fact{font-size:14px; color:#52453A; line-height:1.7}
+  .result .pts{display:inline-block; background:#2E2119; color:var(--amber2); font-weight:900; font-size:13px;
+               border-radius:9px; padding:4px 12px; margin-top:9px}
+  .rowbtn{display:flex; gap:9px; margin-top:12px; flex-wrap:wrap}
+  .sm{flex:1; min-width:130px; border:none; border-radius:22px; padding:12px 16px; font-size:14px; font-weight:800;
+      font-family:inherit; cursor:pointer; color:#fff; text-decoration:none; display:inline-flex; align-items:center;
+      justify-content:center; gap:6px; min-height:46px}
+  .sm.next{background:var(--amber)} .sm.pic2{background:#5F6B7A} .sm.skip{background:#fff; color:var(--muted); border:2px solid var(--line)}
+
+  .kbtip{font-size:12.2px; color:var(--muted); text-align:center; line-height:1.6}
+  .skiprow{display:flex; gap:9px}
+  .skiprow .sm{flex:1}
+  .sm.nextnow{background:#5F6B7A; color:#fff; border:none}
+  .reclead{display:inline-block; background:#2E2119; color:var(--amber2); font-weight:900; font-size:12.5px;
+           letter-spacing:2px; border-radius:9px; padding:4px 12px; align-self:flex-start; margin-bottom:-4px}
+  .recbox{background:#FFF6E9; border:2px solid var(--amber2); border-radius:11px; padding:12px 15px;
+          font-size:14px; color:#6B4A28; line-height:1.72; margin:10px 0 8px}
+  .recbox b{color:#9A5E10; font-weight:900}
+  .recbox > b:first-child{display:block; font-size:13px; letter-spacing:1.5px; margin-bottom:4px}
+  .recextra{font-size:13.6px; color:#52453A; line-height:1.7; background:#F6F1EA; border-radius:10px; padding:10px 13px}
+  .recsrc{font-size:12.2px; color:var(--muted); margin-top:7px}
+  .recsrc a{color:var(--amber); font-weight:700; text-decoration:none}
+
+  /* ---------- 結算 ---------- */
+  .final{background:var(--card); border:1.5px solid var(--line); border-radius:18px; padding:30px 26px; text-align:center}
+  .final .big{font-size:56px; font-weight:900; color:var(--amber); line-height:1.1}
+  .final .of{font-size:15px; color:var(--muted); margin-bottom:6px}
+  .final h2{font-size:26px; font-weight:900; margin:10px 0 6px}
+  .final .ttl{font-size:15px; color:var(--muted); max-width:520px; margin:0 auto 18px; line-height:1.8}
+  .review{display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:9px; margin:20px 0; text-align:left}
+  .rv{border:1.5px solid var(--line); border-radius:11px; padding:10px 12px; font-size:13.3px; background:#fff}
+  .rv.y{border-color:#9BC7A8; background:#F6FBF7} .rv.n{border-color:#E8B4AC; background:#FFF9F8}
+  .rv b{display:block; font-size:14.2px; margin-bottom:2px}
+  .rv span{color:var(--muted); font-size:12.3px}
+
+  .disc{background:#F6F1EA; border:1.5px solid var(--line); border-radius:12px; padding:14px 17px; font-size:13px;
+        color:var(--muted); margin-top:24px; line-height:1.78}
+  .disc b{color:var(--ink)}
+  footer{text-align:center; padding:24px 20px 8px; font-size:13px; color:var(--muted); line-height:1.8}
+
+  #toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px); background:var(--ink);
+         color:#fff; padding:12px 20px; border-radius:24px; font-size:14.5px; font-weight:700; opacity:0; transition:.3s;
+         z-index:60; box-shadow:0 6px 20px rgba(0,0,0,.25); max-width:92vw; text-align:center}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* ---------- 手機 ---------- */
+  @media (max-width:820px){
+    header{padding:22px 16px 20px}
+    header h1{font-size:23px} header p{font-size:13.5px}
+    .kick{font-size:11px; letter-spacing:3px}
+    main{padding:15px 14px}
+    .start{padding:22px 17px 20px; border-radius:15px}
+    .start h2{font-size:20px} .start .p{font-size:13.8px}
+    .rules{grid-template-columns:1fr; gap:9px}
+    .modes{grid-template-columns:1fr; gap:10px}
+    .mode{min-height:0; padding:15px 16px 14px; flex-direction:row; flex-wrap:wrap; align-items:center; gap:9px}
+    .mode .mi{font-size:23px; margin-bottom:0}
+    .mode b{font-size:17px} .mode em{margin-bottom:0}
+    .mode .ms{width:100%; font-size:12.6px}
+    .picks{flex-direction:column} .pick{width:100%; font-size:16px}
+    .start{padding:22px 17px 20px}
+    .stage{grid-template-columns:1fr; gap:14px}
+    .ask{font-size:18px}
+    .final{padding:24px 17px} .final .big{font-size:46px} .final h2{font-size:21px}
+    .review{grid-template-columns:1fr 1fr; gap:8px}
+    .sm{min-width:0}
+    .disc{font-size:12.5px; padding:13px 14px}
+  }
+  /* ---------- 簡報嵌入模式 ---------- */
+  body.embed{padding:0; background:transparent}
+  body.embed header,body.embed footer,body.embed .disc{display:none}
+  body.embed main{padding:10px 14px; max-width:none}
+  body.embed .start{padding:16px 18px 15px; border-radius:14px}
+  body.embed .start h2{font-size:20px; margin-bottom:4px}
+  body.embed .start .p{font-size:13.2px; margin-bottom:12px; line-height:1.65}
+  body.embed .rules{gap:8px; margin-bottom:14px}
+  body.embed .rule{padding:9px 12px} body.embed .rule b{font-size:13.5px} body.embed .rule span{font-size:12.2px}
+  body.embed .pick{padding:12px 24px; font-size:15px; min-height:46px}
+  body.embed .ask{font-size:18px}
+  body.embed .bar{margin-bottom:9px}
+  body.embed .stage{gap:14px}
+  body.embed .final{padding:18px}
+  body.embed .final .big{font-size:42px}
+  body.embed .review{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="kick">AI 萌寵映畫誌｜破冰遊戲</div>
+    <h1>🎯 毛孩品種猜猜樂</h1>
+    <p>看真實照片直接搶答，猜不出來再一層一層要提示，最後公布答案。不用打字，投影出來全場一起玩——過年圍爐、家族聚會拿出來也很好用。</p>
+    <a class="backlink" href="index.html">🏠 課程資源首頁</a>
+    <a class="backlink" href="behaviors.html">🐾 行為資料庫</a>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  AI 萌寵映畫誌｜永豐餘 AI Club 九月企業內訓　·　葉明理 助理教授 × 鍾孟修 職能治療師
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   毛孩品種猜猜樂
+   插畫皆為本頁以 SVG 程式繪製的原創示意圖，非實際照片。
+   ============================================================ */
+
+const DOGS=[
+{n:"柴犬", alias:["柴犬","柴","柴狗","shiba","日本柴犬","豆柴","shibainu"],
+ h:["來自日本，尾巴捲得像一朵花捲，翹在背上。",
+    "臉頰、胸口、四肢內側是白色的，這叫做「裏白」。",
+    "網路上那個「微笑狗」表情包的主角就是牠。"],
+ fact:"柴犬的「裏白」是品種標準的一部分——沒有這圈白色反而不符合標準。牠們警戒心強、對陌生人保留，不是不親人，是本來就這樣。"},
+
+{n:"柯基", alias:["柯基","柯基犬","corgi","威爾斯柯基","彭布羅克柯基","威爾斯柯基犬"],
+ h:["腿超短、耳朵超大，身體卻長得不成比例。",
+    "英國女王養了一輩子的犬種。",
+    "圓圓的屁股被鏟屎官叫做「蜜桃臀」。"],
+ fact:"短腿來自軟骨發育不全的基因，也因此椎間盤突出的風險偏高——別讓牠常跳沙發、上下樓梯，體重也要控制。"},
+
+{n:"黃金獵犬", alias:["黃金獵犬","黃金","黃金拾獵犬","golden","goldenretriever","golden retriever","黃金獵狗"],
+ h:["一身金色的長毛，尾巴像一支大羽毛。",
+    "是最常被訓練成導盲犬與治療犬的品種之一。",
+    "名字裡有「黃金」兩個字。"],
+ fact:"原本是獵鳥犬，被訓練成「把獵物完整帶回來而不咬壞」——這個「軟嘴」特質也是牠對人特別溫和的原因之一。"},
+
+{n:"臘腸狗", alias:["臘腸狗","臘腸","臘腸犬","香腸狗","dachshund","doxie","德國臘腸"],
+ h:["身體長得像一條香腸，腿卻短到快貼地。",
+    "原本的工作是鑽進洞裡把獾趕出來。",
+    "是德國犬種，名字在德文裡就是「獾犬」。"],
+ fact:"那條長背是牠的職業病來源：臘腸狗是椎間盤疾病發生率最高的犬種之一，抱牠一定要同時托住胸口和屁股。"},
+
+{n:"法國鬥牛犬", alias:["法國鬥牛犬","法鬥","法國鬥牛","frenchbulldog","french bulldog","frenchie","法牛"],
+ h:["耳朵像蝙蝠一樣又大又直立。",
+    "臉很扁，睡覺常常打呼。",
+    "名字裡面有一個國家。"],
+ fact:"扁臉（短吻）品種的鼻腔被壓縮，天生就容易呼吸困難、怕熱。台灣的夏天對牠們是高風險——散步請選清晨或夜間。"},
+
+{n:"貴賓狗", alias:["貴賓狗","貴賓","貴賓犬","poodle","紅貴賓","泰迪","貴婦狗","玩具貴賓"],
+ h:["全身捲毛，而且不太會掉毛。",
+    "常被美容剪成一球一球的造型。",
+    "在台灣「紅」色的這個品種特別流行。"],
+ fact:"貴賓其實是水獵犬，那個誇張的剪毛造型原本有功能——保留關節與胸口的毛保暖，其餘剃掉方便游泳。智商在犬種排名中名列前茅。"},
+
+{n:"哈士奇", alias:["哈士奇","husky","二哈","西伯利亞雪橇犬","雪橇犬","siberian husky"],
+ h:["來自雪地，工作是拉雪橇。",
+    "臉上有黑白分明的面具花紋，眼睛常常是藍色。",
+    "表情戲特別多，網路上被叫做「二哈」。"],
+ fact:"雙層被毛是為了零下的環境設計的，在台灣養要特別注意中暑。牠們話很多但很少吠——那是嚎叫，是雪橇犬群體溝通的方式。"},
+
+{n:"米格魯", alias:["米格魯","beagle","比格犬","比格","米格魯犬"],
+ h:["白、棕、黑三色，尾巴尖端一定是白的。",
+    "嗅覺超強，機場的緝毒犬、檢疫犬很多是這個品種。",
+    "史努比就是這個品種。"],
+ fact:"尾巴尖端的白色是被人刻意留下的——獵人在草叢裡只看得到那一點白，用來定位狗的位置。牠們的鼻子有約 2.2 億個嗅覺受器。"},
+
+{n:"博美", alias:["博美","博美犬","pomeranian","pom","波美拉尼亞"],
+ h:["小小一隻，但毛蓬得像一顆球。",
+    "尾巴翹到背上，攤開像一把扇子。",
+    "常被美容剪成「狐狸造型」或「熊寶寶」。"],
+ fact:"博美的祖先是體型大得多的雪橇犬，被刻意縮小育種而來。要注意「剃光」的風險：部分博美剃毛後毛髮長不回來（剃毛後脫毛症）。"},
+
+{n:"拉不拉多", alias:["拉不拉多","拉布拉多","拉拉","labrador","lab","拉布拉多犬","拉不拉多犬"],
+ h:["短毛、體格結實，尾巴又粗又直像水獺的尾巴。",
+    "全世界最常見的導盲犬品種。",
+    "非常愛游泳，腳趾之間有蹼。"],
+ fact:"那條「水獺尾」是游泳時的方向舵。拉不拉多有一個已知的基因變異會讓牠們特別容易覺得餓——牠一直討食不一定是你沒餵飽。"}
+,
+{e:"🐕",n:"澳洲牧牛犬",alias:["澳洲牧牛犬","牧牛犬","藍色赫勒","藍斑","blue heeler","australian cattle dog","heeler","澳洲牛頭犬"],
+ h:["一身灰藍色的細碎斑點，像被潑到顏料。",
+    "工作是在澳洲的大牧場趕牛，會輕咬牛的後腳跟。",
+    "牠的英文俗名叫「藍色赫勒（Blue Heeler）」，來自那個咬腳跟的動作。"],
+ fact:"體力驚人、需要大量運動與任務感，關在公寓裡沒事做很容易出現破壞行為。這個品種也是目前金氏世界紀錄「最長壽狗狗」的保持者。"},
+
+{e:"🐕",n:"灰狗",alias:["灰狗","格力犬","靈緹","靈緹犬","greyhound","格雷伊獵犬","賽狗"],
+ h:["身體極細、腰部明顯上收，胸口卻很深。",
+    "全世界跑最快的狗，賽狗場上的主角。",
+    "英文名字裡有一個顏色。"],
+ fact:"衝刺時每步可以跨出超過 4 公尺、四腳同時離地。但牠其實是「沙發馬鈴薯」——爆發力強、耐力普通，一天散步兩次就滿足，退役賽犬是很好的家庭犬。"},
+
+{e:"🐕",n:"大丹犬",alias:["大丹犬","大丹","great dane","丹麥犬","大丹狗"],
+ h:["站起來比很多人還高，臉上常有一塊黑色面具。",
+    "金氏世界紀錄「史上最高的狗」就是這個品種。",
+    "名字裡有一個歐洲國家，但牠其實是德國培育出來的。"],
+ fact:"被稱為「溫柔的巨人」，個性其實很黏人。巨型犬的代價是壽命短（平均只有 7–10 年），也容易發生胃扭轉，餵食後要避免劇烈活動。"},
+
+{e:"🐕",n:"吉娃娃",alias:["吉娃娃","chihuahua","奇瓦瓦","吉娃娃犬"],
+ h:["全世界最小的狗，成犬常常不到 2 公斤。",
+    "耳朵大得跟頭不成比例，眼睛圓而突出。",
+    "來自墨西哥，名字就是墨西哥一個州的名字。"],
+ fact:"頭骨頂端常有一塊沒有完全閉合的「囟門」，所以摸頭要特別輕。體型小不代表膽小——沒有好好社會化的吉娃娃反而很容易出現恐懼性攻擊。"},
+
+{e:"🐕",n:"邊境牧羊犬",alias:["邊境牧羊犬","邊牧","border collie","bordercollie","邊境牧羊","柯利犬"],
+ h:["黑白相間的長毛，胸口和腳掌通常是白的。",
+    "會用眼神死盯羊群把牠們趕成一團，這叫「凝視（eye）」。",
+    "公認全世界最聰明的狗。"],
+ fact:"一隻叫 Chaser 的邊境牧羊犬被證實能認得 1,022 個玩具的名字，研究發表在同儕審查期刊上。聰明的代價是：沒有工作可做時，牠會自己發明工作——通常是你不想要的那種。"},];
+
+const CATS=[
+{n:"布偶貓", alias:["布偶貓","布偶","ragdoll","娃娃貓"],
+ h:["一身長毛，眼睛一定是藍色的。",
+    "被抱起來的時候會全身放軟，像沒骨頭一樣。",
+    "名字是一種布做的玩具。"],
+ fact:"「抱起來會放軟」是選育出來的性格特質，不是麻痺。也因為太乖、對危險反應慢，布偶貓強烈建議完全室內飼養。"},
+
+{n:"暹羅貓", alias:["暹羅貓","暹羅","暹邏貓","暹邏","siamese","西雅貓"],
+ h:["臉、耳朵、四肢和尾巴的顏色明顯比身體深。",
+    "非常愛講話，叫聲又大又有個性。",
+    "來自泰國，泰國的舊稱就是牠的名字。"],
+ fact:"深色部位是溫度決定的：牠帶有溫度敏感的白化基因，身體較冷的末端才顯色。小貓剛出生時幾乎全白，長大才慢慢「上色」。"},
+
+{n:"波斯貓", alias:["波斯貓","波斯","persian","波斯長毛貓"],
+ h:["臉很扁，鼻子幾乎和眼睛在同一個平面上。",
+    "一身厚長毛，不每天梳就會打結。",
+    "名字來自一個中東的古國。"],
+ fact:"扁臉讓淚管容易阻塞，所以常看到眼下有淚痕。和法鬥一樣屬於短吻品種，呼吸道問題與怕熱都要特別留意。"},
+
+{n:"英國短毛貓", alias:["英國短毛貓","英短","英國短毛","british shorthair","britishshorthair","英國藍貓"],
+ h:["圓臉、圓眼睛、圓身體，整隻像一顆球。",
+    "最經典的顏色是帶灰的藍色。",
+    "《愛麗絲夢遊仙境》裡那隻咧嘴笑的貓，靈感就來自牠。"],
+ fact:"英短的毛又厚又密，像絨布一樣，摸起來沒有明顯的分層。個性相對獨立，多數不愛被抱——「圓滾滾」不等於「愛黏人」。"},
+
+{n:"緬因貓", alias:["緬因貓","緬因","maine coon","mainecoon","緬因庫恩","緬因浣熊貓"],
+ h:["體型非常大，成貓可以長到七、八公斤以上。",
+    "耳朵尖端有一撮向上翹的毛。",
+    "名字來自美國東北部的一個州。"],
+ fact:"公認體型最大的家貓品種之一，要三到五年才完全長成。厚重的被毛與蓬鬆大尾巴是為了緬因州的嚴冬——牠也是少數會玩水的貓。"},
+
+{n:"蘇格蘭摺耳貓", alias:["蘇格蘭摺耳貓","摺耳貓","摺耳","折耳貓","折耳","scottish fold","scottishfold","蘇格蘭折耳貓"],
+ h:["耳朵往前摺下來，緊貼在頭上。",
+    "常常會用像人一樣的姿勢坐著，被叫做「佛陀坐」。",
+    "這個可愛特徵其實來自一個軟骨的基因問題。"],
+ fact:"摺耳來自顯性基因突變，同時會造成全身性的骨軟骨發育異常，許多貓成年後出現關節疼痛與行動困難。多國獸醫組織已呼籲停止繁育——可愛的代價值得被知道。"},
+
+{n:"斯芬克斯貓", alias:["斯芬克斯貓","斯芬克斯","無毛貓","sphynx","加拿大無毛貓","無毛"],
+ h:["幾乎沒有毛，皮膚上有明顯的皺摺。",
+    "耳朵超級大，摸起來像溫熱的絨布。",
+    "名字來自埃及的一座巨大石像。"],
+ fact:"沒有毛不代表不過敏——過敏原主要來自唾液與皮屑，不是毛本身。牠們需要定期洗澡清除皮脂，冬天也真的會冷，要準備衣服。"},
+
+{n:"孟加拉貓", alias:["孟加拉貓","孟加拉","bengal","豹貓","孟加拉豹貓"],
+ h:["身上有像豹一樣的斑點或環狀花紋。",
+    "非常好動，而且很多隻會主動玩水。",
+    "祖先有野生的亞洲豹貓血統。"],
+ fact:"由家貓與亞洲豹貓雜交育成。活動量遠高於一般家貓，沒有足夠的垂直空間與狩獵型遊戲，很容易出現破壞與攻擊行為。"},
+
+{n:"美國短毛貓", alias:["美國短毛貓","美短","american shorthair","americanshorthair","美國短毛"],
+ h:["銀灰底加黑色條紋，身體側面有像牛眼一樣的環狀花紋。",
+    "祖先跟著移民船到美洲，工作是抓船上的老鼠。",
+    "名字裡有一個國家，個性穩定，是很常見的家貓。"],
+ fact:"身側那圈「牛眼紋」是古典虎斑（classic tabby）的標準花色。美短體格結實、耐力好，是少數被形容為「不挑食也不挑人」的品種。"},
+
+{n:"俄羅斯藍貓", alias:["俄羅斯藍貓","俄藍","俄羅斯藍","russian blue","russianblue","俄國藍貓"],
+ h:["灰藍色的短毛，帶著一層銀色的光澤。",
+    "眼睛是綠色的——這是牠和英短最好認的差別。",
+    "嘴角微微上揚像在微笑，名字來自一個國家。"],
+ fact:"毛尖是銀白色的，所以在光線下會泛銀光。個性非常怕生、認人，對主人極度黏但對訪客會直接消失——不是討厭你，是天生謹慎。"},
+
+{e:"🐈",n:"熱帶草原貓",alias:["熱帶草原貓","薩凡納貓","薩凡納","savannah","savannah cat","草原貓","沙凡那貓"],
+ h:["腿特別長、耳朵特別大，身上有黑色斑點。",
+    "全世界最高的家貓品種，站起來可以到人的膝蓋。",
+    "由家貓和非洲的藪貓（serval）雜交而來。"],
+ fact:"金氏世界紀錄「現存最高的家貓」是一隻叫 Fenrir 的這個品種，肩高 47.83 公分。因為含野生血統，部分國家與地區對飼養有法規限制，購買前務必先查清楚。"}
+];
+
+/* ============ 真實照片（由使用者的瀏覽器即時取得） ============
+   順序：Wikipedia 條目主圖（人工策展、最清楚）→ dog.ceo 犬種照片 → Wikimedia Commons 分類
+   w=Wikipedia 條目　d=dog.ceo 路徑　c=Commons 分類候選　kw=檔名關鍵字（過濾用）      */
+const PHOTOSRC={
+ "柴犬":           {w:"Shiba_Inu",             d:"shiba",          c:["Shiba Inu"], kw:"shiba"},
+ "柯基":           {w:"Pembroke_Welsh_Corgi",                      c:["Pembroke Welsh Corgi","Welsh Corgi Pembroke","Welsh Corgis"], kw:"corgi"},
+ "黃金獵犬":       {w:"Golden_Retriever",      d:"retriever/golden", c:["Golden Retriever"], kw:"golden|retriever"},
+ "臘腸狗":         {w:"Dachshund",             d:"dachshund",      c:["Dachshund"], kw:"dachshund|teckel|dackel"},
+ "法國鬥牛犬":     {w:"French_Bulldog",        d:"bulldog/french", c:["French Bulldog"], kw:"french|bouledogue|bulldog"},
+ "貴賓狗":         {w:"Poodle",                d:"poodle/toy",     c:["Poodle","Toy Poodle","Miniature Poodle"], kw:"poodle|pudel|caniche"},
+ "哈士奇":         {w:"Siberian_Husky",        d:"husky",          c:["Siberian Husky"], kw:"husky"},
+ "米格魯":         {w:"Beagle",                d:"beagle",         c:["Beagle"], kw:"beagle"},
+ "博美":           {w:"Pomeranian_dog",        d:"pomeranian",     c:["Pomeranian (dog)","Pomeranian dog","Pomeranians"], kw:"pomeranian|spitz"},
+ "拉不拉多":       {w:"Labrador_Retriever",    d:"labrador",       c:["Labrador Retriever"], kw:"labrador"},
+ "澳洲牧牛犬":     {w:"Australian_Cattle_Dog",                     c:["Australian Cattle Dog"], kw:"cattle|heeler"},
+ "灰狗":           {w:"Greyhound",                                 c:["Greyhound"], kw:"greyhound"},
+ "大丹犬":         {w:"Great_Dane",            d:"dane/great",     c:["Great Dane"], kw:"dane|dogue"},
+ "吉娃娃":         {w:"Chihuahua_(dog)",       d:"chihuahua",      c:["Chihuahua (dog)","Chihuahuas"], kw:"chihuahua"},
+ "邊境牧羊犬":     {w:"Border_Collie",         d:"collie/border",  c:["Border Collie"], kw:"border|collie"},
+ "布偶貓":         {w:"Ragdoll",                                   c:["Ragdoll (cat)","Ragdoll cats","Ragdoll"], kw:"ragdoll"},
+ "暹羅貓":         {w:"Siamese_cat",                               c:["Siamese cats","Siamese cat"], kw:"siam"},
+ "波斯貓":         {w:"Persian_cat",                               c:["Persian cats","Persian cat"], kw:"persian"},
+ "英國短毛貓":     {w:"British_Shorthair",                         c:["British Shorthair","British Shorthair cats"], kw:"british"},
+ "緬因貓":         {w:"Maine_Coon",                                c:["Maine Coon","Maine Coon cats"], kw:"maine"},
+ "蘇格蘭摺耳貓":   {w:"Scottish_Fold",                             c:["Scottish Fold","Scottish Fold cats"], kw:"fold"},
+ "斯芬克斯貓":     {w:"Sphynx_cat",                                c:["Sphynx (cat)","Sphynx cats","Sphynx cat"], kw:"sphynx"},
+ "孟加拉貓":       {w:"Bengal_cat",                                c:["Bengal cats","Bengal cat"], kw:"bengal"},
+ "美國短毛貓":     {w:"American_Shorthair",                        c:["American Shorthair","American Shorthair cats"], kw:"american"},
+ "俄羅斯藍貓":     {w:"Russian_Blue",                              c:["Russian Blue","Russian Blue cats"], kw:"russian"},
+ "熱帶草原貓":     {w:"Savannah_cat",                              c:["Savannah cats","Savannah cat"], kw:"savannah"}
+};
+
+const PHOTO={cache:{}};
+const OKEXT=/\.(jpe?g|png|webp)$/i;
+const BADFILE=new RegExp(['map','logo','icon','diagram','chart','distribution','coat.of.arms','stamp','flag',
+  'skeleton','x-?ray','anatomy','painting','drawing','engraving','illustration','sketch','artwork','statue',
+  'sculpture','plush','toy','cartoon','comic','grave','tomb','memorial','sign','poster','book','cover',
+  'skull','cemetery','museum','coin','banknote','embroider','tattoo','costume','halloween'].join('|'),'i');
+
+function stripTags(h){ const d=document.createElement('div'); d.innerHTML=h||''; return (d.textContent||'').replace(/\s+/g,' ').trim().slice(0,90); }
+
+function jget(url,ms){
+  return new Promise((res,rej)=>{
+    if(!window.fetch) return rej(new Error('nofetch'));
+    const c=('AbortController' in window)?new AbortController():null;
+    const t=setTimeout(()=>{ if(c)c.abort(); rej(new Error('timeout')); }, ms||7000);
+    fetch(url, c?{signal:c.signal,mode:'cors',referrerPolicy:'no-referrer'}:{mode:'cors'})
+      .then(r=>r.ok?r.json():Promise.reject(new Error('http'+r.status)))
+      .then(j=>{clearTimeout(t); res(j);})
+      .catch(e=>{clearTimeout(t); rej(e);});
+  });
+}
+
+function preload(src){
+  return new Promise(res=>{
+    const im=new Image();
+    const t=setTimeout(()=>res(false), 9000);
+    im.onload =()=>{ clearTimeout(t); res(im.naturalWidth>200); };
+    im.onerror=()=>{ clearTimeout(t); res(false); };
+    im.referrerPolicy='no-referrer';
+    im.src=src;
+  });
+}
+
+async function fromWiki(title){
+  const j=await jget('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(title),7000);
+  const s=(j&&j.originalimage&&j.originalimage.source)||(j&&j.thumbnail&&j.thumbnail.source);
+  if(!s||!OKEXT.test(String(s).split('?')[0])) return null;
+  return { src:s,
+           page:(j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page)||('https://en.wikipedia.org/wiki/'+title),
+           author:'Wikipedia／Wikimedia Commons 貢獻者', lic:'見原始頁面', from:'Wikipedia' };
+}
+
+async function fromDogCeo(slug){
+  const j=await jget('https://dog.ceo/api/breed/'+slug+'/images/random/1',7000);
+  const s=j&&j.message&&(Array.isArray(j.message)?j.message[0]:j.message);
+  if(!s) return null;
+  return { src:s, page:'https://dog.ceo/dog-api/', author:'Dog CEO API（Stanford Dogs Dataset）',
+           lic:'見原始頁面', from:'dog.ceo' };
+}
+
+async function fromCommons(cat,kw){
+  const u='https://commons.wikimedia.org/w/api.php?action=query&generator=categorymembers'
+    +'&gcmtitle='+encodeURIComponent('Category:'+cat)
+    +'&gcmtype=file&gcmlimit=40&prop=imageinfo&iiprop=url%7Cextmetadata&iiurlwidth=1200'
+    +'&format=json&formatversion=2&origin=*';
+  const j=await jget(u,8000);
+  const pages=(j&&j.query&&j.query.pages)||[];
+  let good=pages.filter(p=>p&&p.title&&OKEXT.test(p.title)&&!BADFILE.test(p.title)
+           &&p.imageinfo&&p.imageinfo[0]&&p.imageinfo[0].thumburl);
+  if(kw){
+    const k=new RegExp(kw,'i');
+    const narrowed=good.filter(p=>k.test(p.title));
+    if(narrowed.length) good=narrowed;
+  }
+  if(!good.length) return null;
+  const p=good[Math.floor(Math.random()*good.length)];
+  const ii=p.imageinfo[0], em=ii.extmetadata||{};
+  return { src:ii.thumburl, page:ii.descriptionurl||('https://commons.wikimedia.org/wiki/'+encodeURIComponent(p.title)),
+           author:stripTags(em.Artist&&em.Artist.value)||'Wikimedia Commons 貢獻者',
+           lic:stripTags(em.LicenseShortName&&em.LicenseShortName.value)||'見原始頁面',
+           from:'Wikimedia Commons' };
+}
+
+async function getPhoto(name){
+  if(PHOTO.cache[name]) return PHOTO.cache[name];
+  const m=PHOTOSRC[name]; if(!m) return null;
+  const steps=[];
+  if(m.w) steps.push(()=>fromWiki(m.w));
+  if(m.d) steps.push(()=>fromDogCeo(m.d));
+  (m.c||[]).forEach(c=>steps.push(()=>fromCommons(c,m.kw)));
+  for(const f of steps){
+    try{
+      const r=await f();
+      if(r&&r.src && await preload(r.src)){ PHOTO.cache[name]=r; return r; }
+    }catch(e){}
+  }
+  return null;
+}
+
+async function loadPhoto(name, token){
+  const r=await getPhoto(name);
+  if(token!==render.token) return;
+  const box=document.getElementById('phbox'), img=document.getElementById('photo'), note=document.getElementById('phnote');
+  if(!box||!img) return;
+  const sh=document.getElementById('shim'); if(sh) sh.remove();
+  if(r){
+    img.src=r.src; img.classList.add('on'); box.classList.add('hasphoto');
+    if(note) note.textContent='📷 真實照片（公布答案後顯示出處）';
+    Q[idx].__photo=r;
+  }else{
+    box.classList.add('failed');
+    box.insertAdjacentHTML('beforeend',
+      '<div class="phfail">📷 這張照片載不下來<br><span>檢查一下網路，或按「⏭ 下一題」換一題</span></div>');
+    if(note) note.textContent='⚠️ 照片取得失敗';
+  }
+}
+function prefetch(i){ if(Q[i]) getPhoto(Q[i].n).catch(()=>{}); }
+
+/* 課前自我檢測：26 個品種各抓一次，回報成功率 */
+async function testPhotos(btn){
+  const names=Object.keys(PHOTOSRC);
+  let ok=0, fail=[];
+  btn.disabled=true;
+  for(let i=0;i<names.length;i++){
+    btn.textContent=`檢測中… ${i+1} / ${names.length}`;
+    const r=await getPhoto(names[i]);
+    if(r) ok++; else fail.push(names[i]);
+  }
+  btn.disabled=false;
+  btn.textContent='🔍 再測一次';
+  const el=document.getElementById('testout');
+  if(el) el.innerHTML = ok===names.length
+    ? `<b style="color:#3E8E5A">✅ ${names.length} 個品種的照片全部取得成功</b>，可以放心上課。`
+    : `取得成功 <b>${ok} / ${names.length}</b>。以下這幾個抓不到，上課時會顯示「照片載不下來」：<br><span style="color:#C0392B">${fail.join('、')||'—'}</span>`;
+}
+
+/* ============ 🏆 毛孩之最題庫（每則紀錄皆逐一查證金氏世界紀錄官方頁面） ============ */
+const RECORDS=[
+{n:"澳洲牧牛犬", q:"世界上<b>最長壽</b>的狗，是什麼品種？",
+ rec:"<b>Bluey</b>，活了 <b>29 歲 5 個月</b>（1910–1939，澳洲）。2023 年葡萄牙的 Bobi 曾以 31 歲拿下這個頭銜，但金氏世界紀錄在 2024 年重新審查後認定<b>無法證實牠的出生年份</b>而撤銷認證，紀錄回到 Bluey 身上。",
+ extra:"🐈 順帶一提，<b>最長壽的貓</b>是美國德州的 <b>Creme Puff</b>，活了 <b>38 歲又 3 天</b>（1967–2005）。",
+ src:"https://www.abc.net.au/news/2024-03-03/bluey-rochester-dog-reclaims-guinness-world-record-as-oldest-dog/103513372", sn:"ABC News／金氏世界紀錄"},
+
+{n:"灰狗", q:"<b>跑得最快</b>的狗，是什麼品種？",
+ rec:"金氏認證的最快速度是 <b>67.32 公里／小時</b>，由一隻叫 <b>Star Title</b> 的灰狗在 1994 年於澳洲跑出（366 公尺用 19.57 秒）。",
+ extra:"🏃 換算下來大約是<b>人類百米世界紀錄速度的 1.8 倍</b>。牠衝刺時有一段時間四隻腳完全離地。",
+ src:"https://www.guinnessworldrecords.com/world-records/64107-fastest-greyhound", sn:"金氏世界紀錄"},
+
+{n:"大丹犬", q:"世界上<b>最高</b>的狗，是什麼品種？",
+ rec:"<b>Zeus</b>，站立肩高 <b>1.118 公尺</b>（2011 年，美國密西根州）——後腳站起來比大多數成年人還高。",
+ extra:"📏 巨型犬的代價是壽命：大丹犬平均只有 <b>7–10 年</b>，是所有犬種中偏短的。",
+ src:"https://www.guinnessworldrecords.com/world-records/tallest-dog-ever", sn:"金氏世界紀錄"},
+
+{n:"吉娃娃", q:"世界上<b>最小</b>的狗，是什麼品種？",
+ rec:"現存最矮的狗是 <b>Pearl</b>，身高只有 <b>9.14 公分</b>（2022 年，美國佛州）——大約一支手機的長度。",
+ extra:"🦴 體型小不等於好養：吉娃娃頭頂常有沒閉合的囟門，摸頭要輕；沒社會化好也很容易出現恐懼性攻擊。",
+ src:"https://www.guinnessworldrecords.com/world-records/smallest-dog-living-(height)", sn:"金氏世界紀錄"},
+
+{n:"邊境牧羊犬", q:"公認<b>最聰明</b>的狗，是什麼品種？",
+ rec:"一隻叫 <b>Chaser</b> 的邊境牧羊犬被證實能認得 <b>1,022 個玩具的名字</b>，而且能靠排除法推論出沒學過的新名詞——研究發表在同儕審查期刊 Behavioural Processes（Pilley &amp; Reid, 2011）。",
+ extra:"🧠 聰明的代價：沒有工作可做的邊牧會自己發明工作，通常是拆家具或追車。",
+ src:"https://www.sciencedirect.com/science/article/abs/pii/S0376635710002925", sn:"Behavioural Processes（2011）"},
+
+{n:"緬因貓", q:"世界上<b>最長（體型最大）</b>的貓，是什麼品種？",
+ rec:"史上最長的家貓是 <b>Stewie</b>，全長 <b>123 公分</b>（2010 年，美國）；現行紀錄保持者 <b>Barivel</b> 是 120 公分（2018 年，義大利）——<b>前幾名全都是這個品種</b>。",
+ extra:"⚠️ 那「<b>體重最重的貓</b>」呢？金氏世界紀錄<b>在 1998 年停止收錄最重寵物</b>，理由是「避免有人為了上榜而刻意過度餵食寵物」。歷史紀錄是澳洲的 Himmy，21.3 公斤（1986）——這是一隻嚴重肥胖的貓，不是值得追求的目標。",
+ src:"https://www.guinnessworldrecords.com/world-records/108492-longest-domestic-cat-ever", sn:"金氏世界紀錄"},
+
+{n:"熱帶草原貓", q:"世界上<b>最高</b>的貓，是什麼品種？",
+ rec:"現存最高的家貓是 <b>Fenrir</b>，肩高 <b>47.83 公分</b>（2022 年評定，美國密西根州）——牠的哥哥 Arcturus 也曾保持同一項紀錄。",
+ extra:"🌍 這個品種由家貓與非洲藪貓雜交而來，因含野生血統，部分國家與地區對飼養有法規限制。",
+ src:"https://www.guinnessworldrecords.com/news/2025/8/treemendous-worlds-tallest-cat-tests-out-scratching-post-worthy-of-his-stature", sn:"金氏世界紀錄"},
+
+{n:"暹羅貓", q:"公認<b>最愛講話</b>的貓，是什麼品種？",
+ rec:"這個品種以<b>叫聲多、音量大、音調低沉</b>聞名，會用叫聲跟人來回「對話」——牠的叫聲常被形容像嬰兒哭。",
+ extra:"🗣️ 成貓之間其實幾乎不用叫聲溝通，喵叫主要是<b>演化出來對人類用的</b>。這個品種只是把這件事做到極致。",
+ src:"https://icatcare.org/cat-advice", sn:"International Cat Care（一般文獻，非金氏紀錄）"},
+
+{n:"波斯貓", q:"<b>毛最長、最需要天天梳</b>的貓，是什麼品種？",
+ rec:"這個品種的被毛可長達 <b>10 公分以上</b>，而且是雙層毛，<b>不每天梳就會打結成氈</b>，嚴重時必須剃掉。",
+ extra:"😾 牠也是最典型的<b>扁臉（短吻）品種</b>之一：淚管容易阻塞造成淚痕，呼吸道與怕熱問題也要特別注意。",
+ src:"https://icatcare.org/cat-advice", sn:"International Cat Care（一般文獻，非金氏紀錄）"},
+
+{n:"黃金獵犬", q:"最常被訓練成<b>導盲犬</b>的，是哪個品種？",
+ rec:"黃金獵犬與拉不拉多是全球導盲犬學校最主要的兩個品種，也常用於治療犬與搜救犬。",
+ extra:"🦮 關鍵不是聰明，而是<b>穩定</b>：導盲犬需要對噪音、人群、突發狀況都不過度反應，這種「情緒穩定度」才是選種重點。",
+ src:"https://icatcare.org/cat-advice", sn:"一般文獻，非金氏紀錄"}
+];
+
+/* ============ 遊戲狀態 ============ */
+const ALL = DOGS.map(x=>({...x,kind:'dog'})).concat(CATS.map(x=>({...x,kind:'cat'})));
+const PTS=[100,80,60];      // 0/1/2 個提示答對
+const MCPTS=40;             // 選擇題答對
+const app=document.getElementById('app');
+const EMBED=new URLSearchParams(location.search).get('embed')==='1';
+if(EMBED) document.body.classList.add('embed');
+let Q=[], idx=0, hints=0, log=[], answered=false, gameMode='breed';
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function norm(s){return (s||'').toLowerCase().replace(/[\s　·・．.\-_，,。!！?？]/g,'');}
+
+function startScreen(){
+  app.innerHTML=`<div class="start">
+    <h2>看圖猜<span>品種</span>——搶答、要提示、公布答案</h2>
+    <p class="p">26 種常見犬貓品種，每一題只給<b>一張真實照片</b>。沒有輸入框、不用打字，投影出來全場一起喊最有氣氛。</p>
+
+    <div class="rules">
+      <div class="rule"><b>👀 看圖搶答</b><span>只有照片，什麼提示都沒有，先讓大家直接喊。</span></div>
+      <div class="rule"><b>💡 要提示</b><span>最多三層，從外型 → 用途 → 幾乎講白了，難度自己調。</span></div>
+      <div class="rule"><b>🎉 公布答案</b><span>揭曉品種、冷知識與照片出處；卡太久就按「下一題」。</span></div>
+    </div>
+
+    <div class="modes">
+      <button class="mode" onclick="begin(10)">
+        <span class="mi">🎲</span><b>快速版</b><em>10 題</em><span class="ms">5 狗 5 貓，隨機抽</span></button>
+      <button class="mode" onclick="begin(20)">
+        <span class="mi">📚</span><b>完整版</b><em>20 題</em><span class="ms">犬貓各 10 題，題庫全開</span></button>
+      <button class="mode dark" onclick="beginRecords()">
+        <span class="mi">🏆</span><b>毛孩之最</b><em>${RECORDS.length} 題</em><span class="ms">最長壽、最快、最高、最小的狗與最大的貓，每則附金氏世界紀錄出處</span></button>
+    </div>
+
+    <div class="util">
+      <button class="linkish" onclick="testPhotos(this)">🔍 上課前先測一次照片連線</button>
+      <div id="testout"></div>
+    </div>
+  </div>
+  ${EMBED?'':`<div class="disc">
+    <b>關於照片</b>　照片由<b>你的瀏覽器即時取得</b>：先抓 Wikipedia 條目主圖，取不到再依序試 Wikimedia Commons 與 dog.ceo。著作權屬各原作者，公布答案時會顯示作者與授權並附原始頁面連結。<br>
+    <b>場地網路</b>　這個遊戲需要網路。上課前請按一次上方的「測照片連線」，確認 26 個品種都抓得到。<br>
+    <b>品種只是傾向</b>　同一品種的個體差異很大，米克斯更無法用外型歸類。玩得開心就好，不需要用來評斷任何一隻毛孩。
+  </div>`}`;
+}
+
+const BY_NAME={};
+DOGS.forEach(x=>BY_NAME[x.n]={...x,kind:'dog'});
+CATS.forEach(x=>BY_NAME[x.n]={...x,kind:'cat'});
+
+function begin(n){
+  gameMode='breed';
+  const half=n/2;
+  Q=shuffle(shuffle(DOGS.map(x=>({...x,kind:'dog'}))).slice(0,half)
+     .concat(shuffle(CATS.map(x=>({...x,kind:'cat'}))).slice(0,half)));
+  idx=0; log=[]; PHOTO.cache={}; render();
+}
+
+function beginRecords(){
+  gameMode='record';
+  Q=shuffle(RECORDS.map(r=>({...BY_NAME[r.n], rq:r})));
+  idx=0; log=[]; PHOTO.cache={}; render();
+}
+
+function render(){
+  const q=Q[idx]; hints=0; answered=false;
+  app.innerHTML=`
+  <div class="bar">
+    <div class="pnum">第 ${idx+1} / ${Q.length} 題</div>
+    <div class="prog"><i style="width:${(idx/Q.length*100).toFixed(1)}%"></i></div>
+    <div class="pkind ${q.kind}">${q.kind==='dog'?'🐕 狗':'🐈 貓'}</div>
+  </div>
+  <div class="stage">
+    <div class="pic">
+      <div class="phbox" id="phbox">
+        <img id="photo" alt="待猜品種的照片" referrerpolicy="no-referrer">
+        <div id="shim"></div>
+      </div>
+      <div class="phnote" id="phnote">📷 照片載入中…</div>
+    </div>
+    <div class="panel" id="panel"></div>
+  </div>`;
+  panelAsk();
+  render.token=(render.token||0)+1;
+  loadPhoto(q.n, render.token);
+  prefetch(idx+1);
+}
+
+function panelAsk(){
+  const q=Q[idx];
+  document.getElementById('panel').innerHTML=`
+    ${q.rq?`<div class="reclead">🏆 毛孩之最</div><div class="ask">${q.rq.q}</div>
+       <div class="sub">大家先搶答看看——猜不出來再按提示。</div>`
+      :`<div class="ask">這是什麼<span>品種</span>？</div>
+       <div class="sub">大家先搶答看看——猜不出來再按提示。</div>`}
+    <div class="hints" id="hintbox"></div>
+    <button class="hintbtn" id="hb" onclick="giveHint()">💡 給我提示　<span class="hcount">0 / 3</span></button>
+    <div class="skiprow">
+      <button class="sm reveal" id="rv" onclick="reveal()">👀 公布答案</button>
+      <button class="sm nextnow" onclick="skipNow()">⏭ 下一題</button>
+    </div>
+    <div class="kbtip">⌨️ 空白鍵＝公布答案　→ 鍵＝下一題　H＝提示</div>`;
+}
+
+function giveHint(){
+  const q=Q[idx];
+  if(answered||hints>=3) return;
+  hints++;
+  document.getElementById('hintbox').insertAdjacentHTML('beforeend',
+    `<div class="hint"><b>提示 ${hints}：</b>${q.h[hints-1]}</div>`);
+  const hb=document.getElementById('hb');
+  hb.innerHTML=`💡 給我提示　<span class="hcount">${hints} / 3</span>`;
+  if(hints>=3){ hb.disabled=true; hb.innerHTML='💡 提示已全部用完'; }
+}
+
+function skipNow(){ if(!answered) log.push({n:Q[idx].n, seen:false, hints:hints}); next(); }
+
+function reveal(){
+  if(answered) return;
+  answered=true;
+  log.push({n:Q[idx].n, seen:true, hints:hints});
+  const q=Q[idx], ph=q.__photo;
+  const img='https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q.n+(q.kind==='dog'?' 狗':' 貓'));
+  document.getElementById('hb').disabled=true;
+  document.getElementById('rv').outerHTML='';
+  document.getElementById('panel').insertAdjacentHTML('beforeend',
+   `<div class="result ok">
+      <h3>✅ 答案是</h3>
+      <div class="name">${q.n}</div>
+      ${q.rq?`<div class="recbox"><b>🏆 紀錄</b>${q.rq.rec}</div>
+              <div class="recextra">${q.rq.extra}</div>
+              <div class="recsrc">資料來源：<a href="${q.rq.src}" target="_blank" rel="noopener">${q.rq.sn} ↗</a></div>`:''}
+      <div class="fact">💡 ${q.fact}</div>
+      ${ph?`<div class="credit">📷 本題照片：<b>${ph.from}</b>　作者：${ph.author}　授權：${ph.lic}　<a href="${ph.page}" target="_blank" rel="noopener">原始頁面 ↗</a></div>`:''}
+      <div class="rowbtn">
+        <a class="sm pic2" href="${img}" target="_blank" rel="noopener">📷 看更多照片</a>
+        <button class="sm next" onclick="next()">${idx+1<Q.length?'下一題 →':'看總覽 🏁'}</button>
+      </div>
+    </div>`);
+  const r=document.querySelector('.result'); if(r) r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function next(){ idx++; if(idx>=Q.length) final(); else render(); }
+
+function final(){
+  const seen=log.filter(x=>x.seen).length;
+  app.innerHTML=`<div class="final">
+    <div class="of">這一輪玩完了</div>
+    <div class="big">${Q.length}</div>
+    <div class="of">題　·　公布了 ${seen} 個答案</div>
+    <h2>${gameMode==='record'?'🏆 毛孩之最　全部看完':'🐾 這一輪的毛孩'}</h2>
+    <div class="ttl">想再看一次某個品種，直接點下面的名字就能查 Google 圖片；行為與照顧細節可以到「毛孩行為資料庫」查。</div>
+    <div class="review">${log.map(x=>{
+      const q=Q.find(z=>z.n===x.n)||{};
+      const u='https://www.google.com/search?tbm=isch&q='+encodeURIComponent(x.n+(q.kind==='dog'?' 狗':' 貓'));
+      return `<a class="rv y" href="${u}" target="_blank" rel="noopener"><b>${q.kind==='dog'?'🐕':'🐈'} ${x.n}</b><span>${x.hints?`用了 ${x.hints} 個提示`:'沒用提示'}　📷 看照片</span></a>`;
+    }).join('')}</div>
+    <div class="picks">
+      <button class="pick" onclick="${gameMode==='record'?'beginRecords()':`begin(${Q.length})`}">🔄 再玩一次</button>
+      <button class="pick alt" onclick="startScreen()">← 回到選單</button>
+    </div>
+  </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+let tt;
+function toast(m){
+  const t=document.getElementById('toast');
+  t.textContent=m; t.classList.add('show');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* 簡報現場用：空白鍵公布答案、右鍵下一題、H 給提示 */
+document.addEventListener('keydown',e=>{
+  if(!document.querySelector('.stage')) return;
+  const k=e.key;
+  if(k===' '||k==='Enter'){ e.preventDefault(); answered?next():reveal(); }
+  else if(k==='ArrowRight'||k==='PageDown'){ e.preventDefault(); answered?next():skipNow(); }
+  else if(k==='h'||k==='H'||k==='ArrowDown'){ e.preventDefault(); giveHint(); }
+});
+
+startScreen();
+</script>
+</body>
+</html>
