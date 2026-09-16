@@ -108,6 +108,9 @@
 
   .promptbox{background:#2E2119; color:#EEE2D6; border-radius:14px; padding:18px 20px; position:relative; font-size:14px; line-height:1.75; white-space:pre-wrap}
   .promptbox .cap{display:block; color:var(--amber2); font-weight:800; font-size:13px; letter-spacing:2px; margin-bottom:8px}
+  .sptog{display:inline-flex; border:2px solid var(--amber); border-radius:24px; overflow:hidden; margin:0 0 12px}
+  .sptog button{border:none; background:#fff; color:var(--amber); font-family:inherit; font-weight:800; font-size:15px; padding:9px 20px; cursor:pointer; min-height:42px}
+  .sptog button.on{background:var(--amber); color:#fff}
   .promptbox .copybtn{position:absolute; top:14px; right:16px; background:var(--amber); border:none; color:#fff; font-size:12.5px; font-weight:800; padding:9px 16px; border-radius:16px; cursor:pointer; font-family:inherit; min-height:38px}
 
   .howto{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px}
@@ -200,7 +203,7 @@
       <div class="stat">每則都能 <b>看影片 · 看圖片 · 問 AI</b></div>
     </div>
     <a class="backlink" href="毛孩行為影片資料庫.html">🎬 前往毛孩行為影片資料庫（31 支精選影片＋頻道推薦）→</a>
-    <a class="backlink" href="毛孩品種猜猜樂.html" style="margin-left:16px">🎯 品種猜猜樂</a>
+    <a class="backlink" href="game.html" style="margin-left:16px">🎯 品種猜猜樂</a>
     <a class="backlink" href="毛孩研究知識庫.html" style="margin-left:16px">🔬 研究知識庫（18 篇論文）→</a>
   </div>
 </header>
@@ -213,7 +216,7 @@
       <div class="count" id="count"></div>
       <div class="langsel">
         <span class="langlbl">影片／圖片語言</span>
-        <button class="lang on" id="lz" onclick="setLang('zh')">中文</button><button class="lang" id="le" onclick="setLang('en')">English</button>
+        <button class="lang on" id="le" onclick="setLang('en')">English（建議）</button><button class="lang" id="lz" onclick="setLang('zh')">中文</button>
       </div>
       <button class="expand" id="expandBtn" onclick="toggleAll()">全部展開</button>
     </div>
@@ -264,21 +267,24 @@
         <p style="color:#2A4C6B">同一個行為用英文搜，出來的幾乎都是獸醫、行為學家做的解說與示範片，也更容易找到專業圖表。缺點是語言門檻——建議搭配 YouTube 自動翻譯字幕看。</p>
       </div>
     </div>
-    <p class="lead" style="margin-top:12px">所以這個資料庫把兩種語言<b>分開送出</b>：卡片上方的「影片／圖片語言」切換鍵決定用哪一種，絕不混在同一句查詢裡。<b>建議：先用中文快速抓概念，看不夠清楚再切英文找示範片。</b></p>
+    <p class="lead" style="margin-top:12px">所以這個資料庫把兩種語言<b>分開送出</b>，而且<b>預設用英文</b>：實測英文查到的幾乎都是獸醫與行為學者的教學內容。切到中文時，系統會自動在查詢後面加上「解說」（影片）與「圖解」（圖片）把結果往教學內容推——但中文結果仍然容易混進萌寵剪輯，看到「可愛但沒有解釋」的影片就切回英文。</p>
   </div>
 
   <div class="section">
-    <h2>📋 <span>啟動提示詞</span>：開新對話先貼這段</h2>
-    <p class="lead">免費版 ChatGPT／Gemini 都能用——貼上後整段對話 AI 都會照這個角色回答。</p>
+    <h2>📋 <span>啟動提示詞</span>：先選狗或貓，再複製貼上</h2>
+    <p class="lead">免費版 ChatGPT／Gemini 都能用——貼上後整段對話 AI 都會照這個角色回答。選好物種後，觀察線索與就醫紅旗會自動換成該物種的版本；「照顧者背景」一欄請照實填，AI 會依你的經驗程度調整解釋方式。</p>
+    <div class="sptog" role="group" aria-label="選擇物種"><button class="on" data-sp="dog" onclick="setSpecies('dog')">🐕 狗狗版</button><button data-sp="cat" onclick="setSpecies('cat')">🐈 貓咪版</button></div>
     <div class="promptbox">
-      <button class="copybtn" onclick="copyMain(this)">複製提示詞</button><span class="cap">AI 毛孩行為解讀助理</span><span id="mainPrompt">你是犬貓行為觀察助理，整段對話請遵守此設定。
-我家毛孩：【狗／貓、品種、年齡、性別】，個性：【怕生／親人／容易緊張】。
+      <button class="copybtn" onclick="copyMain(this)">複製提示詞</button><span class="cap" id="mainCap">AI 狗狗行為解讀助理</span><span id="mainPrompt">你是「狗狗行為觀察助理」，整段對話請遵守此設定。
+我家狗狗：【品種、年齡、性別、是否結紮】，個性：【怕生／親人／容易緊張／護食】。
+照顧者背景：【我或家人有沒有上過動物行為／訓練相關課程；養狗幾年；平常主要由誰照顧】。請依這個經驗程度調整用詞與解釋深度：沒受過訓練就多解釋「為什麼」、少用術語；並提醒我哪些描述可能是我自己的主觀解讀，必要時追問客觀線索。
 我描述行為或上傳照片時，請用這個格式回覆：
-1. 你在畫面／描述中看到的具體線索（耳朵、眼睛、尾巴、重心、情境）
+1. 具體線索：耳朵位置、眼神與眼白、嘴巴（閉緊／舔嘴／打哈欠／喘）、尾巴高度與擺動速度、身體重心與僵硬程度、當下情境
 2. 最可能的情緒或需求，以及可能性次高的另一種解釋
 3. 當下我可以怎麼做（1–2 個具體動作）
-4. 出現哪些訊號代表要停止互動或就醫
-規則：資訊不足時先問我，不要憑空推測；你的判讀僅供參考，行為問題與健康異常請提醒我諮詢獸醫或行為專業人員。</span>
+4. 該停止互動或就醫的訊號：低吼、露齒、身體僵住、突然改變的行為、疼痛或步態異常
+5. 我還應該補看哪些線索——用問句列出 3–5 個我沒提到、但會改變判讀的觀察點（例如：一天發生幾次、每次多久、發生前後有什麼事、環境或作息有沒有改變、食慾睡眠排泄、其他家人或動物在不在），等我回答後再更新你的判讀
+規則：資訊不足先問我，不要憑空推測；你的判讀僅供參考，行為問題與健康異常請提醒我諮詢獸醫或行為專業人員。</span>
     </div>
   </div>
 
@@ -762,7 +768,7 @@ const DATA = [
 DATA.sort((a,b)=>a.r-b.r);
 
 const CATS = ["全部","🐕 狗狗","🐈 貓咪","安撫訊號","警告訊號","親密行為","情緒訊號","壓力／健康","恐懼防衛","需求表達","遊戲／正常"];
-let active = "全部", kw = "", allOpen = false, lang = "zh";
+let active = "全部", kw = "", allOpen = false, lang = "en";
 
 const grid = document.getElementById('grid');
 const chips = document.getElementById('chips');
@@ -801,7 +807,7 @@ function aiPrompt(d){
 
 請用這個格式回答我：
 1. 依我描述的情境，這個行為最可能代表什麼？還有沒有第二種可能？
-2. 我還應該觀察哪些線索才能判斷得更準（耳朵、眼睛、尾巴、重心、食慾）？
+2. 我還應該補看哪些線索才能判斷得更準？請用問句列出 3–5 個（例如頻率、持續多久、前後發生什麼、環境有沒有變、食慾睡眠排泄），等我回答後再更新判讀
 3. 我現在可以做的 1–2 件具體的事
 4. 出現哪些訊號代表要停止互動或帶去看獸醫
 
@@ -809,12 +815,16 @@ function aiPrompt(d){
 }
 
 /* 搜尋語言：中文與英文分開送，絕不混用（混語言會讓兩邊的結果互相抵銷） */
+/* 預設英文：實測英文查詢幾乎都是獸醫／行為學者的教學內容；中文查詢容易混進萌寵剪輯，
+   所以中文模式會自動加上「解說」「圖解」等限定詞，把結果往教學內容推 */
 function query(d){ return lang==='en' ? d.ve : d.vz; }
 function ytURL(d){
-  return 'https://www.youtube.com/results?search_query='+encodeURIComponent(query(d));
+  const q = lang==='en' ? d.ve : (d.vz+' 解說');
+  return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
 }
 function imgURL(d){
-  return 'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query(d));
+  const q = lang==='en' ? (/body language/i.test(d.ve)? d.ve : d.ve+' body language') : (d.vz+' 圖解');
+  return 'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q);
 }
 
 function render(){
@@ -862,7 +872,7 @@ function setLang(l){
   document.getElementById('lz').classList.toggle('on', l==='zh');
   document.getElementById('le').classList.toggle('on', l==='en');
   render();
-  toast(l==='zh' ? '已切換：搜尋中文影片與圖片' : '已切換：搜尋英文影片與圖片（教學品質通常較穩）');
+  toast(l==='zh' ? '已切換：中文搜尋（會自動加上「解說／圖解」，但仍容易混進萌寵剪輯）' : '已切換：英文搜尋（教學品質最穩，建議搭配 YouTube 自動翻譯字幕）');
 }
 
 function toggleAll(){
@@ -900,6 +910,12 @@ function fallbackCopy(t){
   }catch(e){ return false; }
 }
 
+const SP_PROMPT={"dog": "你是「狗狗行為觀察助理」，整段對話請遵守此設定。\n我家狗狗：【品種、年齡、性別、是否結紮】，個性：【怕生／親人／容易緊張／護食】。\n照顧者背景：【我或家人有沒有上過動物行為／訓練相關課程；養狗幾年；平常主要由誰照顧】。請依這個經驗程度調整用詞與解釋深度：沒受過訓練就多解釋「為什麼」、少用術語；並提醒我哪些描述可能是我自己的主觀解讀，必要時追問客觀線索。\n我描述行為或上傳照片時，請用這個格式回覆：\n1. 具體線索：耳朵位置、眼神與眼白、嘴巴（閉緊／舔嘴／打哈欠／喘）、尾巴高度與擺動速度、身體重心與僵硬程度、當下情境\n2. 最可能的情緒或需求，以及可能性次高的另一種解釋\n3. 當下我可以怎麼做（1–2 個具體動作）\n4. 該停止互動或就醫的訊號：低吼、露齒、身體僵住、突然改變的行為、疼痛或步態異常\n5. 我還應該補看哪些線索——用問句列出 3–5 個我沒提到、但會改變判讀的觀察點（例如：一天發生幾次、每次多久、發生前後有什麼事、環境或作息有沒有改變、食慾睡眠排泄、其他家人或動物在不在），等我回答後再更新你的判讀\n規則：資訊不足先問我，不要憑空推測；你的判讀僅供參考，行為問題與健康異常請提醒我諮詢獸醫或行為專業人員。", "cat": "你是「貓咪行為觀察助理」，整段對話請遵守此設定。\n我家貓咪：【品種、年齡、性別、是否結紮、單貓或多貓家庭】，個性：【怕生／親人／容易緊張／領域性強】。\n照顧者背景：【我或家人有沒有上過動物行為相關課程；養貓幾年；平常主要由誰照顧】。請依這個經驗程度調整用詞與解釋深度：沒受過訓練就多解釋「為什麼」、少用術語；並提醒我哪些描述可能是我自己的主觀解讀，必要時追問客觀線索。\n我描述行為或上傳照片時，請用這個格式回覆：\n1. 具體線索：耳朵方向（前傾／側扁／後貼）、瞳孔大小、鬍鬚方向、尾巴姿態（豎直／尾尖抖動／快速甩動／夾起）、身體壓低或拱背、有無呼嚕或哈氣、當下情境\n2. 最可能的情緒或需求，以及可能性次高的另一種解釋\n3. 當下我可以怎麼做（1–2 個具體動作）\n4. 該停止互動或就醫的訊號：哈氣、飛機耳、尾巴猛甩、躲藏超過一天、食慾或排泄改變、過度舔毛\n5. 我還應該補看哪些線索——用問句列出 3–5 個我沒提到、但會改變判讀的觀察點（例如：一天發生幾次、每次多久、發生前後有什麼事、環境或作息有沒有改變、食慾睡眠排泄、其他家人或動物在不在），等我回答後再更新你的判讀\n規則：資訊不足先問我，不要憑空推測；你的判讀僅供參考，行為問題與健康異常請提醒我諮詢獸醫或行為專業人員。"};
+function setSpecies(sp){
+  document.getElementById('mainPrompt').textContent=SP_PROMPT[sp];
+  document.getElementById('mainCap').textContent= sp==='dog'?'AI 狗狗行為解讀助理':'AI 貓咪行為解讀助理';
+  document.querySelectorAll('.sptog button').forEach(b=>b.classList.toggle('on', b.dataset.sp===sp));
+}
 function copyMain(btn){
   copyText(document.getElementById('mainPrompt').innerText).then(ok=>{
     const old=btn.textContent; btn.textContent= ok?'已複製 ✔':'請手動複製';
