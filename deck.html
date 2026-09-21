@@ -244,10 +244,42 @@
   #nav button { width:44px; height:44px; border-radius:50%; border:none; background:rgba(255,255,255,.14); color:#fff; font-size:19px; cursor:pointer; }
   #nav button:hover { background:rgba(255,255,255,.3); }
   #pageno { position:fixed; bottom:27px; left:26px; color:rgba(255,255,255,.6); font-size:14px; z-index:10; letter-spacing:1px; }
+
+  /* QR code 卡片（封面、最後一頁） */
+  .qrcard { position:absolute; right:84px; top:50%; transform:translateY(-54%); z-index:3; width:236px; background:#FFFBF6; border-radius:18px;
+            padding:18px 18px 14px; text-align:center; color:#1A1310; text-decoration:none; box-shadow:0 10px 34px rgba(0,0,0,.4); }
+  .qrcard svg { width:200px; height:200px; display:block; margin:0 auto; }
+  .qrcard b { display:block; margin-top:11px; font-size:16px; letter-spacing:1px; color:var(--amber); }
+  .qrcard span { display:block; margin-top:4px; font-size:10.5px; line-height:1.45; color:#7A6A5C; word-break:break-all; }
+  /* 課程動線按鈕 */
+  #hub { position:fixed; top:14px; left:22px; display:flex; gap:8px; z-index:10; }
+  #hub a, #hub button { height:34px; padding:0 14px; border-radius:18px; border:1px solid rgba(255,255,255,.26); background:rgba(255,255,255,.12); color:#fff;
+            font-weight:700; font-size:13px; font-family:inherit; display:flex; align-items:center; gap:5px; cursor:pointer; text-decoration:none; }
+  #hub a:hover, #hub button:hover { background:rgba(255,255,255,.28); }
+  body.scroll #hub { display:none; }
+  #mtop .mhome { color:#F4EBE2; text-decoration:none; background:rgba(255,255,255,.14); border-radius:14px; padding:4px 10px; font-size:12.5px; white-space:nowrap; }
+  @media (max-width: 900px) {
+    .qrcard { display:none !important; }
+    #hub { display:none !important; }
+  }
+
+  /* 範例／模板切換 */
+  .extog { position:absolute; top:11px; right:118px; display:inline-flex; border:2px solid #7EC88C; border-radius:22px; overflow:hidden; z-index:2; }
+  .extog button { border:none; background:transparent; color:#EEE2D6; font-family:inherit; font-weight:800; font-size:13px; padding:5px 13px; cursor:pointer; }
+  .extog button.on { background:#7EC88C; color:#16301C; }
+  .extog button.tpl.on { background:var(--amber2); color:#2A1D14; }
+  .extog:has(.tpl.on) { border-color:var(--amber2); }
+  .prompt.hassp .extog { right:268px; }
+  .pk .extog { top:8px; right:108px; } .pk .extog button { font-size:11.5px; padding:3px 9px; }
+  .pk .prompt.hassp .extog { right:222px; }
+  .prompt mark { font:inherit; border-radius:4px; padding:0 3px; }
+  .prompt mark.fill { background:rgba(126,200,140,.2); color:#BFF2C7; box-shadow:inset 0 -2px 0 #7EC88C; }
+  .prompt mark.blank { background:rgba(240,160,80,.2); color:#FFCB8E; box-shadow:inset 0 -2px 0 var(--amber2); }
+  @media (max-width: 900px) { .extog, .prompt.hassp .extog, .pk .extog { position:static !important; margin:2px 8px 8px 0; } }
 </style>
 </head>
 <body>
-<div id="mtop"><span class="ttl">AI 萌寵映畫誌｜課程簡報</span><span class="pg" id="mprog"></span></div>
+<div id="mtop"><a class="mhome" href="index.html">🏠 首頁</a><span class="ttl">AI 萌寵映畫誌｜課程簡報</span><span class="pg" id="mprog"></span></div>
 <div id="stage-wrap"><div id="stage">
 
 <!-- 1 封面 -->
@@ -259,6 +291,11 @@
     <p style="font-size:17px; margin-top:38px; font-weight:700; position:relative; z-index:2;">｜　葉明理 助理教授　×　鍾孟修 職能治療師</p>
     <p style="font-size:14px; margin-top:8px; color:#9E8B78; position:relative; z-index:2;">2026.09.22（二）12:30–13:30・Cisco Webex 線上直播</p>
   </div>
+  <a class="qrcard" href="https://mattsue1003.github.io/animal-behavior-video/deck.html" target="_blank" title="https://mattsue1003.github.io/animal-behavior-video/deck.html">
+    <svg viewBox="0 0 33 33" shape-rendering="crispEdges" aria-label="簡報 QR Code"><path fill="#1A1310" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM10 0h1v1h-1zM12 0h1v1h-1zM14 0h1v1h-1zM16 0h1v1h-1zM17 0h1v1h-1zM18 0h1v1h-1zM21 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM29 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM16 1h1v1h-1zM20 1h1v1h-1zM21 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM12 2h1v1h-1zM16 2h1v1h-1zM18 2h1v1h-1zM19 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM23 2h1v1h-1zM24 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM17 3h1v1h-1zM20 3h1v1h-1zM21 3h1v1h-1zM22 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM16 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM20 4h1v1h-1zM21 4h1v1h-1zM23 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM16 5h1v1h-1zM18 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM14 7h1v1h-1zM16 7h1v1h-1zM19 7h1v1h-1zM20 7h1v1h-1zM22 7h1v1h-1zM23 7h1v1h-1zM0 8h1v1h-1zM6 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM10 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM17 8h1v1h-1zM19 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM31 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1zM19 9h1v1h-1zM21 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM28 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM0 10h1v1h-1zM3 10h1v1h-1zM6 10h1v1h-1zM10 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1zM16 10h1v1h-1zM21 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM25 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM2 11h1v1h-1zM5 11h1v1h-1zM7 11h1v1h-1zM13 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM22 11h1v1h-1zM25 11h1v1h-1zM27 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM30 11h1v1h-1zM31 11h1v1h-1zM0 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM13 12h1v1h-1zM16 12h1v1h-1zM20 12h1v1h-1zM23 12h1v1h-1zM24 12h1v1h-1zM26 12h1v1h-1zM27 12h1v1h-1zM31 12h1v1h-1zM1 13h1v1h-1zM2 13h1v1h-1zM7 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM22 13h1v1h-1zM23 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM29 13h1v1h-1zM31 13h1v1h-1zM32 13h1v1h-1zM0 14h1v1h-1zM1 14h1v1h-1zM3 14h1v1h-1zM4 14h1v1h-1zM6 14h1v1h-1zM13 14h1v1h-1zM15 14h1v1h-1zM20 14h1v1h-1zM21 14h1v1h-1zM22 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM29 14h1v1h-1zM30 14h1v1h-1zM31 14h1v1h-1zM4 15h1v1h-1zM11 15h1v1h-1zM13 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM28 15h1v1h-1zM29 15h1v1h-1zM30 15h1v1h-1zM32 15h1v1h-1zM0 16h1v1h-1zM2 16h1v1h-1zM3 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM8 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM13 16h1v1h-1zM15 16h1v1h-1zM17 16h1v1h-1zM19 16h1v1h-1zM23 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM28 16h1v1h-1zM32 16h1v1h-1zM0 17h1v1h-1zM1 17h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM5 17h1v1h-1zM11 17h1v1h-1zM13 17h1v1h-1zM14 17h1v1h-1zM15 17h1v1h-1zM16 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM26 17h1v1h-1zM29 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM6 18h1v1h-1zM10 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM27 18h1v1h-1zM29 18h1v1h-1zM30 18h1v1h-1zM32 18h1v1h-1zM2 19h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM9 19h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM15 19h1v1h-1zM16 19h1v1h-1zM19 19h1v1h-1zM28 19h1v1h-1zM29 19h1v1h-1zM30 19h1v1h-1zM32 19h1v1h-1zM0 20h1v1h-1zM1 20h1v1h-1zM3 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM22 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM31 20h1v1h-1zM32 20h1v1h-1zM0 21h1v1h-1zM3 21h1v1h-1zM4 21h1v1h-1zM5 21h1v1h-1zM7 21h1v1h-1zM9 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM14 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM22 21h1v1h-1zM23 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM30 21h1v1h-1zM0 22h1v1h-1zM3 22h1v1h-1zM6 22h1v1h-1zM9 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM18 22h1v1h-1zM20 22h1v1h-1zM21 22h1v1h-1zM24 22h1v1h-1zM25 22h1v1h-1zM26 22h1v1h-1zM29 22h1v1h-1zM30 22h1v1h-1zM31 22h1v1h-1zM0 23h1v1h-1zM2 23h1v1h-1zM3 23h1v1h-1zM5 23h1v1h-1zM7 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM12 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM18 23h1v1h-1zM20 23h1v1h-1zM22 23h1v1h-1zM23 23h1v1h-1zM25 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM29 23h1v1h-1zM30 23h1v1h-1zM31 23h1v1h-1zM0 24h1v1h-1zM1 24h1v1h-1zM3 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM8 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM16 24h1v1h-1zM19 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM29 24h1v1h-1zM8 25h1v1h-1zM10 25h1v1h-1zM12 25h1v1h-1zM14 25h1v1h-1zM15 25h1v1h-1zM17 25h1v1h-1zM19 25h1v1h-1zM21 25h1v1h-1zM22 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM0 26h1v1h-1zM1 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM15 26h1v1h-1zM17 26h1v1h-1zM18 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM31 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM9 27h1v1h-1zM11 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM30 27h1v1h-1zM31 27h1v1h-1zM32 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM11 28h1v1h-1zM13 28h1v1h-1zM15 28h1v1h-1zM17 28h1v1h-1zM18 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM0 29h1v1h-1zM2 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM10 29h1v1h-1zM11 29h1v1h-1zM12 29h1v1h-1zM13 29h1v1h-1zM15 29h1v1h-1zM16 29h1v1h-1zM18 29h1v1h-1zM19 29h1v1h-1zM20 29h1v1h-1zM23 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM27 29h1v1h-1zM28 29h1v1h-1zM29 29h1v1h-1zM31 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM14 30h1v1h-1zM15 30h1v1h-1zM16 30h1v1h-1zM17 30h1v1h-1zM19 30h1v1h-1zM20 30h1v1h-1zM21 30h1v1h-1zM22 30h1v1h-1zM23 30h1v1h-1zM24 30h1v1h-1zM25 30h1v1h-1zM27 30h1v1h-1zM28 30h1v1h-1zM29 30h1v1h-1zM30 30h1v1h-1zM31 30h1v1h-1zM32 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM13 31h1v1h-1zM15 31h1v1h-1zM16 31h1v1h-1zM20 31h1v1h-1zM23 31h1v1h-1zM27 31h1v1h-1zM28 31h1v1h-1zM30 31h1v1h-1zM0 32h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM17 32h1v1h-1zM20 32h1v1h-1zM23 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM27 32h1v1h-1zM31 32h1v1h-1z"/></svg>
+    <b>掃我，帶走這份簡報</b>
+    <span>mattsue1003.github.io/<br>animal-behavior-video/deck.html</span>
+  </a>
   <div class="footer"><span>AI 萌寵映畫誌</span><span class="pn"></span></div>
 </section>
 
@@ -619,7 +656,7 @@
   <h2>AI 毛孩行為解讀助理——<span class="accent">先選狗或貓，再複製</span></h2>
   <div class="two">
     <div class="prompt" style="font-size:13.4px; line-height:1.72;">
-      <span class="cap">啟動提示詞（複製即用）</span>
+      <span class="cap">啟動提示詞</span>
       <span class="sptog" role="group" aria-label="選擇物種"><button class="on" data-sp="dog" onclick="setSpecies('dog')">🐕 狗</button><button data-sp="cat" onclick="setSpecies('cat')">🐈 貓</button></span>
       <button class="copybtn" data-copy="q1">複製提示詞</button>
       <span id="q1" data-spfull="1">你是「狗狗行為觀察助理」，整段對話請遵守此設定。
@@ -804,7 +841,7 @@
       <div class="step" style="padding:11px 16px"><div class="no">4</div><div><h4 style="font-size:16.5px">追問，不要只看第一次回答</h4><p style="font-size:13.5px">「你是根據哪一張的哪個部位？」「還有沒有別種可能？」——追問才是精華。</p></div></div>
     </div>
     <div class="prompt" style="align-self:center; font-size:13.2px; line-height:1.7;">
-      <span class="cap">情境提問範例（只填一格・先貼啟動提示詞①再貼這段）</span>
+      <span class="cap">情境提問（先貼①再貼這段）</span>
       <button class="copybtn" data-copy="q2">複製提示詞</button>
       <span id="q2">這是我家毛孩的照片，共【1～3】張，依拍攝順序上傳。
 情境一句話：【例如：家裡來客人／剛洗完澡／散步遇到別的狗】
@@ -1035,7 +1072,7 @@
   <h2>毛孩<span class="accent">「內心翻譯官」</span>——把照片變成台詞</h2>
   <div class="two">
     <div class="prompt" style="font-size:14.6px; line-height:1.85;">
-      <span class="cap">啟動提示詞（複製即用）</span>
+      <span class="cap">啟動提示詞</span>
       <button class="copybtn" data-copy="q3">複製提示詞</button>
       <span id="q3">你是我家毛孩的「內心翻譯官」。
 我的毛孩：【名字、狗／貓、個性一句話】。
@@ -1136,7 +1173,7 @@
       <div class="notice" style="font-size:12.4px; padding:7px 12px;"><b>迷因三原則：</b>一張圖只講一件事・字要大到縮圖也看得到・反差越大越好笑。</div>
     </div>
     <div class="prompt" style="font-size:13.2px; line-height:1.7;">
-      <span class="cap">迷因圖卡（複製即用・先上傳照片）</span>
+      <span class="cap">迷因圖卡（先上傳照片）</span>
       <button class="copybtn" data-copy="q8">複製提示詞</button>
       <span id="q8">請根據這張照片，給我 5 句適合做迷因圖卡的一句話心聲：每句 12 字以內、口語、有反差、可以直接當圖卡上的字；語氣：【傲嬌／厭世上班族／戲劇旁白】。
 我選好之後，請把那句做成迷因圖卡：字放在照片上方、白色粗體、黑色描邊、置中，照片其他部分不要改動。如果你不能改圖，就告訴我，我改用 Canva。</span>
@@ -1229,7 +1266,7 @@
           ⑤ 三段接起來，加音樂，完成</p>
       </div>
       <div class="notice" style="font-size:12.6px; background:#FDF0EE; border-color:#E8B4AC; color:#8A3B33;">
-        <b style="color:var(--bad)">要知道的事：</b>Vids 生出來的是<b>「AI 想像的狗」不是你家的狗</b>。適合示範、開場、沒有照片的段落；真正要發給家人朋友看的，用 🅱️。
+        <b style="color:var(--bad)">要知道的事：</b>只打文字，Vids 生的是<b>「AI 想像的狗」</b>；想要像你家那隻，就<b>上傳照片當 Image 1</b>（後面有整段英文範例）。每一張都要是自家照片，用 🅱️。
       </div>
     </div>
     <div>
@@ -1243,7 +1280,7 @@
           ⑤ 加動畫、音樂、匯出</p>
       </div>
       <div class="prompt" style="font-size:12.8px; line-height:1.65; padding:11px 15px;">
-        <span class="cap">把心聲改寫成 Vids 英文畫面描述（複製即用）</span>
+        <span class="cap">心聲 → Vids 英文畫面描述</span>
         <button class="copybtn" data-copy="q10">複製提示詞</button>
         <span id="q10">請把我剛剛那 3 句心聲，改寫成 Google Vids 可以直接使用的 3 段畫面描述。【重要】畫面描述請用「英文」寫，因為 Vids 的 AI 功能目前主要支援英文。每段一句話，順序是：camera shot → subject → action → setting → lighting → style，主體固定是【品種、毛色】的狗／貓，photorealistic、結尾加 no text。最後再把原本那 3 句中文心聲原樣列一次，我要拿來當字幕。</span>
       </div>
@@ -1344,7 +1381,7 @@
         <h3 style="font-size:16.5px; color:#8A3B33;">①　<span class="o">提示詞要用英文</span></h3>
         <p style="font-size:13.2px; line-height:1.7;">Google 官方說明頁明寫：<b>「Vids 的許多 AI 功能目前僅支援英文」</b>。<br>
         <b>所以中文提示詞常常生不出來，或生出完全不相干的畫面。</b><br>
-        <b>做法：</b>提示詞全部用<b>英文</b>寫，<b>中文只用在字幕</b>——字幕是你自己打上去的，不受影響。<br>
+        <b>做法：</b>指令全部用<b>英文</b>寫，<b>中文只放要出現在畫面上的標題和字幕</b>（下一頁有完整範例）。<br>
         不會寫英文？用 ChatGPT／Gemini 翻就好，下面這組提示詞會<b>直接幫你產出英文版</b>。</p>
       </div>
       <div class="prompt" style="font-size:12.8px; line-height:1.65; padding:11px 15px;">
@@ -1372,6 +1409,43 @@
   </div>
   <div class="footer"><span>單元四</span><span class="pn"></span></div>
 </section>
+
+<!-- 23e Vids 照片＋英文提示詞 -->
+<section class="slide">
+  <div class="kicker">單元四｜Google Vids　用自家照片生成</div>
+  <h2>上傳照片＋英文提示詞，<span class="accent">一次生出標題和字幕</span></h2>
+  <p class="sub">指令用<b>英文</b> Vids 才看得懂；要出現在畫面上的字用<b>繁體中文</b>照打。先上傳的那張照片，就是提示詞裡的「Image 1」</p>
+  <div class="two" style="gap:16px; align-items:start;">
+    <div class="prompt" style="font-size:13.4px; line-height:1.75; padding:13px 17px;">
+      <span class="cap">Vids 照片成片（英文）</span>
+      <button class="copybtn" data-copy="q12">複製提示詞</button>
+      <span id="q12">Create a 【warm and healing / funny / dramatic】 8-second vertical video (9:16). Use Image 1 as the main character, and keep my pet's face, fur color and body shape exactly the same as in the photo.
+Action: the pet 【slowly blinks and looks at the camera / tilts its head / wags its tail】, slow push-in, soft natural window light, photorealistic.
+Add on-screen text in Traditional Chinese (繁體中文) and copy the characters exactly:
+Title at the top of the screen: 【影片標題】
+Subtitles at the bottom of the screen, the pet's inner monologue, one line at a time:
+1. 【心聲 1】
+2. 【心聲 2】
+3. 【心聲 3】
+No other text.</span>
+    </div>
+    <div>
+      <div class="card" style="padding:13px 16px; margin-bottom:9px;">
+        <h3 style="font-size:16px;">這段提示詞的<span class="o">四個零件</span></h3>
+        <p style="font-size:13px; line-height:1.72;">
+        <b>① Image 1 當主角：</b>先在「AI 短片」面板上傳毛孩照片，再寫 Image 1，並要求<b>臉、毛色、體型不要變</b>——這樣生出來的才像你家那隻。<br>
+        <b>② 氛圍＋動作用英文選：</b>warm and healing（療癒）／funny（搞笑）／dramatic（戲劇）；動作<b>一次只給一個</b>。<br>
+        <b>③ 字要寫清楚「放哪裡」：</b>標題 <code>at the top</code>、心聲 <code>at the bottom</code>，並註明 <b>Traditional Chinese</b>，不然可能變簡體。<br>
+        <b>④ 結尾 No other text：</b>避免 AI 自己多加英文字。</p>
+      </div>
+      <div class="notice" style="font-size:12.8px; line-height:1.65;">
+        <b>中文字歪掉、錯字很常見：</b>AI 生成的中文字不一定正確。生好先暫停檢查，錯了就用 Vids 的<b>「文字」工具蓋掉重打</b>（一樣上標題、下字幕）；或把最後一句改成 <code>No text.</code>，字幕全部自己加。一段最長 <b>8 秒</b>，三句心聲剛好。
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>單元四</span><span class="pn"></span></div>
+</section>
+
 
 <!-- 21b Canva 介面導覽 -->
 <section class="slide">
@@ -1821,6 +1895,11 @@
     <p style="font-size:16px; margin-top:36px; position:relative; z-index:2;">葉明理 助理教授　×　鍾孟修 職能治療師</p>
     <p style="font-size:14px; margin-top:8px; color:#9E8B78; position:relative; z-index:2;">別忘了完成你的「30 秒 AI 萌寵生活映畫誌」，參加票選拿獎勵 🎁</p>
   </div>
+  <a class="qrcard" href="https://mattsue1003.github.io/animal-behavior-video/deck.html" target="_blank" title="https://mattsue1003.github.io/animal-behavior-video/deck.html">
+    <svg viewBox="0 0 33 33" shape-rendering="crispEdges" aria-label="簡報 QR Code"><path fill="#1A1310" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM10 0h1v1h-1zM12 0h1v1h-1zM14 0h1v1h-1zM16 0h1v1h-1zM17 0h1v1h-1zM18 0h1v1h-1zM21 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM29 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM16 1h1v1h-1zM20 1h1v1h-1zM21 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM12 2h1v1h-1zM16 2h1v1h-1zM18 2h1v1h-1zM19 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM23 2h1v1h-1zM24 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM17 3h1v1h-1zM20 3h1v1h-1zM21 3h1v1h-1zM22 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM16 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM20 4h1v1h-1zM21 4h1v1h-1zM23 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM16 5h1v1h-1zM18 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM14 7h1v1h-1zM16 7h1v1h-1zM19 7h1v1h-1zM20 7h1v1h-1zM22 7h1v1h-1zM23 7h1v1h-1zM0 8h1v1h-1zM6 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM10 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM17 8h1v1h-1zM19 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM31 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1zM19 9h1v1h-1zM21 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM28 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM0 10h1v1h-1zM3 10h1v1h-1zM6 10h1v1h-1zM10 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1zM16 10h1v1h-1zM21 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM25 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM2 11h1v1h-1zM5 11h1v1h-1zM7 11h1v1h-1zM13 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM22 11h1v1h-1zM25 11h1v1h-1zM27 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM30 11h1v1h-1zM31 11h1v1h-1zM0 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM13 12h1v1h-1zM16 12h1v1h-1zM20 12h1v1h-1zM23 12h1v1h-1zM24 12h1v1h-1zM26 12h1v1h-1zM27 12h1v1h-1zM31 12h1v1h-1zM1 13h1v1h-1zM2 13h1v1h-1zM7 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM22 13h1v1h-1zM23 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM29 13h1v1h-1zM31 13h1v1h-1zM32 13h1v1h-1zM0 14h1v1h-1zM1 14h1v1h-1zM3 14h1v1h-1zM4 14h1v1h-1zM6 14h1v1h-1zM13 14h1v1h-1zM15 14h1v1h-1zM20 14h1v1h-1zM21 14h1v1h-1zM22 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM29 14h1v1h-1zM30 14h1v1h-1zM31 14h1v1h-1zM4 15h1v1h-1zM11 15h1v1h-1zM13 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM28 15h1v1h-1zM29 15h1v1h-1zM30 15h1v1h-1zM32 15h1v1h-1zM0 16h1v1h-1zM2 16h1v1h-1zM3 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM8 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM13 16h1v1h-1zM15 16h1v1h-1zM17 16h1v1h-1zM19 16h1v1h-1zM23 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM28 16h1v1h-1zM32 16h1v1h-1zM0 17h1v1h-1zM1 17h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM5 17h1v1h-1zM11 17h1v1h-1zM13 17h1v1h-1zM14 17h1v1h-1zM15 17h1v1h-1zM16 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM26 17h1v1h-1zM29 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM6 18h1v1h-1zM10 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM27 18h1v1h-1zM29 18h1v1h-1zM30 18h1v1h-1zM32 18h1v1h-1zM2 19h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM9 19h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM15 19h1v1h-1zM16 19h1v1h-1zM19 19h1v1h-1zM28 19h1v1h-1zM29 19h1v1h-1zM30 19h1v1h-1zM32 19h1v1h-1zM0 20h1v1h-1zM1 20h1v1h-1zM3 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM22 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM31 20h1v1h-1zM32 20h1v1h-1zM0 21h1v1h-1zM3 21h1v1h-1zM4 21h1v1h-1zM5 21h1v1h-1zM7 21h1v1h-1zM9 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM14 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM22 21h1v1h-1zM23 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM30 21h1v1h-1zM0 22h1v1h-1zM3 22h1v1h-1zM6 22h1v1h-1zM9 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM18 22h1v1h-1zM20 22h1v1h-1zM21 22h1v1h-1zM24 22h1v1h-1zM25 22h1v1h-1zM26 22h1v1h-1zM29 22h1v1h-1zM30 22h1v1h-1zM31 22h1v1h-1zM0 23h1v1h-1zM2 23h1v1h-1zM3 23h1v1h-1zM5 23h1v1h-1zM7 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM12 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM18 23h1v1h-1zM20 23h1v1h-1zM22 23h1v1h-1zM23 23h1v1h-1zM25 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM29 23h1v1h-1zM30 23h1v1h-1zM31 23h1v1h-1zM0 24h1v1h-1zM1 24h1v1h-1zM3 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM8 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM16 24h1v1h-1zM19 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM29 24h1v1h-1zM8 25h1v1h-1zM10 25h1v1h-1zM12 25h1v1h-1zM14 25h1v1h-1zM15 25h1v1h-1zM17 25h1v1h-1zM19 25h1v1h-1zM21 25h1v1h-1zM22 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM0 26h1v1h-1zM1 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM15 26h1v1h-1zM17 26h1v1h-1zM18 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM31 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM9 27h1v1h-1zM11 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM30 27h1v1h-1zM31 27h1v1h-1zM32 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM11 28h1v1h-1zM13 28h1v1h-1zM15 28h1v1h-1zM17 28h1v1h-1zM18 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM0 29h1v1h-1zM2 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM10 29h1v1h-1zM11 29h1v1h-1zM12 29h1v1h-1zM13 29h1v1h-1zM15 29h1v1h-1zM16 29h1v1h-1zM18 29h1v1h-1zM19 29h1v1h-1zM20 29h1v1h-1zM23 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM27 29h1v1h-1zM28 29h1v1h-1zM29 29h1v1h-1zM31 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM14 30h1v1h-1zM15 30h1v1h-1zM16 30h1v1h-1zM17 30h1v1h-1zM19 30h1v1h-1zM20 30h1v1h-1zM21 30h1v1h-1zM22 30h1v1h-1zM23 30h1v1h-1zM24 30h1v1h-1zM25 30h1v1h-1zM27 30h1v1h-1zM28 30h1v1h-1zM29 30h1v1h-1zM30 30h1v1h-1zM31 30h1v1h-1zM32 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM13 31h1v1h-1zM15 31h1v1h-1zM16 31h1v1h-1zM20 31h1v1h-1zM23 31h1v1h-1zM27 31h1v1h-1zM28 31h1v1h-1zM30 31h1v1h-1zM0 32h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM17 32h1v1h-1zM20 32h1v1h-1zM23 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM27 32h1v1h-1zM31 32h1v1h-1z"/></svg>
+    <b>掃我，課後隨時複習</b>
+    <span>mattsue1003.github.io/<br>animal-behavior-video/deck.html</span>
+  </a>
   <div class="footer"><span>AI 萌寵映畫誌</span><span class="pn"></span></div>
 </section>
 
@@ -1834,11 +1913,15 @@
 
 <button id="mtop2" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到頂端">↑</button>
 <button id="modebtn" onclick="toggleMode()">⇅ 捲動預覽模式</button>
+<div id="hub">
+  <button onclick="show(0)" title="回到封面（Home 鍵）">⏮ 封面</button>
+  <a href="index.html" title="回到課程資源站首頁">🏠 資源站首頁</a>
+</div>
 <div id="nav">
   <button onclick="prev()" aria-label="上一頁">‹</button>
   <button onclick="next()" aria-label="下一頁">›</button>
 </div>
-<div id="pageno">1 / 29</div>
+<div id="pageno"></div>
 
 <script>
   const slides = [...document.querySelectorAll('.slide')];
@@ -1847,6 +1930,7 @@
     idx = Math.max(0, Math.min(slides.length-1, i));
     slides.forEach((s,j)=>s.classList.toggle('active', j===idx));
     document.getElementById('pageno').textContent = (idx+1)+' / '+slides.length;
+    try{ const u=new URL(location.href); u.searchParams.set('slide', idx+1); history.replaceState(null,'',u); }catch(e){}
   }
   function quizReveal(el){
     const sl = el ? el.closest('.slide') : document;
@@ -1857,8 +1941,7 @@
   let species = 'dog';
   function setSpecies(sp){
     species = sp;
-    document.querySelectorAll('[data-spfull]').forEach(el=>el.textContent=SP_PROMPT[sp].full);
-    document.querySelectorAll('[data-spshort]').forEach(el=>el.textContent=SP_PROMPT[sp].short);
+    document.querySelectorAll('[data-spfull],[data-spshort]').forEach(el=>renderEx(el.id));
     document.querySelectorAll('.sptog button').forEach(b=>b.classList.toggle('on', b.dataset.sp===sp));
   }
   /* YouTube：本機 file:// 開啟時沒有 Referer，內嵌播放器會報「錯誤 153」，所以改為另開；放到 GitHub Pages 後則直接在頁內播放 */
@@ -1906,6 +1989,43 @@
     if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
     if(e.key==='Home') show(0);
     if(e.key==='End') show(slides.length-1);
+  });
+  /* 範例／模板：範例＝已填好、可直接貼（綠色＝改過的地方）；模板＝原始空格（橘色＝要改成你家的） */
+  const EX = {"q1": {"dog": [["【品種、年齡、性別、是否結紮】", "柴犬、3 歲、公、已結紮"], ["【怕生／親人／容易緊張／護食】", "對家人很親，但怕陌生人、吃飯時會護食"], ["【我或家人有沒有上過動物行為／訓練相關課程；養狗幾年；平常主要由誰照顧】", "我和家人都沒上過動物行為或訓練課程；養狗 2 年；平常主要是我照顧"]], "cat": [["【品種、年齡、性別、是否結紮、單貓或多貓家庭】", "米克斯橘貓、5 歲、母、已結紮、家裡還有一隻貓"], ["【怕生／親人／容易緊張／領域性強】", "親人但很怕吸塵器，領域性強"], ["【我或家人有沒有上過動物行為相關課程；養貓幾年；平常主要由誰照顧】", "我和家人都沒上過相關課程；養貓 5 年；平常主要是我照顧"]]}, "s1": {"dog": [["【品種、年齡、性別、是否結紮】", "柴犬、3 歲、公、已結紮"], ["【怕生／親人／容易緊張】", "對家人很親、怕陌生人"], ["【有沒有上過動物行為或訓練課程、養狗幾年、主要照顧者是誰】", "沒上過相關課程、養狗 2 年、主要是我照顧"]], "cat": [["【品種、年齡、性別、是否結紮、單貓或多貓】", "米克斯橘貓、5 歲、母、已結紮、家裡還有一隻貓"], ["【怕生／親人／容易緊張】", "親人但很怕吸塵器"], ["【有沒有上過動物行為課程、養貓幾年、主要照顧者是誰】", "沒上過相關課程、養貓 5 年、主要是我照顧"]]}, "q2": [["【1～3】", "2"], ["【例如：家裡來客人／剛洗完澡／散步遇到別的狗】", "家裡來了兩位客人，牠一直躲在沙發旁邊"], ["（有空再補，越多越準：拍照前發生了什麼、照片間隔幾分鐘、我當時做了什麼、現場還有誰）", "（補充：第 1 張是客人剛進門，第 2 張是 10 分鐘後；我當時在廚房倒茶，沒有叫牠）"]], "s2": [["【1～3】", "2"], ["【家裡來客人／剛洗完澡／散步遇到別的狗】", "家裡來了兩位客人，牠一直躲在沙發旁邊"], ["（有空再補：拍照前發生什麼、間隔幾分鐘、我做了什麼、現場有誰）", "（補充：第 1 張是客人剛進門，第 2 張是 10 分鐘後；我在廚房倒茶）"]], "q3": [["【名字、狗／貓、個性一句話】", "小橘，柴犬，愛面子又超貪吃"], ["【傲嬌／撒嬌／厭世／戲劇化，擇一】", "厭世"]], "s3": [["【名字、狗／貓、個性一句話】", "小橘，柴犬，愛面子又超貪吃"], ["【傲嬌／撒嬌／厭世／戲劇化】", "厭世"]], "q8": [["【傲嬌／厭世上班族／戲劇旁白】", "厭世上班族"]], "s8": [["【傲嬌／厭世／旁白腔】", "厭世上班族"]], "q10": [["【品種、毛色】的狗／貓", "赤色柴犬（a red Shiba Inu）"]], "s10": [["【品種、毛色】的狗／貓", "赤色柴犬（a red Shiba Inu）"]], "s6": [["約 ○○ 秒", "約 20 秒"], ["【在做什麼／誰在旁邊／有什麼聲音】", "我拿出指甲剪，牠從沙發跳下來躲到桌子底下，電視開著"]], "s7": [["【品種、毛色】的狗／貓", "赤色柴犬"], ["【場景】", "客廳木地板上"], ["【動作】", "趴著打哈欠"], ["【時間與光線，例如午後窗邊自然光】", "午後窗邊自然光"], ["【耳朵／尾巴／鬍鬚】", "耳朵和尾巴"], ["【○○】", "秋天落葉的公園"], ["【下一個動作】", "慢慢站起來伸懶腰"]], "q12": [["【warm and healing / funny / dramatic】", "warm and healing"], ["【slowly blinks and looks at the camera / tilts its head / wags its tail】", "rests its chin on the sofa, slowly blinks and looks up at the camera"], ["【影片標題】", "療癒法鬥陪著你"], ["【心聲 1】", "在這裡陪你很久了"], ["【心聲 2】", "知道你也累了"], ["【心聲 3】", "休息一下我都在"]]};
+  const EXMODE = {};
+  const TPL = {};
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  function tplOf(id){
+    const el=document.getElementById(id);
+    if(el.dataset.spfull) return esc(SP_PROMPT[species].full);
+    if(el.dataset.spshort) return esc(SP_PROMPT[species].short);
+    return TPL[id];
+  }
+  function renderEx(id){
+    const el=document.getElementById(id); if(!el) return;
+    let t=tplOf(id);
+    if((EXMODE[id]||'ex')==='ex'){
+      let reps=EX[id]; if(!Array.isArray(reps)) reps=reps[species];
+      reps.forEach(([a,b])=>{ t=t.split(esc(a)).join('<mark class="fill">'+esc(b)+'</mark>'); });
+    }else{
+      t=t.replace(/【(?!重要|建立|動畫|編輯|延長)[^】]*】|○○/g, m=>'<mark class="blank">'+m+'</mark>');
+    }
+    el.innerHTML=t;
+    const tog=el.parentNode.querySelector('.extog');
+    if(tog) tog.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.m===(EXMODE[id]||'ex')));
+  }
+  function setEx(id,m){ EXMODE[id]=m; renderEx(id); }
+  function setAllEx(m){ Object.keys(EX).forEach(id=>setEx(id,m)); }
+  Object.keys(EX).forEach(id=>{
+    const el=document.getElementById(id); if(!el) return;
+    TPL[id]=el.innerHTML;
+    const box=el.parentNode;
+    if(box.querySelector('.sptog')) box.classList.add('hassp');
+    const tog=document.createElement('span'); tog.className='extog'; tog.setAttribute('role','group');
+    tog.innerHTML='<button data-m="ex" title="已填好的範例，可直接複製貼上">✅ 範例</button><button class="tpl" data-m="tpl" title="原始模板，橘色是要改成你家毛孩的地方">✏️ 模板</button>';
+    tog.querySelectorAll('button').forEach(b=>b.onclick=()=>setEx(id,b.dataset.m));
+    box.insertBefore(tog, box.querySelector('.copybtn'));
+    renderEx(id);
   });
   // 已移除點擊換頁，避免誤觸：請用方向鍵、空白鍵或右下角箭頭換頁
   document.querySelectorAll('.copybtn').forEach(btn=>{
@@ -1957,8 +2077,24 @@
   addEventListener('scroll', ()=>{ requestAnimationFrame(updateProg); }, {passive:true});
   addEventListener('resize', updateProg);
   updateProg();
+  /* 課程動線：開啟行為資料庫／猜猜樂等網頁時在同一分頁開，並記住目前頁碼，對方頁面按「回到簡報」即回到這一頁 */
+  const INTERNAL = /(毛孩品種猜猜樂|毛孩行為資料庫|毛孩行為影片資料庫|毛孩研究知識庫|game|behaviors|videos|research)\.html/;
+  function curSlide(){
+    if(isMobile() || scrollMode){ let c=1; slides.forEach((sl,i)=>{ if(sl.getBoundingClientRect().top<=90) c=i+1; }); return c; }
+    return idx+1;
+  }
+  document.addEventListener('click', e=>{
+    const a=e.target.closest('a[href]'); if(!a) return;
+    const href=a.getAttribute('href');
+    if(!INTERNAL.test(href) || /^https?:/.test(href)) return;
+    e.preventDefault();
+    const [base, hash] = href.split('#');
+    location.href = base + (base.includes('?')?'&':'?') + 'back=' + curSlide() + (hash?'#'+hash:'');
+  });
   const q = new URLSearchParams(location.search).get('slide');
+  document.getElementById('pageno').textContent = (idx+1)+' / '+slides.length;
   if(q && !isMobile()) show(parseInt(q,10)-1);
+  else if(q && isMobile()){ const t=slides[parseInt(q,10)-1]; if(t) setTimeout(()=>t.scrollIntoView({block:'start'}), 300); }
 </script>
 </body>
 </html>
