@@ -1197,7 +1197,7 @@
         <p style="font-size:13px; line-height:1.65;">
           ① 開新影片 → 選<b>直式 9:16</b><br>
           ② 右側「<b>AI 短片</b>」→ <b>建立</b><br>
-          ③ 把分鏡的<b>畫面描述</b>貼進去，<b>一個分鏡生一段</b><br>
+          ③ 把分鏡的<b>畫面描述（英文）</b>貼進去，<b>一個分鏡生一段</b><br>
           ④ 生好後在時間軸加文字 → 貼上<b>對應那一句心聲</b><br>
           ⑤ 三段接起來，加音樂，完成</p>
       </div>
@@ -1216,9 +1216,9 @@
           ⑤ 加動畫、音樂、匯出</p>
       </div>
       <div class="prompt" style="font-size:12.8px; line-height:1.65; padding:11px 15px;">
-        <span class="cap">把心聲改寫成 Vids 畫面描述（複製即用）</span>
+        <span class="cap">把心聲改寫成 Vids 英文畫面描述（複製即用）</span>
         <button class="copybtn" data-copy="q10">複製提示詞</button>
-        <span id="q10">請把我剛剛那 3 句心聲，改寫成 Google Vids 可以直接使用的 3 段畫面描述。每段一句話，順序是：鏡頭 → 主體 → 動作 → 場景 → 光線 → 風格。主體固定寫【品種、毛色】的狗／貓，寫實風格，畫面裡不要有任何文字。最後再把原本那 3 句心聲原樣列一次，我要拿來當字幕。</span>
+        <span id="q10">請把我剛剛那 3 句心聲，改寫成 Google Vids 可以直接使用的 3 段畫面描述。【重要】畫面描述請用「英文」寫，因為 Vids 的 AI 功能目前主要支援英文。每段一句話，順序是：camera shot → subject → action → setting → lighting → style，主體固定是【品種、毛色】的狗／貓，photorealistic、結尾加 no text。最後再把原本那 3 句中文心聲原樣列一次，我要拿來當字幕。</span>
       </div>
     </div>
   </div>
@@ -1306,6 +1306,46 @@
   <div class="footer"><span>單元四</span><span class="pn"></span></div>
 </section>
 
+<!-- 23d Vids 卡關 -->
+<section class="slide">
+  <div class="kicker">單元四｜Google Vids　生不出來的時候</div>
+  <h2>生成失敗？<span class="accent">先檢查這兩件事</span></h2>
+  <p class="sub">絕大多數「一直顯示無法生成」都是這兩個原因，不是你的提示詞寫得不好</p>
+  <div class="two" style="gap:16px; align-items:start;">
+    <div>
+      <div class="card" style="padding:13px 16px; margin-bottom:9px; background:#FDF0EE; border-color:#E8B4AC;">
+        <h3 style="font-size:16.5px; color:#8A3B33;">①　<span class="o">提示詞要用英文</span></h3>
+        <p style="font-size:13.2px; line-height:1.7;">Google 官方說明頁明寫：<b>「Vids 的許多 AI 功能目前僅支援英文」</b>。<br>
+        <b>所以中文提示詞常常生不出來，或生出完全不相干的畫面。</b><br>
+        <b>做法：</b>提示詞全部用<b>英文</b>寫，<b>中文只用在字幕</b>——字幕是你自己打上去的，不受影響。<br>
+        不會寫英文？用 ChatGPT／Gemini 翻就好，下面這組提示詞會<b>直接幫你產出英文版</b>。</p>
+      </div>
+      <div class="prompt" style="font-size:12.8px; line-height:1.65; padding:11px 15px;">
+        <span class="cap">英文畫面描述・照抄改字即可</span>
+        <button class="copybtn" data-copy="q11">複製提示詞</button>
+        <span id="q11">Static medium shot, a brown short-haired dog lying on a wooden floor, ears flattened backwards, warm afternoon window light, photorealistic, no text.</span>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="padding:13px 16px; margin-bottom:9px;">
+        <h3 style="font-size:16.5px;">②　<span class="o">這個月的次數用完了</span></h3>
+        <table class="tb tight" style="font-size:12.6px; margin-top:6px;">
+          <tr><th style="width:150px;">帳號</th><th>每月可生成影片</th></tr>
+          <tr><td>一般免費 Google 帳號</td><td><b>約 10 部／月</b></td></tr>
+          <tr><td>多數 Workspace 商業版<br>Google AI Pro／Ultra</td><td><b>最多 50 部／月</b>（官方數字）</td></tr>
+          <tr><td>企業 AI 加購方案</td><td>200～1,000 部／月不等</td></tr>
+        </table>
+        <p style="font-size:12.6px; line-height:1.6; margin-top:7px;"><b>每月 1 號（美西時間）重置。</b>家庭共享的 AI Pro／Ultra 是<b>全家共用同一個額度</b>。<br>
+        <span style="color:var(--muted)">生成的片段為 720p、24 FPS；把照片動畫化最長 8 秒。</span></p>
+      </div>
+      <div class="notice" style="font-size:12.6px;">
+        <b>還是失敗？剩下三個原因：</b>① 描述<b>碰到內容政策</b>（暴力、真實人物、品牌 logo）換個說法 ② 用<b>公司帳號</b>但管理員關閉了 AI 功能 ③ 位於歐洲經濟區、英國、瑞士等地區時，<b>部分上傳影片的編輯功能不開放</b>。
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>單元四</span><span class="pn"></span></div>
+</section>
+
 <!-- 21b Canva 介面導覽 -->
 <section class="slide">
   <div class="kicker">單元四｜第二步　換 Canva 上場</div>
@@ -1370,6 +1410,42 @@
   <div class="footer"><span>單元四</span><span class="pn"></span></div>
 </section>
 
+<!-- 21c2 範本改造 -->
+<section class="slide">
+  <div class="kicker">單元四｜步驟 1＋　範本改造</div>
+  <h2>範本裡的<span class="accent">影片和形狀</span>，都可以換成你家毛孩</h2>
+  <p class="sub">很多人卡在「範本背後那支影片不是我的狗」——其實兩個動作就換掉了。這兩招學會，任何範本都能變成你的</p>
+  <div class="two" style="gap:16px; align-items:start;">
+    <div>
+      <div class="card" style="padding:13px 16px; margin-bottom:9px; background:#EFF7F0; border-color:#9BC7A8;">
+        <h3 style="font-size:16px;">🔁 招式一｜<span class="o">換掉範本自帶的影片／照片</span></h3>
+        <p style="font-size:13.2px; line-height:1.7;">
+          <b>最快：直接蓋上去</b>　從左側「上傳」把<b>你自己的影片或照片拖到範本那個畫面上放開</b>，Canva 會自動替換、自動填滿，位置和裁切都保留。<br>
+          <b>拖不動、蓋不上去？</b>那是<b>背景</b>不是一般素材——<b>在畫面上按右鍵 →「分離背景圖片／影片」</b>，它就變成可以選取的一般物件，再<b>按 Delete 刪掉</b>，然後把你的影片拖進來。<br>
+          <b>只想換掉一部分？</b>點素材 → 上方「<b>取代</b>」，選你上傳的檔案。</p>
+      </div>
+      <div class="notice" style="font-size:12.8px; background:#FDF0EE; border-color:#E8B4AC; color:#8A3B33;">
+        <b style="color:var(--bad)">換完先檢查兩件事：</b>① 你的影片比例和原本不同，可能被裁到頭——雙擊進裁切模式調位置 ② 範本原本影片的<b>聲音</b>可能還在，點片段把音量拉到 0。
+      </div>
+    </div>
+    <div>
+      <div class="card" style="padding:13px 16px; margin-bottom:9px;">
+        <h3 style="font-size:16px;">⭕ 招式二｜<span class="o">邊框（框架）</span>　把照片裁成任何形狀</h3>
+        <p style="font-size:13.2px; line-height:1.7;">
+          左側「<b>元素</b>」→ 往下找「<b>邊框</b>」（舊版叫框架）→ <b>查看全部</b>。裡面有圓形、三角形、星形、愛心、拍立得、手機外框……<br>
+          <b>用法：</b>把邊框拉到畫面上 → <b>把照片或影片拖進邊框範圍放開</b> → 自動裁成那個形狀。<br>
+          <b>調位置：</b><b>雙擊</b>邊框進入裁切模式，拖動或縮放裡面的照片。<br>
+          <b>影片也可以</b>——圓形框裡放一段毛孩影片，質感立刻不一樣。</p>
+      </div>
+      <div class="notice" style="font-size:12.8px;">
+        <b>毛孩片最好用的三種邊框：</b><b>圓形</b>（當頭貼、放在角落當「牠在旁白」）・<b>拍立得</b>（回憶感，配溫馨音樂）・<b>手機外框</b>（做成「牠傳訊息給你」的梗）。<br>
+        <span style="color:var(--muted)">搜尋不到就切英文：frame、circle frame、polaroid、phone mockup。</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>單元四</span><span class="pn"></span></div>
+</section>
+
 <!-- 21d 步驟2 元素與文字 -->
 <section class="slide">
   <div class="kicker">單元四｜步驟 2　元素與文字</div>
@@ -1423,8 +1499,13 @@
         鏡頭會在照片上緩緩推近或橫移，<b>靜態照立刻有運鏡感</b>——這就是紀錄片常用的手法。<br>
         <b>訣竅：</b>整支片方向統一（都推近，或都橫移），一頁一頁方向亂跳會暈。</p>
       </div>
-      <div class="notice" style="font-size:13px;">
-        <b>每張照片停多久？</b>配樂快的 <b>2–3 秒</b>、溫馨的 <b>4–5 秒</b>。點片段拖兩端把手就能改長度——<b>寧可短一點</b>，觀眾滑掉都是因為太慢。
+      <div class="card" style="padding:13px 16px;">
+        <h3 style="font-size:16px;">⏱️ <span class="o">頁面時間設定</span>　一頁 5 秒怎麼調</h3>
+        <p style="font-size:13.2px; line-height:1.7;">
+          Canva 影片<b>每一頁預設就是 5 秒</b>。要改：點該頁 → 上方工具列的<b>時鐘圖示「頁面時間設定」</b>（也可以拖時間軸上片段的兩端）→ 輸入秒數，<b>最多 30 秒</b>。<br>
+          面板裡有「<b>套用至所有頁面</b>」，一次把整支片調成同樣長度，節奏最整齊。<br>
+          <b>建議秒數：</b>配樂快的 <b>2–3 秒</b>、溫馨的 <b>4–5 秒</b>。<b>寧可短一點</b>，觀眾滑掉都是因為太慢。<br>
+          <span style="color:var(--muted)">找不到時鐘圖示？先隨便加一個動畫或轉場，這顆按鈕就會出現，之後不會再消失。</span></p>
       </div>
     </div>
     <div>
@@ -1460,8 +1541,14 @@
         <b>結尾加「淡出」</b>：點音訊 → 音訊效果 → 淡出，突然斷掉最不專業<br>
         <b>音樂比片長？</b>拖右端把手剪掉多餘的。</p>
       </div>
-      <div class="notice" style="font-size:12.8px;">
-        <b>選曲對照：</b>搞笑心聲配輕快烏克麗麗／溫馨回憶配鋼琴／耍帥慢動作配節奏感強的。<b>先決定語氣，再選音樂。</b>
+      <div class="card" style="padding:12px 15px;">
+        <h3 style="font-size:16px;">💥 <span class="o">音效</span>　比配樂更有梗的一招</h3>
+        <p style="font-size:13.2px; line-height:1.65;">音效和音樂<b>在同一個「音訊」面板</b>，用搜尋找：<b>pop</b>（登場）、<b>whoosh</b>（轉場）、<b>ding</b>（叮，吐槽用）、<b>boing</b>（跳躍）、<b>record scratch</b>（急煞，反差最好笑）、<b>bark／meow</b>。<br>
+        <b>放法：</b>把播放頭移到要出現的那一秒 → 點音效 → 它會加在那個位置，再拖到精準位置。<br>
+        <b>一支 30 秒的片放 2–3 個就夠</b>，放太多會很吵。</p>
+      </div>
+      <div class="notice" style="font-size:12.6px; margin-top:8px;">
+        <b>選曲對照：</b>搞笑配輕快烏克麗麗／溫馨回憶配鋼琴／耍帥慢動作配節奏強的。<b>先決定語氣，再選音樂。</b>
       </div>
     </div>
     <div>
@@ -1641,9 +1728,9 @@
   <h2>單元三、四的<span class="accent">生成與剪輯提示詞</span></h2>
   <div class="pk">
     <div class="prompt">
-      <span class="cap">⑩ 心聲改寫成 Vids 畫面描述（單元四）</span>
+      <span class="cap">⑩ 心聲改寫成 Vids 英文畫面描述（單元四）</span>
       <button class="copybtn" data-copy="s10">複製提示詞</button>
-      <span id="s10">請把我剛剛那 3 句心聲，改寫成 Google Vids 可以直接使用的 3 段畫面描述。每段一句話，順序是：鏡頭 → 主體 → 動作 → 場景 → 光線 → 風格。主體固定寫【品種、毛色】的狗／貓，寫實風格，畫面裡不要有任何文字。最後再把原本那 3 句心聲原樣列一次，我要拿來當字幕。</span>
+      <span id="s10">請把我剛剛那 3 句心聲，改寫成 Google Vids 可以直接使用的 3 段畫面描述。【重要】畫面描述請用「英文」寫，因為 Vids 的 AI 功能目前主要支援英文。每段一句話，順序是：camera shot → subject → action → setting → lighting → style，主體固定是【品種、毛色】的狗／貓，photorealistic、結尾加 no text。最後再把原本那 3 句中文心聲原樣列一次，我要拿來當字幕。</span>
     </div>
     <div class="prompt">
       <span class="cap">⑨ Canva 圖片轉影片（單元四・Custom 模式）</span>
